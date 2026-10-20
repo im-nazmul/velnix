@@ -1,6 +1,6 @@
 # ADR 0006 — Daemonless control with explicit optional workload lifetimes
 
-- Status: Proposed — pending explicit user approval
+- Status: Accepted for Phase 2 foreground Nginx with explicit identity-checked lifecycle only; systemd and other optional workloads remain proposed
 - Date: 2026-10-20
 - Related original decisions: D005, D012
 
@@ -19,3 +19,11 @@ Alternatives: permanent management daemon simplifies scheduling but increases id
 ## Validation and approval
 
 Evidence and unresolved experiments: [FEASIBILITY](../FEASIBILITY.md). Required acceptance checks: [TESTING](../TESTING.md). Security conditions: [SECURITY](../SECURITY.md). Scope and phase gate: [IMPLEMENTATION-PLAN](../IMPLEMENTATION-PLAN.md). Approval must be recorded explicitly before implementation; this ADR does not authorize host changes.
+
+## Phase 2 authorization and implementation
+
+The user approved [the scoped HTTP completion proposal](../PHASE-2-HTTP-PROPOSAL.md)
+with “You have my approval” on 2026-10-20. See [HTTP](../HTTP.md) for implemented
+behavior and [validation](../validation/PHASE-2-HTTP.md) for actual local evidence.
+This accepts only the subset in the status above, not later milestone work or
+host package, system service, DNS or trust mutations.

@@ -27,6 +27,9 @@ Usage:
   velnix state status [--json]
   velnix state init|recover [--dry-run] [--json]
   velnix state init|recover --approve PLAN_ID [--json]
+  velnix http status [--json]
+  velnix http start [--nginx /usr/sbin/nginx] [--port 8080] [--dry-run|--approve PLAN_ID] [--json]
+  velnix http reload|stop|recover [--dry-run|--approve PLAN_ID] [--json]
   velnix projects list [--json]
   velnix projects inspect --name NAME [--json]
   velnix projects link --name NAME --path PATH [--document-root PATH] [--dry-run|--approve PLAN_ID] [--json]
@@ -86,7 +89,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	command := args[0]
 	rest := args[1:]
 	sub := ""
-	if command == "config" || command == "state" || command == "projects" {
+	if command == "config" || command == "state" || command == "projects" || command == "http" {
 		if len(rest) == 0 {
 			return domain.E(domain.Invalid, "%s requires a subcommand", command)
 		}
@@ -98,6 +101,16 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var jsonFlag, dryRun bool
 	var cfgPath, approval string
 	var projectName, projectPath, documentRoot string
+	var nginxPath string
+	var httpPort int
+	if command == "http" && sub != "status" {
+		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
+		fs.StringVar(&approval, "approve", "", "reviewed plan ID")
+		if sub == "start" {
+			fs.StringVar(&nginxPath, "nginx", "/usr/sbin/nginx", "absolute Nginx executable")
+			fs.IntVar(&httpPort, "port", 8080, "loopback HTTP port")
+		}
+	}
 	fs.BoolVar(&jsonFlag, "json", false, "structured output")
 	if command == "doctor" || command == "config" {
 		fs.StringVar(&cfgPath, "config", "", "configuration path")
@@ -158,6 +171,29 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 			value = result.Plan
 		}
 		b, _ := json.MarshalIndent(value, "", "  ")
+		return output(value, string(b))
+	}
+	if command == "http" {
+		service := app.HTTPService{Store: state.Store{Paths: c.Paths}}
+		req := app.HTTPRequest{Action: sub, Executable: nginxPath, Port: httpPort, Approval: approval, DryRun: dryRun}
+		var value any
+		var err error
+		if sub == "status" {
+			value, err = service.Status()
+		} else if dryRun && approval != "" {
+			return domain.E(domain.Invalid, "--dry-run cannot be combined with --approve")
+		} else if approval == "" {
+			value, err = service.Plan(ctx, req)
+		} else {
+			value, err = service.Apply(ctx, req)
+		}
+		if err != nil {
+			return err
+		}
+		b, err := json.MarshalIndent(value, "", "  ")
+		if err != nil {
+			return err
+		}
 		return output(value, string(b))
 	}
 	if command == "projects" {

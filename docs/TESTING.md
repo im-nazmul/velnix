@@ -1,6 +1,6 @@
 # Velnix — Validation and Performance Plan
 
-Status: release acceptance requirements. Phase 0 performed documentation research only; Phase 1 local foundation results are recorded in [validation/PHASE-1.md](validation/PHASE-1.md). The first Phase 2 registry slice is recorded in [validation/PHASE-2-REGISTRY.md](validation/PHASE-2-REGISTRY.md); HTTP gates remain open. Source research is recorded in FEASIBILITY.md. Documentation-only checks do not establish runtime feasibility.
+Status: release acceptance requirements. Phase 0 performed documentation research only; Phase 1 local foundation results are recorded in [validation/PHASE-1.md](validation/PHASE-1.md). The first Phase 2 registry slice is recorded in [validation/PHASE-2-REGISTRY.md](validation/PHASE-2-REGISTRY.md); Local HTTP evidence is recorded in [validation/PHASE-2-HTTP.md](validation/PHASE-2-HTTP.md); unperformed platform and filesystem fault gates remain open. Source research is recorded in FEASIBILITY.md. Documentation-only checks do not establish runtime feasibility.
 
 ## Test layers
 

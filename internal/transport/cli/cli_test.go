@@ -25,7 +25,7 @@ func command(t *testing.T, args ...string) (int, string, string) {
 	return code, out.String(), stderr.String()
 }
 func TestReadOnlyCommands(t *testing.T) {
-	for _, args := range [][]string{{"version", "--json"}, {"doctor", "--json"}, {"config", "show", "--json"}, {"config", "validate"}, {"state", "status", "--json"}, {"state", "init", "--dry-run", "--json"}, {"projects", "list", "--json"}, {"--help"}} {
+	for _, args := range [][]string{{"version", "--json"}, {"doctor", "--json"}, {"config", "show", "--json"}, {"config", "validate"}, {"state", "status", "--json"}, {"state", "init", "--dry-run", "--json"}, {"projects", "list", "--json"}, {"http", "status", "--json"}, {"--help"}} {
 		code, out, stderr := command(t, args...)
 		if code != 0 || out == "" || stderr != "" {
 			t.Fatalf("%v: %d %s %s", args, code, out, stderr)
@@ -85,7 +85,7 @@ func TestProjectCLI(t *testing.T) {
 	}
 }
 func TestErrors(t *testing.T) {
-	for _, args := range [][]string{{"unknown", "--json"}, {"state"}, {"config", "nope", "--json"}, {"version", "unexpected"}, {"doctor", "--unknown"}, {"state", "init", "--dry-run", "--approve", "bad"}} {
+	for _, args := range [][]string{{"unknown", "--json"}, {"state"}, {"config", "nope", "--json"}, {"version", "unexpected"}, {"doctor", "--unknown"}, {"state", "init", "--dry-run", "--approve", "bad"}, {"http", "start", "--dry-run", "--approve", "bad"}, {"http", "unknown", "--json"}} {
 		code, out, stderr := command(t, args...)
 		if code != 2 || out != "" || stderr == "" {
 			t.Fatalf("%v: %d %q %q", args, code, out, stderr)

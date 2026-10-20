@@ -1,6 +1,6 @@
 # Phase 2 project registry
 
-Phase 2 was authorized by “Lets start work with phase 2”. This first slice adds durable project metadata and commands. Rootless Nginx, HTTP serving and process lifecycle are still pending; Phase 2 is not complete.
+Phase 2 was authorized by “Lets start work with phase 2”. This first slice adds durable project metadata and commands. Rootless Nginx static HTTP and process lifecycle now complete the approved Phase 2 implementation; see [HTTP](HTTP.md) for commands, safety and recovery.
 
 ## Usage
 
@@ -30,4 +30,4 @@ The first effective mutation upgrades registry schema 1 to 2, retaining resource
 
 One journal retains the latest transaction. Project operations share the initialization mutation lock and block on unresolved operations. After a failed/interrupted mutation, inspect `state status`, then preview `state recover --dry-run --json` and approve its exact plan. Recovery marks unchanged before-state failed or committed target-state complete. It never replays a write. Unknown external edits are preserved for manual review.
 
-Directory identity checks describe observations at link time; they do not freeze source paths or make them safe for serving. The upcoming HTTP slice must enforce its own path and content policy.
+Directory identity checks describe observations at link time; they do not freeze source paths or make them safe for serving. The HTTP adapter rechecks these identities at start/reload and enforces its own path and content policy. An active routing snapshot changes only after an explicitly approved reload; unlink alone does not revoke that route.

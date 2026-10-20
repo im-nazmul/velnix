@@ -1,6 +1,6 @@
 # Velnix — Proposed Implementation Plan
 
-Status: Phase 2 authorized by the user with “Lets start work with phase 2”. The first project registry slice is described in [PROJECTS](PROJECTS.md); foundation details are in [FOUNDATION](FOUNDATION.md). Rootless HTTP remains pending within Phase 2. Later milestones need separate approval. This authorization does not permit provider installation or system configuration changes.
+Status: Phase 2 authorized by the user with “Lets start work with phase 2”. The first project registry slice is described in [PROJECTS](PROJECTS.md); foundation details are in [FOUNDATION](FOUNDATION.md). Rootless static HTTP and explicit foreground lifecycle are now implemented; see [HTTP](HTTP.md) and [local validation](validation/PHASE-2-HTTP.md). Phase 2 implementation is complete within the approved scope; unperformed platform matrix checks remain open. Later milestones need separate approval. This authorization does not permit provider installation or system configuration changes.
 
 ## Architecture and technology
 
