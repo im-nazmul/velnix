@@ -1,0 +1,40 @@
+# Go
+/bin/
+/dist/
+/build/
+*.test
+*.out
+coverage.txt
+coverage.html
+
+# Frontend
+node_modules/
+.vite/
+web/dist/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Local
+*.local
+*.log
+tmp/
+.cache/
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Sensitive
+*.key
+*.pem
+*.p12
+*.pfx
