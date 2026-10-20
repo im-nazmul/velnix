@@ -11,17 +11,23 @@ import (
 	"time"
 
 	"velnix/internal/domain"
+	"velnix/internal/projectmeta"
 )
 
 type ProjectChange struct {
-	Action       string
-	Name         string
-	Root         string
-	DocumentRoot string
-	PHPCLI       domain.PHPSelection
+	MetadataDigest string
+	Action         string
+	Name           string
+	Root           string
+	DocumentRoot   string
+	PHPCLI         domain.PHPSelection
+	Kind           string
+	Runtime        domain.RuntimeSelection
+	ProxyPort      int
 }
 
 type ProjectPlan struct {
+	MetadataDigest string `json:"metadata_digest,omitempty"`
 	Plan
 	Registry Registry `json:"registry_target"`
 }
@@ -40,6 +46,9 @@ func validateProjects(r Registry) error {
 	}
 	names, roots := map[string]bool{}, map[string]bool{}
 	for _, p := range r.Projects {
+		if r.Schema < 4 && (p.Node != (domain.RuntimeSelection{}) || p.Bun != (domain.RuntimeSelection{}) || p.Python != (domain.RuntimeSelection{}) || p.ProxyPort != 0) {
+			return domain.E(domain.Invalid, "multi-language/proxy settings require schema 4")
+		}
 		if r.Schema < 3 && p.PHPCLI != (domain.PHPSelection{}) {
 			return domain.E(domain.Invalid, "PHP selections require registry schema 3")
 		}
@@ -56,7 +65,7 @@ func validateProjects(r Registry) error {
 
 func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 	var p ProjectPlan
-	if change.Action != "link" && change.Action != "unlink" && change.Action != "select-php" && change.Action != "clear-php" {
+	if change.Action != "link" && change.Action != "unlink" && change.Action != "select-php" && change.Action != "clear-php" && change.Action != "select-runtime" && change.Action != "clear-runtime" && change.Action != "proxy" {
 		return p, domain.E(domain.Invalid, "unknown project mutation")
 	}
 	if !domain.ValidProjectName(change.Name) {
@@ -94,7 +103,7 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 			return p, e
 		}
 		if index >= 0 {
-			project.PHPCLI = target.Projects[index].PHPCLI
+			project = project.WithSettingsFrom(target.Projects[index])
 			if target.Projects[index] != project {
 				return p, domain.E(domain.Conflict, "project name already linked with different metadata; unlink it first")
 			}
@@ -120,13 +129,62 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 			selection = domain.PHPSelection{}
 		}
 		if target.Projects[index].PHPCLI != selection {
-			target.Schema = 3
+			if target.Schema < 3 {
+				target.Schema = 3
+			}
 			target.Projects[index].PHPCLI = selection
 			p.Effects = []string{"journal approved PHP CLI selection change", "atomically replace registry with exact external PHP CLI selection; preserve all other projects and resources", "verify registry and mark operation complete"}
 			if change.Action == "select-php" {
 				p.Effects = append([]string{`execute selected PHP with argv [-n, -r, echo json_encode(["version"=>PHP_VERSION,"sapi"=>PHP_SAPI]);], cwd /, environment PATH=/usr/bin:/bin LANG=C; timeout 2s; require exact version and cli SAPI before registry commit`}, p.Effects...)
 			}
 			p.Limitations = "Registry metadata only; external runtime remains externally owned. Selection approval also authorizes a bounded PHP CLI probe before commit. Existing binaries cannot read schema 3. Clearing selection does not stop already running commands."
+		}
+	case "select-runtime", "clear-runtime", "proxy":
+		if index < 0 {
+			return p, domain.E(domain.Unavailable, "project is not linked")
+		}
+		if change.Action == "proxy" {
+			if !domain.ValidProxyPort(change.ProxyPort) {
+				return p, domain.E(domain.Invalid, "proxy port must be 1024–65535 or zero")
+			}
+			if target.Projects[index].ProxyPort != change.ProxyPort {
+				target.Projects[index].ProxyPort = change.ProxyPort
+				p.Effects = []string{"update explicit loopback proxy metadata; no server launch, listener change or dependency install"}
+			}
+		} else {
+			if !domain.MultiRuntime(change.Kind) {
+				return p, domain.E(domain.Invalid, "kind must be node, bun or python")
+			}
+			selected := change.Runtime
+			if change.Action == "clear-runtime" {
+				selected = domain.RuntimeSelection{}
+			} else if e := selected.Validate(change.Kind); e != nil {
+				return p, e
+			}
+			if change.Action == "select-runtime" {
+				report, e := projectmeta.Inspect(target.Projects[index].Root)
+				if e != nil {
+					return p, e
+				}
+				if e = report.Check(change.Kind, selected.Executable.Version); e != nil {
+					return p, e
+				}
+				if change.MetadataDigest != "" && report.Digest != change.MetadataDigest {
+					return p, domain.E(domain.Conflict, "project metadata changed; preview again")
+				}
+				p.MetadataDigest = report.Digest
+			}
+			if target.Projects[index].Runtime(change.Kind) != selected {
+				target.Projects[index].SetRuntime(change.Kind, selected)
+				p.Effects = []string{"update exact externally owned runtime selection; preserve other settings"}
+				if change.Action == "select-runtime" {
+					p.Effects = append([]string{"run approved isolated exact-version probe before registry commit; no repository hooks or downloads"}, p.Effects...)
+				}
+			}
+		}
+		if len(p.Effects) > 0 {
+			target.Schema = 4
+			p.Limitations = "Registry metadata only; exact reviewed runtime selection or loopback proxy. External installations, venvs and app servers are never adopted. Existing readers cannot read schema 4; recovery never replays probes or launches."
 		}
 	case "unlink":
 		if index >= 0 {
@@ -146,6 +204,9 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 	}
 	if len(p.Effects) > 0 && target.Schema == 3 && st.Registry.Schema < 3 {
 		p.Effects = append([]string{"upgrade registry to schema 3; retain existing projects and resources"}, p.Effects...)
+	}
+	if len(p.Effects) > 0 && target.Schema == 4 && st.Registry.Schema < 4 {
+		p.Effects = append([]string{"upgrade registry to schema 4; retain all resources, projects and PHP selections"}, p.Effects...)
 	}
 	p.Registry = target
 	if len(encoded(target)) > maxFile {

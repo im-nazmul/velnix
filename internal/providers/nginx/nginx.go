@@ -42,7 +42,7 @@ func RenderWeb(projects []domain.Project, port int, token, prefix string, routes
 		return "", e
 	}
 	var b strings.Builder
-	fmt.Fprintf(&b, "daemon off;\nmaster_process on;\nworker_processes 1;\nworker_shutdown_timeout 2s;\npid %s;\nerror_log stderr warn;\nevents { worker_connections 128; }\nhttp {\naccess_log off;\ndefault_type application/octet-stream;\nclient_max_body_size 1m;\nclient_body_buffer_size 1m;\n", q)
+	fmt.Fprintf(&b, "daemon off;\nmaster_process on;\nworker_processes 1;\nworker_shutdown_timeout 2s;\npid %s;\nerror_log stderr warn;\nevents { worker_connections 128; }\nhttp {\naccess_log off;\ndefault_type application/octet-stream;\nclient_max_body_size 1m;\nclient_body_buffer_size 1m;\nmap $http_upgrade $velnix_connection { default upgrade; '' close; }\n", q)
 	for _, name := range []string{"client_body_temp_path", "proxy_temp_path", "fastcgi_temp_path", "uwsgi_temp_path", "scgi_temp_path"} {
 		p, e := quote(filepath.Join(prefix, name))
 		if e != nil {
@@ -77,6 +77,9 @@ func RenderWeb(projects []domain.Project, port int, token, prefix string, routes
 			}
 			fmt.Fprintf(&b, "location ~* ^/%s(/|$) { return 404; }\n", upload)
 		}
+		if php && p.ProxyPort != 0 {
+			return "", domain.E(domain.Conflict, "project cannot enable FPM and proxy together")
+		}
 		if php {
 			if route.Profile != "php" && route.Profile != "front-controller" {
 				return "", domain.E(domain.Invalid, "invalid PHP profile")
@@ -94,7 +97,12 @@ func RenderWeb(projects []domain.Project, port int, token, prefix string, routes
 			fmt.Fprintf(&b, "try_files $uri =404;\nfastcgi_pass %s;\nfastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\nfastcgi_param SCRIPT_NAME $fastcgi_script_name;\nfastcgi_param QUERY_STRING $query_string;\nfastcgi_param REQUEST_METHOD $request_method;\nfastcgi_param CONTENT_TYPE $content_type;\nfastcgi_param CONTENT_LENGTH $content_length;\nfastcgi_param REQUEST_URI $request_uri;\nfastcgi_param DOCUMENT_URI $document_uri;\nfastcgi_param DOCUMENT_ROOT $document_root;\nfastcgi_param SERVER_PROTOCOL $server_protocol;\nfastcgi_param SERVER_NAME $server_name;\nfastcgi_param SERVER_PORT $server_port;\nfastcgi_param REMOTE_ADDR $remote_addr;\nfastcgi_param GATEWAY_INTERFACE CGI/1.1;\nfastcgi_param REDIRECT_STATUS 200;\nfastcgi_param HTTP_PROXY '';\nfastcgi_param HTTPS $https if_not_empty;\nfastcgi_read_timeout 30s;\n}\n", socket)
 		}
 		b.WriteString("location ~* (\\.(php[0-9]*|phtml|phar|py|pyc|go|rb|pl|sh|sql|sqlite[0-9]*|log|pem|key|crt|bak|old|orig|swp|ini|toml|ya?ml|lock)|~)$ { return 404; }\nlocation ~* (^|/)(composer\\.json|package\\.json|artisan|Dockerfile|Makefile)$ { return 404; }\n")
-		if php {
+		if p.ProxyPort != 0 {
+			if p.ProxyPort == port {
+				return "", domain.E(domain.Invalid, "proxy target cannot be the HTTP listener")
+			}
+			fmt.Fprintf(&b, "location / { proxy_pass http://127.0.0.1:%d; proxy_http_version 1.1; proxy_set_header Host $http_host; proxy_set_header X-Forwarded-Host $http_host; proxy_set_header X-Forwarded-For $remote_addr; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection $velnix_connection; proxy_connect_timeout 1s; proxy_read_timeout 60s; proxy_send_timeout 30s; proxy_buffering off; }\n", p.ProxyPort)
+		} else if php {
 			if route.Profile == "front-controller" {
 				b.WriteString("location / { try_files $uri /index.php$is_args$args; }\n")
 			} else {

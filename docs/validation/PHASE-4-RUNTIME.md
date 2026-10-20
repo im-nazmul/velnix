@@ -1,5 +1,9 @@
 # Phase 4 runtime inspection: local validation
 
+Follow-up: persistent selection/exec, detection and proxy evidence is now recorded
+in [PHASE-4-EXECUTION](PHASE-4-EXECUTION.md). This report retains its original
+inspection-only scope.
+
 Date: 2026-10-20. These are local implementation results; WSL/native Ubuntu
 platform acceptance and the outstanding Phase 3 FPM/HTTPS checks remain open.
 

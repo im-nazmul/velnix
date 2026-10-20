@@ -6,7 +6,7 @@ Run as your ordinary user. No systemd, root privileges or permanent Velnix daemo
 are needed. Default executable: `/usr/sbin/nginx`; default listener:
 `127.0.0.1:8080`. Alternative ports must be 1024–65535. IPv6 is unavailable in
 the static slice. Phase 3 adds [per-project FPM](FPM.md) and [optional HTTPS](HTTPS.md);
-reverse proxying remains later work.
+Phase 4 adds [explicit loopback app-server proxying](PHASE-4.md#loopback-application-proxy).
 
 ## Start and inspect
 

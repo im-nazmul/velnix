@@ -12,21 +12,36 @@ var projectName = regexp.MustCompile(`^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$`)
 
 // Project owns a registry entry only; its source directory remains external.
 type Project struct {
-	Name           string       `json:"name"`
-	Root           string       `json:"root"`
-	DocumentRoot   string       `json:"document_root"`
-	Domain         string       `json:"domain"`
-	Device         uint64       `json:"device"`
-	Inode          uint64       `json:"inode"`
-	DocumentDevice uint64       `json:"document_device"`
-	DocumentInode  uint64       `json:"document_inode"`
-	PHPCLI         PHPSelection `json:"php_cli,omitzero"`
+	Name           string           `json:"name"`
+	Root           string           `json:"root"`
+	DocumentRoot   string           `json:"document_root"`
+	Domain         string           `json:"domain"`
+	Device         uint64           `json:"device"`
+	Inode          uint64           `json:"inode"`
+	DocumentDevice uint64           `json:"document_device"`
+	DocumentInode  uint64           `json:"document_inode"`
+	PHPCLI         PHPSelection     `json:"php_cli,omitzero"`
+	Node           RuntimeSelection `json:"node,omitzero"`
+	Bun            RuntimeSelection `json:"bun,omitzero"`
+	Python         RuntimeSelection `json:"python,omitzero"`
+	ProxyPort      int              `json:"proxy_port,omitempty"`
 }
 
 func ValidProjectName(name string) bool { return projectName.MatchString(name) }
 
 // Validate checks stored metadata without accessing project files or executing code.
 func (p Project) Validate() error {
+	if !ValidProxyPort(p.ProxyPort) {
+		return E(Invalid, "proxy port must be 1024–65535 or zero to disable")
+	}
+	for _, kind := range []string{"node", "bun", "python"} {
+		selection := p.Runtime(kind)
+		if selection != (RuntimeSelection{}) {
+			if e := selection.Validate(kind); e != nil {
+				return e
+			}
+		}
+	}
 	if p.PHPCLI != (PHPSelection{}) {
 		if err := p.PHPCLI.Validate(); err != nil {
 			return err

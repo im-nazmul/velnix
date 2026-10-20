@@ -23,6 +23,7 @@ import (
 )
 
 type RuntimeRequest struct {
+	Venv                                  string
 	Action, Name, Path, Version, Approval string
 	Kind, Directory                       string
 	DryRun                                bool
@@ -39,9 +40,11 @@ type ProbePlan struct {
 }
 
 type ExecutionSpec struct {
-	Executable  domain.PHPSelection `json:"executable"`
-	Directory   string              `json:"directory"`
-	Environment map[string]string   `json:"environment_delta"`
+	UnsetPrefixes  []string            `json:"unset_prefixes,omitempty"`
+	UnsetVariables []string            `json:"unset_variables,omitempty"`
+	Executable     domain.PHPSelection `json:"executable"`
+	Directory      string              `json:"directory"`
+	Environment    map[string]string   `json:"environment_delta"`
 }
 
 type RuntimeService struct{ Store ProjectStore }
@@ -50,12 +53,22 @@ func (s RuntimeService) Run(ctx context.Context, req RuntimeRequest) (any, error
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
+	if req.Venv != "" && req.Kind != "python" {
+		return nil, domain.E(domain.Invalid, "virtualenv selection requires Python")
+	}
 	if req.DryRun && req.Approval != "" {
 		return nil, domain.E(domain.Invalid, "--dry-run cannot be combined with --approve")
 	}
-	if req.Kind != "" && req.Kind != "php" && req.Action != "list" && req.Action != "inspect" {
-		return nil, domain.E(domain.Invalid, "only list and inspect support non-PHP runtimes in this slice")
+	if req.Action == "providers" {
+		return RuntimeProviders(), nil
 	}
+	if domain.MultiRuntime(req.Kind) && (req.Action == "select" || req.Action == "clear" || req.Action == "resolve") {
+		return s.multi(ctx, req)
+	}
+	if req.Kind != "" && req.Kind != "php" && req.Action != "list" && req.Action != "inspect" {
+		return nil, domain.E(domain.Invalid, "unsupported runtime kind")
+	}
+
 	switch req.Action {
 	case "list":
 		if req.Kind != "" && req.Kind != "php" {
@@ -147,7 +160,7 @@ func (s RuntimeService) project(name string) (domain.Project, error) {
 		if err != nil {
 			return p, err
 		}
-		now.PHPCLI = p.PHPCLI
+		now = now.WithSettingsFrom(p)
 		if now != p {
 			return p, domain.E(domain.Conflict, "project directory identity changed; relink before execution")
 		}

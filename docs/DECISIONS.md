@@ -36,6 +36,7 @@ The statuses above describe original direction and requirements, not implementat
 | [0009](decisions/0009-existing-php-cli.md) | Exact existing PHP CLI selections, approved probes and explicit exec | Accepted for first Phase 3 slice |
 | [0010](decisions/0010-multi-language-inspection.md) | Shared native executable identity and approved Node/Bun/Python version inspection | Accepted for Phase 4 inspection slice |
 | [0011](decisions/0011-phase3-web-lifecycle.md) | Shared foreground FPM transitions and isolated optional TLS issuance | Implemented within approved Phase 3; platform acceptance open |
+| [0012](decisions/0012-phase4-execution-and-proxy.md) | Existing Node/Bun/Python execution, bounded metadata and external loopback proxy | Implemented within Phase 4; optional managers unavailable and platform acceptance open |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
 

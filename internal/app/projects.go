@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"velnix/internal/domain"
+	"velnix/internal/projectmeta"
 	"velnix/internal/state"
 )
 
@@ -30,7 +31,7 @@ func (s ProjectService) Run(ctx context.Context, request ProjectRequest) (any, e
 		return nil, domain.E(domain.Invalid, "--dry-run cannot be combined with --approve")
 	}
 	switch request.Action {
-	case "list", "inspect":
+	case "list", "inspect", "detect":
 		if request.DryRun || request.ApprovedPlanID != "" {
 			return nil, domain.E(domain.Invalid, "project queries are read-only")
 		}
@@ -53,11 +54,21 @@ func (s ProjectService) Run(ctx context.Context, request ProjectRequest) (any, e
 		}
 		for _, p := range st.Registry.Projects {
 			if p.Name == request.Name {
+				if request.Action == "detect" {
+					current, e := domain.ResolveProject(p.Name, p.Root, p.DocumentRoot)
+					if e != nil {
+						return nil, e
+					}
+					if current.WithSettingsFrom(p) != p {
+						return nil, domain.E(domain.Conflict, "project identity changed")
+					}
+					return projectmeta.Inspect(p.Root)
+				}
 				return p, nil
 			}
 		}
 		return nil, domain.E(domain.Unavailable, "project is not linked")
-	case "link", "unlink":
+	case "link", "unlink", "proxy":
 		if request.ApprovedPlanID == "" {
 			return s.Store.PlanProject(request.ProjectChange)
 		}

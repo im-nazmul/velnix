@@ -21,7 +21,7 @@ func TestRuntimeInspectionApprovalBindsKindVersionAndExecutable(t *testing.T) {
 	service := RuntimeService{} // Inspection must never access persistent state.
 	for _, action := range []string{"select", "clear", "resolve"} {
 		if _, err := service.Run(context.Background(), RuntimeRequest{Action: action, Kind: "node"}); err == nil {
-			t.Fatalf("unsupported Node %s accepted", action)
+			t.Fatalf("Node %s without a project name accepted", action)
 		}
 	}
 	req := RuntimeRequest{Action: "inspect", Kind: "node", Path: path, Version: "1.2.3"}

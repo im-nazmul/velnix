@@ -66,6 +66,9 @@ func (s HTTPService) routes(projects []domain.Project) (map[string]nginx.PHPRout
 		if r.FPM == nil {
 			continue
 		}
+		if p.ProxyPort != 0 {
+			return nil, nil, domain.E(domain.Conflict, "disable FPM before enabling proxy routing for %s", p.Name)
+		}
 		if r.Phase != "running" {
 			return nil, nil, domain.E(domain.Unavailable, "FPM for %s is unavailable; start it before HTTP start/reload", p.Name)
 		}
@@ -77,7 +80,7 @@ func (s HTTPService) routes(projects []domain.Project) (map[string]nginx.PHPRout
 			return nil, nil, domain.E(domain.Unavailable, "FPM for %s exited", p.Name)
 		}
 		want := r.FPM.Project
-		want.PHPCLI = p.PHPCLI
+		want = want.WithSettingsFrom(p)
 		if !reflect.DeepEqual(want, p) {
 			return nil, nil, domain.E(domain.Conflict, "FPM project metadata changed; restart pool %s", p.Name)
 		}

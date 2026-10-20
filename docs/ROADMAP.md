@@ -14,8 +14,12 @@ Existing PHP CLI discovery/selection/exec, independent [FPM](FPM.md) and optiona
 [HTTPS](HTTPS.md) are implemented. [Validation](validation/PHASE-3-WEB.md) records
 local evidence and outstanding real-mkcert, trust and platform acceptance.
 
-## Phase 4 — Multi-language (authorized; discovery slice implemented)
-Node, Bun, Python providers; app server proxying; framework detection. The first read-only candidate discovery slice is implemented; see [PHASE-4](PHASE-4.md). Proxying, framework detection and runtime selection remain pending.
+## Phase 4 — Multi-language (bounded implementation complete; acceptance open)
+Existing Node/Bun/Python discovery, inspection, selection/exec, native resolution,
+explicit loopback proxying and bounded framework hints are implemented; see
+[PHASE-4](PHASE-4.md) and [validation](validation/PHASE-4-EXECUTION.md). Optional
+mise/uv command adapters are explicitly unavailable pending compatibility evidence.
+Provider mutations and platform acceptance are separate.
 
 ## Phase 5 — TUI
 Overview, projects, runtimes, services and diagnostics.

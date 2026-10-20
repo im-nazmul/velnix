@@ -41,6 +41,7 @@ type HTTPRequest struct {
 	Uploads                      []string
 }
 type HTTPRecord struct {
+	Upstreams      []int              `json:"upstreams,omitempty"`
 	SocketDevice   uint64             `json:"socket_device,omitempty"`
 	SocketInode    uint64             `json:"socket_inode,omitempty"`
 	TLS            *TLSRecord         `json:"tls,omitempty"`
@@ -291,6 +292,9 @@ func (s HTTPService) plan(req HTTPRequest, f *state.HTTPFiles) (HTTPPlan, error)
 					project = &v
 				}
 			}
+			if project != nil && project.ProxyPort != 0 {
+				return p, domain.E(domain.Conflict, "disable proxy before starting FPM")
+			}
 			if project == nil {
 				return p, domain.E(domain.Unavailable, "linked project not found")
 			}
@@ -327,7 +331,7 @@ func (s HTTPService) plan(req HTTPRequest, f *state.HTTPFiles) (HTTPPlan, error)
 			if e != nil {
 				return p, e
 			}
-			now.PHPCLI = project.PHPCLI
+			now = now.WithSettingsFrom(project)
 			if now != project {
 				return p, domain.E(domain.Conflict, "project directory identity changed; relink %s", project.Name)
 			}
@@ -350,6 +354,11 @@ func (s HTTPService) plan(req HTTPRequest, f *state.HTTPFiles) (HTTPPlan, error)
 				return p, err
 			}
 			p.Target.Pools = pools
+			for _, project := range st.Registry.Projects {
+				if project.ProxyPort != 0 {
+					p.Target.Upstreams = append(p.Target.Upstreams, project.ProxyPort)
+				}
+			}
 			p.Configuration, e = nginx.RenderWeb(st.Registry.Projects, port, p.Target.Token, p.Prefix, routes)
 			tlsEnabled, tlsPort := req.HTTPS, req.HTTPSPort
 			if req.Action == "reload" && r.TLS != nil {
@@ -374,6 +383,11 @@ func (s HTTPService) plan(req HTTPRequest, f *state.HTTPFiles) (HTTPPlan, error)
 				}
 				p.Target.TLS = cert
 				p.Target.HTTPSPort = tlsPort
+				for _, project := range st.Registry.Projects {
+					if project.ProxyPort == tlsPort {
+						return p, domain.E(domain.Invalid, "proxy target cannot be the HTTPS listener")
+					}
+				}
 				p.Configuration, e = nginx.WithTLS(p.Configuration, port, tlsPort, filepath.Join(p.Prefix, cert.Generation, "cert.pem"), filepath.Join(p.Prefix, cert.Generation, "key.pem"))
 			}
 		}
@@ -530,6 +544,14 @@ func (s HTTPService) Apply(ctx context.Context, req HTTPRequest) (HTTPStatus, er
 				}
 				l.Close()
 			}
+		}
+		for _, port := range target.Upstreams {
+			dialer := net.Dialer{Timeout: time.Second}
+			conn, err := dialer.DialContext(step, "tcp4", fmt.Sprintf("127.0.0.1:%d", port))
+			if err != nil {
+				return domain.E(domain.Unavailable, "configured loopback app server on port %d is unavailable; start it explicitly first", port)
+			}
+			conn.Close()
 		}
 		if e = f.Write(s.filename("http-candidate.conf"), []byte(p.Configuration)); e != nil {
 			return e

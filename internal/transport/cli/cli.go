@@ -37,16 +37,21 @@ Usage:
   velnix http start [--nginx /usr/sbin/nginx] [--port 8080] [--https] [--https-port 8443] [--dry-run|--approve PLAN_ID] [--json]
   velnix http reload|stop|recover [--dry-run|--approve PLAN_ID] [--json]
   velnix projects list [--json]
-  velnix projects inspect --name NAME [--json]
+  velnix projects inspect|detect --name NAME [--json]
+  velnix projects proxy --name NAME --port PORT [--dry-run|--approve PLAN_ID] [--json]
   velnix projects link --name NAME --path PATH [--document-root PATH] [--dry-run|--approve PLAN_ID] [--json]
   velnix projects unlink --name NAME [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime providers [--json]
+  velnix runtime select --kind node|bun|python --name NAME --executable /absolute/binary --version X.Y.Z [--venv /absolute/.venv] [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime clear --kind node|bun|python --name NAME [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime resolve --kind node|bun|python --name NAME [--json]
   velnix runtime list [--kind php|node|bun|python] [--directory /absolute/path] [--json]
   velnix runtime inspect --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime inspect --kind node|bun|python --executable /absolute/binary --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime select --name NAME --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime clear --name NAME [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime resolve --name NAME [--json]
-  velnix exec --name NAME -- PHP_ARGUMENTS...
+  velnix exec --name NAME [--kind php|node|bun|python] -- RUNTIME_ARGUMENTS...
 
 State mutations default to a read-only plan. Review its ID, then explicitly approve.
 No packages, services, hosts files or trust stores are changed by these commands.
@@ -116,7 +121,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 			}
 		}
 		if separator < 0 {
-			return domain.E(domain.Invalid, "exec requires -- before PHP arguments")
+			return domain.E(domain.Invalid, "exec requires -- before runtime arguments")
 		}
 		phpArgs, rest = rest[separator+1:], rest[:separator]
 	}
@@ -137,6 +142,8 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var phpPath, phpVersion string
 	var runtimeKind, runtimeDirectory string
 	var runtimeExecutable string
+	var runtimeVenv string
+	var proxyPort int
 	var httpPort int
 	var tlsExecutable string
 	var https bool
@@ -185,9 +192,14 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		fs.StringVar(&runtimeKind, "kind", "php", "runtime candidate kind")
 		fs.StringVar(&runtimeDirectory, "directory", "", "explicit discovery directory for Node, Bun or Python")
 	}
-	if command == "runtime" && sub == "inspect" {
+	if (command == "runtime" && (sub == "inspect" || sub == "select" || sub == "clear" || sub == "resolve")) || command == "exec" {
 		fs.StringVar(&runtimeKind, "kind", "php", "runtime kind")
-		fs.StringVar(&runtimeExecutable, "executable", "", "absolute existing Node, Bun or Python executable")
+		if command == "runtime" && (sub == "inspect" || sub == "select") {
+			fs.StringVar(&runtimeExecutable, "executable", "", "absolute existing Node, Bun or Python executable")
+		}
+		if sub == "select" {
+			fs.StringVar(&runtimeVenv, "venv", "", "existing Python virtualenv inside project")
+		}
 	}
 	if command == "exec" || (command == "runtime" && (sub == "select" || sub == "clear" || sub == "resolve")) {
 		fs.StringVar(&projectName, "name", "", "linked project name")
@@ -208,14 +220,17 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		fs.StringVar(&approval, "approve", "", "reviewed plan ID")
 	}
 	if command == "projects" {
-		if sub == "inspect" || sub == "link" || sub == "unlink" {
+		if sub == "inspect" || sub == "link" || sub == "unlink" || sub == "detect" || sub == "proxy" {
 			fs.StringVar(&projectName, "name", "", "project name")
 		}
 		if sub == "link" {
 			fs.StringVar(&projectPath, "path", ".", "project directory")
 			fs.StringVar(&documentRoot, "document-root", ".", "document root relative to the project directory")
 		}
-		if sub == "link" || sub == "unlink" {
+		if sub == "proxy" {
+			fs.IntVar(&proxyPort, "port", 0, "already-running loopback upstream port; zero disables")
+		}
+		if sub == "link" || sub == "unlink" || sub == "proxy" {
 			fs.BoolVar(&dryRun, "dry-run", false, "preview only")
 			fs.StringVar(&approval, "approve", "", "reviewed plan ID")
 		}
@@ -262,7 +277,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		return output(value, string(b))
 	}
 	if command == "runtime" {
-		if sub == "inspect" {
+		if sub == "inspect" || sub == "select" {
 			if runtimeKind == "" {
 				return domain.E(domain.Invalid, "runtime kind must be php, node, bun or python")
 			}
@@ -276,7 +291,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 				phpPath = runtimeExecutable
 			}
 		}
-		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun, Kind: runtimeKind, Directory: runtimeDirectory})
+		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun, Kind: runtimeKind, Directory: runtimeDirectory, Venv: runtimeVenv})
 		if err != nil {
 			return err
 		}
@@ -287,7 +302,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		return output(value, string(b))
 	}
 	if command == "exec" {
-		return (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Exec(ctx, projectName, phpArgs, c.In, c.Out, c.Err)
+		return (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).ExecKind(ctx, projectName, runtimeKind, phpArgs, c.In, c.Out, c.Err)
 	}
 	if command == "tls" {
 		service := app.TLSService{Store: state.Store{Paths: c.Paths}}
@@ -345,7 +360,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	}
 	if command == "projects" {
 		service := app.ProjectService{Store: state.Store{Paths: c.Paths}}
-		value, err := service.Run(ctx, app.ProjectRequest{ProjectChange: state.ProjectChange{Action: sub, Name: projectName, Root: projectPath, DocumentRoot: documentRoot}, DryRun: dryRun, ApprovedPlanID: approval})
+		value, err := service.Run(ctx, app.ProjectRequest{ProjectChange: state.ProjectChange{Action: sub, Name: projectName, Root: projectPath, DocumentRoot: documentRoot, ProxyPort: proxyPort}, DryRun: dryRun, ApprovedPlanID: approval})
 		if err != nil {
 			return err
 		}
