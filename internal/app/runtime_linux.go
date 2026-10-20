@@ -17,12 +17,14 @@ import (
 
 	"velnix/internal/domain"
 	"velnix/internal/process"
+	"velnix/internal/providers/managedstore"
 	"velnix/internal/providers/phpcli"
 	"velnix/internal/providers/runtimeinventory"
 	"velnix/internal/state"
 )
 
 type RuntimeRequest struct {
+	Provider, ProviderRoot                string
 	Venv                                  string
 	Action, Name, Path, Version, Approval string
 	Kind, Directory                       string
@@ -61,6 +63,17 @@ func (s RuntimeService) Run(ctx context.Context, req RuntimeRequest) (any, error
 	}
 	if req.Action == "providers" {
 		return RuntimeProviders(), nil
+	}
+	if req.Action == "locate" {
+		if req.Approval != "" || req.DryRun || req.Path != "" || req.Venv != "" {
+			return nil, domain.E(domain.Invalid, "locate is a passive provider query; supply provider, provider-root, kind and version only")
+		}
+		return managedstore.Resolve(managedstore.Request{Provider: req.Provider, Root: req.ProviderRoot, Kind: req.Kind, Version: req.Version})
+	}
+	if req.Provider != "" || req.ProviderRoot != "" {
+		if req.Action != "select" || !domain.MultiRuntime(req.Kind) || req.Path != "" {
+			return nil, domain.E(domain.Invalid, "provider selection requires --kind node|bun|python and cannot combine --executable/--php")
+		}
 	}
 	if domain.MultiRuntime(req.Kind) && (req.Action == "select" || req.Action == "clear" || req.Action == "resolve") {
 		return s.multi(ctx, req)

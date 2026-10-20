@@ -14,12 +14,14 @@ Existing PHP CLI discovery/selection/exec, independent [FPM](FPM.md) and optiona
 [HTTPS](HTTPS.md) are implemented. [Validation](validation/PHASE-3-WEB.md) records
 local evidence and outstanding real-mkcert, trust and platform acceptance.
 
-## Phase 4 — Multi-language (bounded implementation complete; acceptance open)
-Existing Node/Bun/Python discovery, inspection, selection/exec, native resolution,
-explicit loopback proxying and bounded framework hints are implemented; see
-[PHASE-4](PHASE-4.md) and [validation](validation/PHASE-4-EXECUTION.md). Optional
-mise/uv command adapters are explicitly unavailable pending compatibility evidence.
-Provider mutations and platform acceptance are separate.
+## Phase 4 — Multi-language (COMPLETE)
+Existing Node/Bun/Python discovery, inspection, selection/exec, native and
+read-only mise/uv store resolution, explicit loopback proxying and bounded
+framework hints are complete within the approved implementation scope. See
+[PHASE-4](PHASE-4.md) and [completion evidence](validation/PHASE-4-COMPLETION.md).
+[Platform/release acceptance](validation/RELEASE-ACCEPTANCE.md) remains open.
+Runtime/provider mutations, manager command activation and later roadmap work
+are outside this completed scope.
 
 ## Phase 5 — TUI
 Overview, projects, runtimes, services and diagnostics.

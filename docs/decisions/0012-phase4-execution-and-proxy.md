@@ -1,6 +1,6 @@
 # ADR 0012 — Existing multi-language selections and external app proxies
 
-- Status: Implemented within authorized Phase 4
+- Status: Implemented within authorized Phase 4; provider-store completion in [ADR 0013](0013-existing-provider-store-resolution.md)
 - Date: 2026-10-20
 - Authorization: “Now lets finish phase 4”, following the Phase 4 implementation authorization
 

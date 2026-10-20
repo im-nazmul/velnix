@@ -1,9 +1,14 @@
 # Phase 4: multi-language
 
+**Status: COMPLETE — approved implementation scope, 2026-10-20.**
+[Completion evidence](validation/PHASE-4-COMPLETION.md) records the final provider
+adapters and checks. [Platform/release acceptance](validation/RELEASE-ACCEPTANCE.md)
+remains separately open; implementation completion does not assert those passes.
+
 Authorized by “Lets start work with phase 4, no need to ask for my aproval. you
 can start implementation directly”, followed by “Now lets finish phase 4”. The
 bounded implementation now includes existing Node/Bun/Python discovery,
-inspection, persistent selection/exec, native provider resolution, explicit
+inspection, persistent selection/exec, native and mise/uv store resolution, explicit
 loopback app-server proxying and passive framework detection. Local validation
 is in [PHASE-4-EXECUTION](validation/PHASE-4-EXECUTION.md).
 
@@ -38,15 +43,51 @@ required. Scripts and manager shims are refused; a version response does not
 prove safety or language identity. Inspection persists nothing.
 
 `runtime providers` reports capabilities, not ownership/management grants. The
-native provider supports exact existing installations, including those installed
-externally by nvm/mise/uv/pyenv when supplied by native executable path. Resolve
-checks the selected executable and project metadata without running it. Optional
-mise/uv command adapters remain **unavailable**: their version-pinned offline,
-no-download/no-hook contracts have not been established here, and neither tool
-is installed locally. nvm/pyenv shell activation is also unavailable. The CLI
-reports these reasons instead of invoking managers or installing prerequisites.
-This follows the approved provider capability fallback; it is not a claim that
-those command adapters have been implemented or accepted.
+native provider supports exact existing installations by native executable path.
+Mise and uv also have read-only `existing-store-v1` adapters, described below.
+Resolve checks the selected executable and project metadata without running it.
+No provider command, shell activation, download, hook or installation is needed.
+
+## Existing mise and uv stores
+
+```sh
+velnix runtime locate --provider mise --provider-root /absolute/mise-data --kind node --version 25.9.0 --json
+velnix runtime select --provider mise --provider-root /absolute/mise-data --kind node --version 25.9.0 --name demo --dry-run --json
+velnix runtime select --provider mise --provider-root /absolute/mise-data --kind node --version 25.9.0 --name demo --approve PLAN_ID --json
+velnix runtime locate --provider uv --provider-root /absolute/uv-python --kind python --version 3.12.3 --json
+velnix runtime select --provider uv --provider-root /absolute/uv-python --kind python --version 3.12.3 --name demo --dry-run --json
+# Review and repeat the same uv selection with --approve PLAN_ID.
+```
+
+Supply the actual installed numeric patch version. `locate` is passive and creates
+no state. It reports expected version and executable fingerprint with `probed:
+false`, external authority and unknown origin. Names/layouts cannot establish
+version, safety or installer provenance. Selection includes the provider source
+in its reviewed plan and requires the existing approved version probe before
+commit. `--provider` cannot combine with `--executable`/`--php`; the root is always
+explicit, and a missing version is an error with no installation attempt.
+
+Mise's root is its **data directory**, containing `installs/node/VERSION/bin/node`
+or `installs/bun/VERSION/bin/bun`. Exact version links can resolve into an identity
+store inside that data directory. Custom install stores outside the supplied root
+are refused; use a direct executable selection for them. No project mise config,
+plugins, aliases such as latest, tasks or hooks are read/executed.
+
+Uv's root is its **Python installation directory**, containing
+`cpython-VERSION-linux-x86_64-gnu/bin/pythonMAJOR.MINOR` or the corresponding
+`aarch64` key. Inspection reads at most 1024 directory entries. Musl, foreign
+architectures, free-threaded/PyPy/other layouts are explicitly unsupported by this
+adapter; use a supported native direct path instead. Directory links and binary
+aliases must remain within the explicit canonical storage root. A root resolving
+to `/` is refused. There is no recursive store scan or implicit environment lookup.
+
+The adapters pin this storage contract rather than a manager executable version:
+neither manager is ever launched. Tests use documented-layout fixtures and
+copies of real installed runtimes, not installed mise/uv releases. Command-driven
+manager resolution, installation and activation are outside Phase 4. nvm/pyenv
+shell activation stays unavailable; existing native installations still work by
+direct path. Persisted selections remain ordinary exact native/venv selections,
+so subsequent resolve/exec needs no manager or new schema.
 
 ## Persistent selection and execution
 
@@ -188,5 +229,7 @@ review `projects proxy --name demo --port 0`, then review HTTP reload. Disabling
 proxy metadata alone does not revoke an active route. Optional [HTTPS](HTTPS.md)
 uses the same proxy and supplies the external `https` forwarding scheme.
 
-See [ADR 0012](decisions/0012-phase4-execution-and-proxy.md) for boundaries and
-[validation](validation/PHASE-4-EXECUTION.md) for evidence and open platform gates.
+See [ADR 0012](decisions/0012-phase4-execution-and-proxy.md) and
+[ADR 0013](decisions/0013-existing-provider-store-resolution.md) for boundaries,
+[completion validation](validation/PHASE-4-COMPLETION.md) for final evidence and
+[release acceptance](validation/RELEASE-ACCEPTANCE.md) for the remaining platform gates.

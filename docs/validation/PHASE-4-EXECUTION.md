@@ -1,5 +1,10 @@
 # Phase 4 selection, execution, metadata and proxy — local validation
 
+Follow-up: [PHASE-4-COMPLETION](PHASE-4-COMPLETION.md) closes the remaining
+provider-resolution implementation with read-only mise/uv store adapters. This
+report preserves the earlier native-only evidence and its then-unavailable
+manager capabilities. Open acceptance is tracked in [RELEASE-ACCEPTANCE](RELEASE-ACCEPTANCE.md).
+
 Date: 2026-10-20. This completes the bounded native implementation described in
 [PHASE-4](../PHASE-4.md). It does not close platform acceptance or claim support
 for optional manager command adapters. The earlier

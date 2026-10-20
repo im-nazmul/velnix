@@ -12,22 +12,25 @@ import (
 
 	"velnix/internal/domain"
 	"velnix/internal/projectmeta"
+	"velnix/internal/providers/managedstore"
 )
 
 type ProjectChange struct {
-	MetadataDigest string
-	Action         string
-	Name           string
-	Root           string
-	DocumentRoot   string
-	PHPCLI         domain.PHPSelection
-	Kind           string
-	Runtime        domain.RuntimeSelection
-	ProxyPort      int
+	Provider, ProviderRoot string
+	MetadataDigest         string
+	Action                 string
+	Name                   string
+	Root                   string
+	DocumentRoot           string
+	PHPCLI                 domain.PHPSelection
+	Kind                   string
+	Runtime                domain.RuntimeSelection
+	ProxyPort              int
 }
 
 type ProjectPlan struct {
-	MetadataDigest string `json:"metadata_digest,omitempty"`
+	Provider       *managedstore.Resolution `json:"provider_resolution,omitempty"`
+	MetadataDigest string                   `json:"metadata_digest,omitempty"`
 	Plan
 	Registry Registry `json:"registry_target"`
 }
@@ -162,6 +165,16 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 				return p, e
 			}
 			if change.Action == "select-runtime" {
+				if change.Provider != "" || change.ProviderRoot != "" {
+					resolved, e := managedstore.Resolve(managedstore.Request{Provider: change.Provider, Root: change.ProviderRoot, Kind: change.Kind, Version: selected.Executable.Version})
+					if e != nil {
+						return p, e
+					}
+					if resolved.Executable != selected.Executable {
+						return p, domain.E(domain.Conflict, "provider installation changed; preview again")
+					}
+					p.Provider = &resolved
+				}
 				report, e := projectmeta.Inspect(target.Projects[index].Root)
 				if e != nil {
 					return p, e

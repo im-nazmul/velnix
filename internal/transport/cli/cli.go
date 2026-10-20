@@ -42,6 +42,8 @@ Usage:
   velnix projects link --name NAME --path PATH [--document-root PATH] [--dry-run|--approve PLAN_ID] [--json]
   velnix projects unlink --name NAME [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime providers [--json]
+  velnix runtime locate --provider mise|uv --provider-root /absolute/store --kind node|bun|python --version X.Y.Z [--json]
+  velnix runtime select --provider mise|uv --provider-root /absolute/store --kind node|bun|python --name NAME --version X.Y.Z [--venv /absolute/.venv] [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime select --kind node|bun|python --name NAME --executable /absolute/binary --version X.Y.Z [--venv /absolute/.venv] [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime clear --kind node|bun|python --name NAME [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime resolve --kind node|bun|python --name NAME [--json]
@@ -143,6 +145,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var runtimeKind, runtimeDirectory string
 	var runtimeExecutable string
 	var runtimeVenv string
+	var runtimeProvider, providerRoot string
 	var proxyPort int
 	var httpPort int
 	var tlsExecutable string
@@ -192,7 +195,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		fs.StringVar(&runtimeKind, "kind", "php", "runtime candidate kind")
 		fs.StringVar(&runtimeDirectory, "directory", "", "explicit discovery directory for Node, Bun or Python")
 	}
-	if (command == "runtime" && (sub == "inspect" || sub == "select" || sub == "clear" || sub == "resolve")) || command == "exec" {
+	if (command == "runtime" && (sub == "locate" || sub == "inspect" || sub == "select" || sub == "clear" || sub == "resolve")) || command == "exec" {
 		fs.StringVar(&runtimeKind, "kind", "php", "runtime kind")
 		if command == "runtime" && (sub == "inspect" || sub == "select") {
 			fs.StringVar(&runtimeExecutable, "executable", "", "absolute existing Node, Bun or Python executable")
@@ -203,6 +206,13 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	}
 	if command == "exec" || (command == "runtime" && (sub == "select" || sub == "clear" || sub == "resolve")) {
 		fs.StringVar(&projectName, "name", "", "linked project name")
+	}
+	if command == "runtime" && (sub == "locate" || sub == "select") {
+		fs.StringVar(&runtimeProvider, "provider", "", "read-only existing provider store: mise or uv")
+		fs.StringVar(&providerRoot, "provider-root", "", "explicit existing provider storage root")
+		if sub == "locate" {
+			fs.StringVar(&phpVersion, "version", "", "exact installed release version")
+		}
 	}
 	if command == "runtime" && (sub == "inspect" || sub == "select" || sub == "clear") {
 		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
@@ -291,7 +301,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 				phpPath = runtimeExecutable
 			}
 		}
-		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun, Kind: runtimeKind, Directory: runtimeDirectory, Venv: runtimeVenv})
+		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun, Kind: runtimeKind, Directory: runtimeDirectory, Venv: runtimeVenv, Provider: runtimeProvider, ProviderRoot: providerRoot})
 		if err != nil {
 			return err
 		}

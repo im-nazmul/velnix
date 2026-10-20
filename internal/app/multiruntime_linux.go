@@ -16,6 +16,7 @@ import (
 	"velnix/internal/domain"
 	"velnix/internal/process"
 	"velnix/internal/projectmeta"
+	"velnix/internal/providers/managedstore"
 	"velnix/internal/providers/nativeexec"
 	"velnix/internal/providers/runtimeinventory"
 	"velnix/internal/state"
@@ -31,8 +32,8 @@ type ProviderCapability struct {
 func RuntimeProviders() []ProviderCapability {
 	return []ProviderCapability{
 		{"native", []string{"php", "node", "bun", "python"}, true, "Existing absolute native executables only; explicit approved exact-version probe, passive resolution; no ownership or installation grant."},
-		{"mise", []string{"node", "bun"}, false, "No installed/version-pinned adapter compatibility evidence for no-download/no-hook resolution. Select an existing native executable directly."},
-		{"uv", []string{"python"}, false, "No installed/version-pinned adapter compatibility evidence for offline, no-download resolution. Select an existing interpreter/venv directly."},
+		{"mise", []string{"node", "bun"}, true, "Read-only existing-store-v1 adapter: explicit mise data root, exact installs/KIND/VERSION/bin/KIND link; no manager commands, downloads or hooks."},
+		{"uv", []string{"python"}, true, "Read-only existing-store-v1 adapter: explicit uv Python root, exact CPython Linux amd64/arm64 GNU layout; no manager commands, downloads or hooks."},
 		{"nvm/pyenv", []string{"node", "python"}, false, "Shell profiles and manager shims are not executed. Supply the absolute existing native installation."},
 	}
 }
@@ -148,6 +149,15 @@ func (s RuntimeService) multi(ctx context.Context, req RuntimeRequest) (any, err
 	case "select", "clear":
 		change := state.ProjectChange{Action: "clear-runtime", Name: req.Name, Kind: req.Kind}
 		if req.Action == "select" {
+			if req.Provider != "" || req.ProviderRoot != "" {
+				source, err := managedstore.Resolve(managedstore.Request{Provider: req.Provider, Root: req.ProviderRoot, Kind: req.Kind, Version: req.Version})
+				if err != nil {
+					return nil, err
+				}
+				change.Provider = req.Provider
+				change.ProviderRoot = source.Root
+				req.Path = source.Executable.Path
+			}
 			executable, e := nativeexec.Snapshot(req.Path, req.Version)
 			if e != nil {
 				return nil, e

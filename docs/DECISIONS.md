@@ -26,7 +26,7 @@ The statuses above describe original direction and requirements, not implementat
 | ADR | Proposal | Status |
 |---|---|---|
 | [0001](decisions/0001-core-and-state.md) | Go core, transport boundaries and durable state | Accepted for Phase 1 |
-| [0002](decisions/0002-runtime-providers.md) | Small provider capabilities and independent CLI/FPM resolution | Direct existing PHP selection accepted for Phase 3; manager adapters proposed |
+| [0002](decisions/0002-runtime-providers.md) | Small provider capabilities and independent CLI/FPM resolution | Direct native and read-only mise/uv store resolution implemented; manager command/mutation adapters deferred |
 | [0003](decisions/0003-rootless-web.md) | Rootless separate Nginx on high ports and per-project FPM | Rootless static HTTP implemented; FPM/HTTPS accepted for Phase 3 |
 | [0004](decisions/0004-dns-and-trust.md) | Exact hosts entries and separate trust-store approval | Manual setup and optional isolated mkcert accepted for Phase 3 |
 | [0005](decisions/0005-ownership-and-privilege.md) | Provenance, grants, plans and recovery limits | Foundation subset accepted |
@@ -36,7 +36,8 @@ The statuses above describe original direction and requirements, not implementat
 | [0009](decisions/0009-existing-php-cli.md) | Exact existing PHP CLI selections, approved probes and explicit exec | Accepted for first Phase 3 slice |
 | [0010](decisions/0010-multi-language-inspection.md) | Shared native executable identity and approved Node/Bun/Python version inspection | Accepted for Phase 4 inspection slice |
 | [0011](decisions/0011-phase3-web-lifecycle.md) | Shared foreground FPM transitions and isolated optional TLS issuance | Implemented within approved Phase 3; platform acceptance open |
-| [0012](decisions/0012-phase4-execution-and-proxy.md) | Existing Node/Bun/Python execution, bounded metadata and external loopback proxy | Implemented within Phase 4; optional managers unavailable and platform acceptance open |
+| [0012](decisions/0012-phase4-execution-and-proxy.md) | Existing Node/Bun/Python execution, bounded metadata and external loopback proxy | Implemented; provider completion in ADR 0013 |
+| [0013](decisions/0013-existing-provider-store-resolution.md) | Read-only existing mise/uv storage layouts with reviewed exact-version probes | Implemented; Phase 4 implementation COMPLETE, platform/release acceptance open |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
 
