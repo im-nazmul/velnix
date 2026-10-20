@@ -1,6 +1,6 @@
 # ADR 0002 — Capability-driven runtime resolution without implicit installation
 
-- Status: Proposed — pending explicit user approval
+- Status: Direct existing PHP CLI/FPM selection accepted for Phase 3; provider-managed resolution remains proposed
 - Date: 2026-10-20
 - Related original decisions: D006, D011
 
@@ -17,5 +17,10 @@ Separate discover/resolve/install/remove contracts. Read-only existing runtimes 
 Alternatives: one mandatory mise provider narrows user choice and obscures backend trust; custom runtime builds reinvent package managers. Provider compatibility and trusted executable probing remain validation work.
 
 ## Validation and approval
+
+The user approved [Phase 3](../PHASE-3-PROPOSAL.md) with “Approved, start
+implementation”. [ADR 0009](0009-existing-php-cli.md) records the implemented
+direct PHP CLI subset; FPM remains pending implementation. This accepts no
+provider installation or manager-backed resolution.
 
 Evidence and unresolved experiments: [FEASIBILITY](../FEASIBILITY.md). Required acceptance checks: [TESTING](../TESTING.md). Security conditions: [SECURITY](../SECURITY.md). Scope and phase gate: [IMPLEMENTATION-PLAN](../IMPLEMENTATION-PLAN.md). Approval must be recorded explicitly before implementation; this ADR does not authorize host changes.

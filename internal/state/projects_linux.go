@@ -18,6 +18,7 @@ type ProjectChange struct {
 	Name         string
 	Root         string
 	DocumentRoot string
+	PHPCLI       domain.PHPSelection
 }
 
 type ProjectPlan struct {
@@ -39,6 +40,9 @@ func validateProjects(r Registry) error {
 	}
 	names, roots := map[string]bool{}, map[string]bool{}
 	for _, p := range r.Projects {
+		if r.Schema < 3 && p.PHPCLI != (domain.PHPSelection{}) {
+			return domain.E(domain.Invalid, "PHP selections require registry schema 3")
+		}
 		if err := p.Validate(); err != nil {
 			return err
 		}
@@ -52,7 +56,7 @@ func validateProjects(r Registry) error {
 
 func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 	var p ProjectPlan
-	if change.Action != "link" && change.Action != "unlink" {
+	if change.Action != "link" && change.Action != "unlink" && change.Action != "select-php" && change.Action != "clear-php" {
 		return p, domain.E(domain.Invalid, "unknown project mutation")
 	}
 	if !domain.ValidProjectName(change.Name) {
@@ -73,7 +77,9 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 		return p, domain.E(domain.Conflict, "interrupted operation requires state recover")
 	}
 	target := st.Registry
-	target.Schema = 2
+	if target.Schema < 2 {
+		target.Schema = 2
+	}
 	p.Plan = Plan{Schema: Schema, Action: "project-" + change.Action, DataPath: s.Paths.Data, StatePath: s.Paths.State, RegistryBefore: digest(r), JournalBefore: digest(j), Effects: []string{}, Privilege: "current-user", Limitations: "Only registry metadata changes. Project files remain external. Recovery recognizes exact before/after digests; unknown edits require manual review. Older Velnix binaries cannot read schema 2."}
 	index := -1
 	for i, project := range target.Projects {
@@ -88,6 +94,7 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 			return p, e
 		}
 		if index >= 0 {
+			project.PHPCLI = target.Projects[index].PHPCLI
 			if target.Projects[index] != project {
 				return p, domain.E(domain.Conflict, "project name already linked with different metadata; unlink it first")
 			}
@@ -99,6 +106,27 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 			}
 			target.Projects = append(target.Projects, project)
 			p.Effects = []string{"journal approved project link", "atomically replace registry with reviewed project metadata", "verify registry and mark operation complete"}
+		}
+	case "select-php", "clear-php":
+		if index < 0 {
+			return p, domain.E(domain.Unavailable, "project is not linked")
+		}
+		selection := change.PHPCLI
+		if change.Action == "select-php" {
+			if err := selection.Validate(); err != nil {
+				return p, err
+			}
+		} else {
+			selection = domain.PHPSelection{}
+		}
+		if target.Projects[index].PHPCLI != selection {
+			target.Schema = 3
+			target.Projects[index].PHPCLI = selection
+			p.Effects = []string{"journal approved PHP CLI selection change", "atomically replace registry with exact external PHP CLI selection; preserve all other projects and resources", "verify registry and mark operation complete"}
+			if change.Action == "select-php" {
+				p.Effects = append([]string{`execute selected PHP with argv [-n, -r, echo json_encode(["version"=>PHP_VERSION,"sapi"=>PHP_SAPI]);], cwd /, environment PATH=/usr/bin:/bin LANG=C; timeout 2s; require exact version and cli SAPI before registry commit`}, p.Effects...)
+			}
+			p.Limitations = "Registry metadata only; external runtime remains externally owned. Selection approval also authorizes a bounded PHP CLI probe before commit. Existing binaries cannot read schema 3. Clearing selection does not stop already running commands."
 		}
 	case "unlink":
 		if index >= 0 {
@@ -115,6 +143,9 @@ func (s Store) PlanProject(change ProjectChange) (ProjectPlan, error) {
 	}
 	if len(p.Effects) > 0 && st.Registry.Schema == 1 {
 		p.Effects = append([]string{"upgrade registry from schema 1 to schema 2; retain existing resources"}, p.Effects...)
+	}
+	if len(p.Effects) > 0 && target.Schema == 3 && st.Registry.Schema < 3 {
+		p.Effects = append([]string{"upgrade registry to schema 3; retain existing projects and resources"}, p.Effects...)
 	}
 	p.Registry = target
 	if len(encoded(target)) > maxFile {

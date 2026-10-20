@@ -34,12 +34,19 @@ Usage:
   velnix projects inspect --name NAME [--json]
   velnix projects link --name NAME --path PATH [--document-root PATH] [--dry-run|--approve PLAN_ID] [--json]
   velnix projects unlink --name NAME [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime list [--json]
+  velnix runtime inspect --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime select --name NAME --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime clear --name NAME [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime resolve --name NAME [--json]
+  velnix exec --name NAME -- PHP_ARGUMENTS...
 
 State mutations default to a read-only plan. Review its ID, then explicitly approve.
 No packages, services, hosts files or trust stores are changed by these commands.
 `
 
 type CLI struct {
+	In       io.Reader
 	Out, Err io.Writer
 	Paths    platform.Paths
 	Detector app.PlatformReader
@@ -62,6 +69,10 @@ func (c CLI) Run(ctx context.Context, args []string) int {
 	err := c.run(ctx, args, jsonMode)
 	if err == nil {
 		return 0
+	}
+	var child *app.ChildExit
+	if errors.As(err, &child) {
+		return child.Code
 	}
 	code := domain.Failure
 	var de *domain.Error
@@ -88,8 +99,22 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	}
 	command := args[0]
 	rest := args[1:]
+	var phpArgs []string
+	if command == "exec" {
+		separator := -1
+		for i, arg := range rest {
+			if arg == "--" {
+				separator = i
+				break
+			}
+		}
+		if separator < 0 {
+			return domain.E(domain.Invalid, "exec requires -- before PHP arguments")
+		}
+		phpArgs, rest = rest[separator+1:], rest[:separator]
+	}
 	sub := ""
-	if command == "config" || command == "state" || command == "projects" || command == "http" {
+	if command == "config" || command == "state" || command == "projects" || command == "http" || command == "runtime" {
 		if len(rest) == 0 {
 			return domain.E(domain.Invalid, "%s requires a subcommand", command)
 		}
@@ -102,6 +127,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var cfgPath, approval string
 	var projectName, projectPath, documentRoot string
 	var nginxPath string
+	var phpPath, phpVersion string
 	var httpPort int
 	if command == "http" && sub != "status" {
 		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
@@ -111,7 +137,20 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 			fs.IntVar(&httpPort, "port", 8080, "loopback HTTP port")
 		}
 	}
-	fs.BoolVar(&jsonFlag, "json", false, "structured output")
+	if command != "exec" {
+		fs.BoolVar(&jsonFlag, "json", false, "structured output")
+	}
+	if command == "exec" || (command == "runtime" && (sub == "select" || sub == "clear" || sub == "resolve")) {
+		fs.StringVar(&projectName, "name", "", "linked project name")
+	}
+	if command == "runtime" && (sub == "inspect" || sub == "select" || sub == "clear") {
+		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
+		fs.StringVar(&approval, "approve", "", "reviewed plan ID")
+		if sub != "clear" {
+			fs.StringVar(&phpPath, "php", "", "absolute existing PHP CLI executable")
+			fs.StringVar(&phpVersion, "version", "", "exact required PHP version")
+		}
+	}
 	if command == "doctor" || command == "config" {
 		fs.StringVar(&cfgPath, "config", "", "configuration path")
 	}
@@ -172,6 +211,20 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		}
 		b, _ := json.MarshalIndent(value, "", "  ")
 		return output(value, string(b))
+	}
+	if command == "runtime" {
+		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun})
+		if err != nil {
+			return err
+		}
+		b, err := json.MarshalIndent(value, "", "  ")
+		if err != nil {
+			return err
+		}
+		return output(value, string(b))
+	}
+	if command == "exec" {
+		return (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Exec(ctx, projectName, phpArgs, c.In, c.Out, c.Err)
 	}
 	if command == "http" {
 		service := app.HTTPService{Store: state.Store{Paths: c.Paths}}

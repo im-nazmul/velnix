@@ -73,7 +73,7 @@ func TestSchemaPrivacyAndLinks(t *testing.T) {
 			path := filepath.Join(s.Paths.Data, "registry.json")
 			switch kind {
 			case "future":
-				os.WriteFile(path, []byte(`{"schema":3,"resources":[]}`), 0600)
+				os.WriteFile(path, []byte(`{"schema":4,"resources":[]}`), 0600)
 			case "null":
 				os.WriteFile(path, []byte("null"), 0600)
 			case "missing-schema":

@@ -29,8 +29,12 @@ Bun is the default package manager and script runner for Velnix's JavaScript/Typ
 6. Never implement the whole roadmap in one task.
 
 ## Current Phase
-Phase 2: projects and HTTP, authorized by the user with “Lets start work with phase 2”.
+Phase 3: runtime and HTTPS, authorized by “Lets start work with phase 3” and
+approval of docs/PHASE-3-PROPOSAL.md with “Approved, start implementation”.
 Project registry transactions and the approved rootless static HTTP slice are implemented; see docs/PROJECTS.md, docs/HTTP.md and docs/validation/PHASE-2-HTTP.md.
 The user approved docs/PHASE-2-HTTP-PROPOSAL.md with “You have my approval”. Local implementation validation passes; unperformed platform acceptance remains open.
-Continue within the Phase 2 scope in docs/IMPLEMENTATION-PLAN.md. Propose further significant web/process changes before implementation.
-Do not proceed to Phase 3 or implement later roadmap features without approval.
+The first Phase 3 PHP CLI discovery/selection/exec slice is implemented; see
+docs/RUNTIMES.md and docs/validation/PHASE-3-RUNTIME.md. Continue with FPM, then
+optional HTTPS within docs/PHASE-3-PROPOSAL.md. Propose significant departures
+from that approved design before implementation. Do not proceed to v0.1
+stabilization or later roadmap features without approval.

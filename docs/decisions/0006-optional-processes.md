@@ -1,6 +1,6 @@
 # ADR 0006 — Daemonless control with explicit optional workload lifetimes
 
-- Status: Accepted for Phase 2 foreground Nginx with explicit identity-checked lifecycle only; systemd and other optional workloads remain proposed
+- Status: Foreground Nginx implemented; foreground per-project FPM accepted for Phase 3; systemd and later workloads remain proposed
 - Date: 2026-10-20
 - Related original decisions: D005, D012
 
@@ -17,6 +17,9 @@ Keep control commands daemonless. Requested processes run foreground or through 
 Alternatives: permanent management daemon simplifies scheduling but increases idle/security burden. Fully daemonless mail capture cannot receive messages after exit. WSL service lifetime and shutdown behavior must be documented.
 
 ## Validation and approval
+
+The user subsequently approved [Phase 3](../PHASE-3-PROPOSAL.md) with “Approved,
+start implementation”, accepting its explicit foreground FPM lifecycle.
 
 Evidence and unresolved experiments: [FEASIBILITY](../FEASIBILITY.md). Required acceptance checks: [TESTING](../TESTING.md). Security conditions: [SECURITY](../SECURITY.md). Scope and phase gate: [IMPLEMENTATION-PLAN](../IMPLEMENTATION-PLAN.md). Approval must be recorded explicitly before implementation; this ADR does not authorize host changes.
 

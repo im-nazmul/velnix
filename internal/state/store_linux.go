@@ -106,7 +106,7 @@ func parse(r, j []byte) (Status, error) {
 		if err := decode(r, &st.Registry); err != nil {
 			return st, err
 		}
-		if st.Registry.Schema != Schema && st.Registry.Schema != 2 {
+		if st.Registry.Schema != Schema && st.Registry.Schema != 2 && st.Registry.Schema != 3 {
 			return st, domain.E(domain.Invalid, "unsupported registry schema %d", st.Registry.Schema)
 		}
 		if st.Registry.Resources == nil {
@@ -122,7 +122,7 @@ func parse(r, j []byte) (Status, error) {
 		if err := decode(j, st.Journal); err != nil {
 			return st, err
 		}
-		projectOperation := st.Journal.Operation == "project-link" || st.Journal.Operation == "project-unlink"
+		projectOperation := st.Journal.Operation == "project-link" || st.Journal.Operation == "project-unlink" || st.Journal.Operation == "project-select-php" || st.Journal.Operation == "project-clear-php"
 		if st.Journal.Schema != Schema || (st.Journal.Operation != "init" && !projectOperation) || !validDigest(st.Journal.PlanID) || !validDigest(st.Journal.TargetDigest) || (projectOperation && !validDigest(st.Journal.BeforeDigest)) || (st.Journal.Operation == "init" && st.Journal.TargetDigest != digest(encoded(empty()))) {
 			return st, domain.E(domain.Invalid, "unsupported or invalid operation journal")
 		}
