@@ -1,6 +1,6 @@
 # Velnix — Proposed Implementation Plan
 
-Status: Phase 3 authorized by “Lets start work with phase 3” and approval of the [Phase 3 proposal](PHASE-3-PROPOSAL.md) with “Approved, start implementation”. Existing PHP CLI discovery, selection and exec are implemented; see [RUNTIMES](RUNTIMES.md). FPM and optional HTTPS remain in the approved implementation scope. Phase 2 implementation is complete within its approved scope; see [PROJECTS](PROJECTS.md), [HTTP](HTTP.md) and [local validation](validation/PHASE-2-HTTP.md). Unperformed platform acceptance remains open. Stabilization and later milestones need separate approval. This authorization does not permit provider installation or system configuration changes.
+Status: Phase 4 multi-language work is now authorized; see [PHASE-4](PHASE-4.md) for the first implemented slice and remaining scope. Phase 3 previously authorized by “Lets start work with phase 3” and approval of the [Phase 3 proposal](PHASE-3-PROPOSAL.md) with “Approved, start implementation”. Existing PHP CLI discovery, selection and exec are implemented; see [RUNTIMES](RUNTIMES.md). FPM and optional HTTPS remain in the approved implementation scope. Phase 2 implementation is complete within its approved scope; see [PROJECTS](PROJECTS.md), [HTTP](HTTP.md) and [local validation](validation/PHASE-2-HTTP.md). Unperformed platform acceptance remains open. Stabilization and later milestones need separate approval. This authorization does not permit provider installation or system configuration changes.
 
 ## Architecture and technology
 
@@ -90,7 +90,7 @@ Defer runtime/provider/package installation, upgrades/uninstall, adoption mutati
 | Phase 3 runtime/HTTPS | Existing runtime resolution, exec, independent FPM and optional mkcert | Two PHP CLI/web versions verified; missing versions fail; Linux/Windows trust checks recorded |
 | v0.1 stabilization | Limited Node/Bun/Python resolution, explicit reverse proxy, docs and packaging | Full TESTING matrix, performance results, license and security review complete |
 
-The original later roadmap phases remain separate: full multi-language provider mutations, TUI, mail and web follow v0.1. Each milestone needs user approval before proceeding to the next; the current authorization covers Phase 3 through the scoped proposal. Failed rootless/provider spikes trigger revised ADR/scope, never automatic privileged fallback.
+The original later roadmap phases remain separate: full multi-language provider mutations, TUI, mail and web follow v0.1. Each milestone needs user approval before proceeding to the next; Phase 4 authorization additionally covers multi-language work; the initial discovery slice is documented in [PHASE-4](PHASE-4.md). Failed rootless/provider spikes trigger revised ADR/scope, never automatic privileged fallback.
 
 ## Approval decisions
 

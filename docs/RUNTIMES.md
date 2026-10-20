@@ -89,3 +89,9 @@ including runtime metadata changes. Existing static routes continue until an
 explicit reviewed HTTP reload or stop; CLI selection does not enable PHP over
 HTTP. See [HTTP](HTTP.md) for lifecycle/recovery behavior and
 [validation](validation/PHASE-3-RUNTIME.md) for performed checks and open gates.
+
+## Node, Bun and Python discovery
+
+Phase 4 adds `runtime list --kind node|bun|python` with optional absolute
+`--directory`. These are unprobed candidates, with no selection or execution
+capability yet. See [PHASE-4](PHASE-4.md) for commands and limits.

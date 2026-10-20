@@ -36,6 +36,31 @@ func TestReadOnlyCommands(t *testing.T) {
 	}
 }
 
+func TestMultiLanguageDiscoveryCLI(t *testing.T) {
+	dir := t.TempDir()
+	for _, kind := range []string{"node", "bun", "python"} {
+		code, out, stderr := command(t, "runtime", "list", "--kind", kind, "--directory", dir, "--json")
+		var got struct {
+			Kind       string `json:"kind"`
+			Candidates []any  `json:"candidates"`
+			Issues     []any  `json:"issues"`
+		}
+		if code != 0 || stderr != "" || json.Unmarshal([]byte(out), &got) != nil || got.Kind != kind || got.Candidates == nil || got.Issues == nil {
+			t.Fatalf("%s: %d %s %s", kind, code, out, stderr)
+		}
+	}
+	for _, args := range [][]string{
+		{"runtime", "list", "--kind", "ruby"},
+		{"runtime", "list", "--kind", "node", "--directory", "relative"},
+		{"runtime", "list", "--directory", dir},
+		{"runtime", "resolve", "--kind", "node"},
+	} {
+		if code, _, _ := command(t, args...); code == 0 {
+			t.Fatalf("accepted %v", args)
+		}
+	}
+}
+
 func TestProjectCLI(t *testing.T) {
 	root := t.TempDir()
 	paths := platform.Paths{Config: filepath.Join(root, "config"), Data: filepath.Join(root, "data"), State: filepath.Join(root, "state")}

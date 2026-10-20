@@ -18,11 +18,13 @@ import (
 	"velnix/internal/domain"
 	"velnix/internal/process"
 	"velnix/internal/providers/phpcli"
+	"velnix/internal/providers/runtimeinventory"
 	"velnix/internal/state"
 )
 
 type RuntimeRequest struct {
 	Action, Name, Path, Version, Approval string
+	Kind, Directory                       string
 	DryRun                                bool
 }
 
@@ -53,6 +55,16 @@ func (s RuntimeService) Run(ctx context.Context, req RuntimeRequest) (any, error
 	}
 	switch req.Action {
 	case "list":
+		if req.Kind != "" && req.Kind != "php" {
+			dirs := []string{"/usr/bin", "/usr/local/bin"}
+			if req.Directory != "" {
+				dirs = []string{req.Directory}
+			}
+			return runtimeinventory.Discover(req.Kind, dirs)
+		}
+		if req.Directory != "" {
+			return nil, domain.E(domain.Invalid, "--directory requires --kind node, bun or python")
+		}
 		return phpcli.Discover(), nil
 	case "inspect":
 		selection, err := phpcli.Snapshot(req.Path, req.Version)

@@ -34,7 +34,7 @@ Usage:
   velnix projects inspect --name NAME [--json]
   velnix projects link --name NAME --path PATH [--document-root PATH] [--dry-run|--approve PLAN_ID] [--json]
   velnix projects unlink --name NAME [--dry-run|--approve PLAN_ID] [--json]
-  velnix runtime list [--json]
+  velnix runtime list [--kind php|node|bun|python] [--directory /absolute/path] [--json]
   velnix runtime inspect --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime select --name NAME --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime clear --name NAME [--dry-run|--approve PLAN_ID] [--json]
@@ -128,6 +128,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var projectName, projectPath, documentRoot string
 	var nginxPath string
 	var phpPath, phpVersion string
+	var runtimeKind, runtimeDirectory string
 	var httpPort int
 	if command == "http" && sub != "status" {
 		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
@@ -139,6 +140,10 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	}
 	if command != "exec" {
 		fs.BoolVar(&jsonFlag, "json", false, "structured output")
+	}
+	if command == "runtime" && sub == "list" {
+		fs.StringVar(&runtimeKind, "kind", "php", "runtime candidate kind")
+		fs.StringVar(&runtimeDirectory, "directory", "", "explicit discovery directory for Node, Bun or Python")
 	}
 	if command == "exec" || (command == "runtime" && (sub == "select" || sub == "clear" || sub == "resolve")) {
 		fs.StringVar(&projectName, "name", "", "linked project name")
@@ -213,7 +218,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		return output(value, string(b))
 	}
 	if command == "runtime" {
-		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun})
+		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun, Kind: runtimeKind, Directory: runtimeDirectory})
 		if err != nil {
 			return err
 		}

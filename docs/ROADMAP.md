@@ -12,8 +12,8 @@ Project registry, link/unlink, rootless Nginx, static HTTP and explicit process 
 ## Phase 3 — HTTPS and Runtime Selection
 Local CA, WSL trust, runtime discovery, version selection and PHP CLI/FPM integration.
 
-## Phase 4 — Multi-language
-Node, Bun, Python providers; app server proxying; framework detection.
+## Phase 4 — Multi-language (authorized; discovery slice implemented)
+Node, Bun, Python providers; app server proxying; framework detection. The first read-only candidate discovery slice is implemented; see [PHASE-4](PHASE-4.md). Proxying, framework detection and runtime selection remain pending.
 
 ## Phase 5 — TUI
 Overview, projects, runtimes, services and diagnostics.
@@ -37,3 +37,5 @@ Each phase needs acceptance criteria, tests, docs and known limitations. Do not 
 [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md) maps a restricted v0.1 across the foundation, project/HTTP, runtime/HTTPS and stabilization milestones. Full runtime installation, framework automation, TUI, mail and web remain later work. [TESTING](TESTING.md) defines measurable gates; budgets are not measured results. Each milestone still requires explicit approval. Phase 0 documentation alone did not authorize implementation; subsequent user authorization starts Phase 1 only.
 
 Phase 1 authorization: user instruction “Lets start implementation”. Implemented surface and limitations are documented in [FOUNDATION](FOUNDATION.md). Phase 2 authorization: “Lets start work with phase 2”. The first registry slice is documented in [PROJECTS](PROJECTS.md). Phase 3 and later approval gates remain in effect.
+
+Phase 4 authorization: “Lets start work with phase 4, no need to ask for my aproval. you can start implementation directly”. This does not mark unfinished Phase 3 work or platform acceptance complete.
