@@ -1,6 +1,6 @@
 # Velnix — Proposed Implementation Plan
 
-Status: Phase 0 proposal. Approval of this document does not occur through its creation. Wait for explicit approval before Phase 1. No implementation, provider installation or system configuration has been performed.
+Status: Phase 1 foundation authorized by the user after the Phase 0 review. The scope below remains the release plan; later milestones need separate approval. Foundation details are in [FOUNDATION](FOUNDATION.md). No provider installation or system configuration is authorized by this status change.
 
 ## Architecture and technology
 

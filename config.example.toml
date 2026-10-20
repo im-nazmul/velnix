@@ -1,0 +1,7 @@
+# Optional: ~/.config/velnix/config.toml (or XDG_CONFIG_HOME/velnix/config.toml).
+# Velnix does not create or alter this file automatically.
+schema = 1
+
+[diagnostics]
+# Valid range: 100–5000 milliseconds.
+timeout_ms = 2000

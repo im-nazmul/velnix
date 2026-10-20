@@ -44,4 +44,4 @@ PHP CLI vs PHP-FPM version selection; external runtime managers; Windows/WSL DNS
 
 ## Phase 0 refinement
 
-The detailed proposed package boundaries, state strategy and small interfaces are in [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md); privilege and recovery requirements are in [SECURITY](SECURITY.md). [FEASIBILITY](FEASIBILITY.md) evaluates the open research above. These proposals require approval before implementation.
+The detailed proposed package boundaries, state strategy and small interfaces are in [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md); privilege and recovery requirements are in [SECURITY](SECURITY.md). [FEASIBILITY](FEASIBILITY.md) evaluates the open research above. The user authorized the Phase 1 foundation after review; implemented boundaries and limits are in [FOUNDATION](FOUNDATION.md). Later milestones still require approval.

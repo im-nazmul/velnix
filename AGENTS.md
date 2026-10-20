@@ -27,4 +27,6 @@ Go core and CLI; Bubble Tea/Lip Gloss TUI; Vue 3/TypeScript/Vite dashboard compi
 6. Never implement the whole roadmap in one task.
 
 ## Current Phase
-Phase 0: architecture and feasibility. Do not begin implementation until approved.
+Phase 1: core foundation, authorized by the user after the Phase 0 review.
+Implement the Go CLI, configuration, platform diagnostics, private state/journal/locks, tests and CI.
+Do not proceed to Phase 2 or implement later roadmap features without approval.

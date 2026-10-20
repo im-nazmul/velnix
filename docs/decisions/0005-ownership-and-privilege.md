@@ -1,6 +1,6 @@
 # ADR 0005 — Separate provenance, management grants and recoverable effects
 
-- Status: Proposed — pending explicit user approval
+- Status: Foundation subset accepted (private state, plan approval, locks and initialization recovery); later privilege/provider/adoption operations remain proposed
 - Date: 2026-10-20
 - Related original decisions: D009
 
@@ -18,4 +18,4 @@ Alternatives: sudo the CLI or infer ownership from location is unsafe. General r
 
 ## Validation and approval
 
-Evidence and unresolved experiments: [FEASIBILITY](../FEASIBILITY.md). Required acceptance checks: [TESTING](../TESTING.md). Security conditions: [SECURITY](../SECURITY.md). Scope and phase gate: [IMPLEMENTATION-PLAN](../IMPLEMENTATION-PLAN.md). Approval must be recorded explicitly before implementation; this ADR does not authorize host changes.
+Evidence and unresolved experiments: [FEASIBILITY](../FEASIBILITY.md). Required acceptance checks: [TESTING](../TESTING.md). Security conditions: [SECURITY](../SECURITY.md). Scope and phase gate: [IMPLEMENTATION-PLAN](../IMPLEMENTATION-PLAN.md). Foundation authorization is recorded above. Later milestone decisions still require explicit approval; this ADR does not authorize system changes.

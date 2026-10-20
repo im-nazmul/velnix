@@ -2,9 +2,22 @@
 
 **Native Linux development, without the overhead.**
 
-> Status: planning and architecture. Name provisional pending availability checks.
+> Status: Phase 1 Go CLI foundation. Name provisional pending availability checks.
 
 Velnix is an open-source, lightweight local development environment manager for WSL2 and Linux. It aims to unify native services, runtime versions, project linking, `.test` domains, HTTPS and development mail capture without mandatory containers.
+
+## Getting started
+
+Requires Go 1.22+ on Linux. Use a supported patched Go release for release builds.
+
+```sh
+go build -o bin/velnix ./cmd/velnix
+bin/velnix doctor
+bin/velnix config show
+bin/velnix state init --dry-run
+```
+
+The foundation includes version, doctor, config show/validate and state status/init/recover. State creation requires an explicitly approved plan digest. Diagnostics execute no runtime/provider tools and create no files. See [foundation usage and recovery](docs/FOUNDATION.md).
 
 ## Planned capabilities
 - CLI, interactive TUI, optional web dashboard
@@ -16,9 +29,8 @@ Velnix is an open-source, lightweight local development environment manager for 
 - Local SMTP mail capture
 - Safe system integration and ownership tracking
 
-## Illustrative commands (not implemented)
+## Future commands (not implemented)
 ```bash
-velnix doctor
 velnix install php@8.5
 velnix link
 velnix secure
@@ -28,6 +40,7 @@ velnix ui
 ```
 
 ## Documentation
+- [Foundation usage and recovery](docs/FOUNDATION.md)
 - [Project specification](docs/PROJECT.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Feature catalogue](docs/FEATURES.md)

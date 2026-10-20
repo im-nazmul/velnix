@@ -1,6 +1,6 @@
 # Velnix — Validation and Performance Plan
 
-Status: future acceptance requirements. No application tests, platform experiments or performance measurements have been run in Phase 0. Source research is recorded in FEASIBILITY.md. Documentation-only checks do not establish runtime feasibility.
+Status: release acceptance requirements. Phase 0 performed documentation research only; Phase 1 local foundation results are recorded in [validation/PHASE-1.md](validation/PHASE-1.md). Source research is recorded in FEASIBILITY.md. Documentation-only checks do not establish runtime feasibility.
 
 ## Test layers
 
