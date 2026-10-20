@@ -27,8 +27,14 @@ Usage:
   velnix state status [--json]
   velnix state init|recover [--dry-run] [--json]
   velnix state init|recover --approve PLAN_ID [--json]
+  velnix fpm start --name NAME --php-fpm /absolute/php-fpm --version X.Y.Z [--profile php|front-controller] [--uploads uploads,files] [--dry-run|--approve PLAN_ID] [--json]
+  velnix fpm status|stop|recover|disable --name NAME [--dry-run|--approve PLAN_ID] [--json]
+  velnix tls issue [--mkcert /absolute/mkcert] [--dry-run|--approve PLAN_ID] [--json]
+  velnix tls status|export-ca [--json]
+  velnix tls recover [--dry-run|--approve PLAN_ID] [--json]
+  velnix tls verify --name NAME [--port 8443] [--json]
   velnix http status [--json]
-  velnix http start [--nginx /usr/sbin/nginx] [--port 8080] [--dry-run|--approve PLAN_ID] [--json]
+  velnix http start [--nginx /usr/sbin/nginx] [--port 8080] [--https] [--https-port 8443] [--dry-run|--approve PLAN_ID] [--json]
   velnix http reload|stop|recover [--dry-run|--approve PLAN_ID] [--json]
   velnix projects list [--json]
   velnix projects inspect --name NAME [--json]
@@ -115,7 +121,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		phpArgs, rest = rest[separator+1:], rest[:separator]
 	}
 	sub := ""
-	if command == "config" || command == "state" || command == "projects" || command == "http" || command == "runtime" {
+	if command == "config" || command == "state" || command == "projects" || command == "http" || command == "fpm" || command == "tls" || command == "runtime" {
 		if len(rest) == 0 {
 			return domain.E(domain.Invalid, "%s requires a subcommand", command)
 		}
@@ -132,12 +138,44 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var runtimeKind, runtimeDirectory string
 	var runtimeExecutable string
 	var httpPort int
+	var tlsExecutable string
+	var https bool
+	var httpsPort int
+	if command == "tls" {
+		if sub == "issue" || sub == "recover" {
+			fs.BoolVar(&dryRun, "dry-run", false, "preview only")
+			fs.StringVar(&approval, "approve", "", "reviewed plan ID")
+		}
+		if sub == "issue" {
+			fs.StringVar(&tlsExecutable, "mkcert", "/usr/local/bin/mkcert", "absolute installed mkcert v1.4.4 executable")
+		}
+		if sub == "verify" {
+			fs.StringVar(&projectName, "name", "", "registered project name")
+			fs.IntVar(&httpsPort, "port", 8443, "loopback HTTPS port")
+		}
+	}
+	var fpmProfile, uploadDirectories string
+	if command == "fpm" {
+		fs.StringVar(&projectName, "name", "", "linked project name")
+		if sub != "status" {
+			fs.BoolVar(&dryRun, "dry-run", false, "preview only")
+			fs.StringVar(&approval, "approve", "", "reviewed plan ID")
+		}
+		if sub == "start" {
+			fs.StringVar(&phpPath, "php-fpm", "", "absolute native FPM executable")
+			fs.StringVar(&phpVersion, "version", "", "exact FPM version")
+			fs.StringVar(&fpmProfile, "profile", "php", "php or front-controller")
+			fs.StringVar(&uploadDirectories, "uploads", "uploads", "comma-separated relative upload directories denied by web routing")
+		}
+	}
 	if command == "http" && sub != "status" {
 		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
 		fs.StringVar(&approval, "approve", "", "reviewed plan ID")
 		if sub == "start" {
 			fs.StringVar(&nginxPath, "nginx", "/usr/sbin/nginx", "absolute Nginx executable")
 			fs.IntVar(&httpPort, "port", 8080, "loopback HTTP port")
+			fs.BoolVar(&https, "https", false, "enable HTTPS with current issued certificate")
+			fs.IntVar(&httpsPort, "https-port", 8443, "loopback HTTPS port")
 		}
 	}
 	if command != "exec" {
@@ -251,9 +289,40 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	if command == "exec" {
 		return (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Exec(ctx, projectName, phpArgs, c.In, c.Out, c.Err)
 	}
-	if command == "http" {
+	if command == "tls" {
+		service := app.TLSService{Store: state.Store{Paths: c.Paths}}
+		var value any
+		var err error
+		if sub == "verify" {
+			value, err = service.Verify(ctx, projectName, httpsPort)
+		} else {
+			value, err = service.Run(ctx, app.TLSRequest{Action: sub, Executable: tlsExecutable, Approval: approval, DryRun: dryRun})
+		}
+		if err != nil {
+			return err
+		}
+		if sub == "export-ca" && !jsonMode {
+			_, err = io.WriteString(c.Out, value.(string))
+			return err
+		}
+		b, _ := json.MarshalIndent(value, "", "  ")
+		return output(value, string(b))
+	}
+	if command == "http" || command == "fpm" {
 		service := app.HTTPService{Store: state.Store{Paths: c.Paths}}
-		req := app.HTTPRequest{Action: sub, Executable: nginxPath, Port: httpPort, Approval: approval, DryRun: dryRun}
+		req := app.HTTPRequest{Action: sub, Executable: nginxPath, Port: httpPort, Approval: approval, DryRun: dryRun, HTTPS: https, HTTPSPort: httpsPort}
+		if command == "fpm" {
+			if !domain.ValidProjectName(projectName) {
+				return domain.E(domain.Invalid, "fpm requires a valid --name")
+			}
+			service.FPMName = projectName
+			req.Executable = phpPath
+			req.Version = phpVersion
+			req.Profile = fpmProfile
+			if uploadDirectories != "" {
+				req.Uploads = strings.Split(uploadDirectories, ",")
+			}
+		}
 		var value any
 		var err error
 		if sub == "status" {

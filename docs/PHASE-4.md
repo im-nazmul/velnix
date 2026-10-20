@@ -2,7 +2,9 @@
 
 Authorized by the user: “Lets start work with phase 4, no need to ask for my
 aproval. you can start implementation directly”. This starts Phase 4 without
-marking the remaining Phase 3 FPM/HTTPS work or platform acceptance complete.
+marking Phase 3 platform acceptance complete. Phase 3 FPM/HTTPS implementation
+is now recorded in [web validation](validation/PHASE-3-WEB.md); real mkcert and
+platform/trust acceptance remain open.
 
 The first coherent slice adds read-only Node, Bun and Python candidate discovery
 through the application service and CLI. No new dependency or state schema is

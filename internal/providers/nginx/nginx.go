@@ -24,7 +24,16 @@ func quote(s string) (string, error) {
 	}
 	return "\"" + s + "\"", nil
 }
+
+type PHPRoute struct {
+	Socket, Profile string
+	Uploads         []string
+}
+
 func Render(projects []domain.Project, port int, token, prefix string) (string, error) {
+	return RenderWeb(projects, port, token, prefix, nil)
+}
+func RenderWeb(projects []domain.Project, port int, token, prefix string, routes map[string]PHPRoute) (string, error) {
 	if port < 1024 || port > 65535 {
 		return "", domain.E(domain.Invalid, "HTTP port must be 1024–65535")
 	}
@@ -54,7 +63,47 @@ func Render(projects []domain.Project, port int, token, prefix string) (string, 
 			return "", e
 		}
 		fmt.Fprintf(&b, "server { listen 127.0.0.1:%d; server_name %s; root %s; disable_symlinks on; autoindex off; index index.html;\n", port, p.Domain, root)
-		b.WriteString("location ~ (^|/)\\. { return 404; }\nlocation ~* (^|/)(vendor|node_modules|storage|config|database|tests|uploads)(/|$) { return 404; }\nlocation ~* (\\.(php[0-9]*|phtml|phar|py|pyc|go|rb|pl|sh|sql|sqlite[0-9]*|log|pem|key|crt|bak|old|orig|swp|ini|toml|ya?ml|lock)|~)$ { return 404; }\nlocation ~* (^|/)(composer\\.json|package\\.json|artisan|Dockerfile|Makefile)$ { return 404; }\nlocation / { limit_except GET HEAD { deny all; } try_files $uri $uri/ =404; }\n}\n")
+		route, php := routes[p.Name]
+		b.WriteString("location ~* \\.php[0-9]*/ { return 404; }\nlocation ~ (^|/)\\. { return 404; }\nlocation ~* (^|/)(vendor|node_modules|storage|config|database|tests|uploads)(/|$) { return 404; }\n")
+		for _, upload := range route.Uploads {
+			// Upload names have a deliberately restricted syntax, validated by FPM.
+			for _, r := range upload {
+				if !(r == '/' || r == '_' || r == '-' || r >= 'a' && r <= 'z' || r >= 'A' && r <= 'Z' || r >= '0' && r <= '9') {
+					return "", domain.E(domain.Invalid, "invalid upload path")
+				}
+			}
+			if upload == "" || strings.Contains(upload, "..") {
+				return "", domain.E(domain.Invalid, "invalid upload path")
+			}
+			fmt.Fprintf(&b, "location ~* ^/%s(/|$) { return 404; }\n", upload)
+		}
+		if php {
+			if route.Profile != "php" && route.Profile != "front-controller" {
+				return "", domain.E(domain.Invalid, "invalid PHP profile")
+			}
+			socket, e := quote("unix:" + route.Socket)
+			if e != nil {
+				return "", e
+			}
+			if route.Profile == "front-controller" {
+				b.WriteString("location = /index.php {\n")
+			} else {
+				b.WriteString("location ~ \\.php$ {\n")
+			}
+			// try_files obeys disable_symlinks; no PATH_INFO, arbitrary snippets or includes.
+			fmt.Fprintf(&b, "try_files $uri =404;\nfastcgi_pass %s;\nfastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;\nfastcgi_param SCRIPT_NAME $fastcgi_script_name;\nfastcgi_param QUERY_STRING $query_string;\nfastcgi_param REQUEST_METHOD $request_method;\nfastcgi_param CONTENT_TYPE $content_type;\nfastcgi_param CONTENT_LENGTH $content_length;\nfastcgi_param REQUEST_URI $request_uri;\nfastcgi_param DOCUMENT_URI $document_uri;\nfastcgi_param DOCUMENT_ROOT $document_root;\nfastcgi_param SERVER_PROTOCOL $server_protocol;\nfastcgi_param SERVER_NAME $server_name;\nfastcgi_param SERVER_PORT $server_port;\nfastcgi_param REMOTE_ADDR $remote_addr;\nfastcgi_param GATEWAY_INTERFACE CGI/1.1;\nfastcgi_param REDIRECT_STATUS 200;\nfastcgi_param HTTP_PROXY '';\nfastcgi_param HTTPS $https if_not_empty;\nfastcgi_read_timeout 30s;\n}\n", socket)
+		}
+		b.WriteString("location ~* (\\.(php[0-9]*|phtml|phar|py|pyc|go|rb|pl|sh|sql|sqlite[0-9]*|log|pem|key|crt|bak|old|orig|swp|ini|toml|ya?ml|lock)|~)$ { return 404; }\nlocation ~* (^|/)(composer\\.json|package\\.json|artisan|Dockerfile|Makefile)$ { return 404; }\n")
+		if php {
+			if route.Profile == "front-controller" {
+				b.WriteString("location / { try_files $uri /index.php$is_args$args; }\n")
+			} else {
+				b.WriteString("location / { index index.php index.html; try_files $uri $uri/ =404; }\n")
+			}
+		} else {
+			b.WriteString("location / { limit_except GET HEAD { deny all; } try_files $uri $uri/ =404; }\n")
+		}
+		b.WriteString("}\n")
 	}
 	b.WriteString("}\n")
 	return b.String(), nil
@@ -125,4 +174,23 @@ func Executable(path string) (string, error) {
 		return "", domain.E(domain.Unavailable, "Nginx executable is not executable")
 	}
 	return p, nil
+}
+
+// WithTLS retains independent HTTP listeners and adds optional loopback TLS.
+func WithTLS(config string, httpPort, tlsPort int, cert, key string) (string, error) {
+	if tlsPort < 1024 || tlsPort > 65535 || tlsPort == httpPort {
+		return "", domain.E(domain.Invalid, "invalid HTTPS port")
+	}
+	c, e := quote(cert)
+	if e != nil {
+		return "", e
+	}
+	k, e := quote(key)
+	if e != nil {
+		return "", e
+	}
+	config = strings.ReplaceAll(config, fmt.Sprintf("listen 127.0.0.1:%d default_server;", httpPort), fmt.Sprintf("listen 127.0.0.1:%d default_server; listen 127.0.0.1:%d ssl default_server;", httpPort, tlsPort))
+	config = strings.ReplaceAll(config, fmt.Sprintf("listen 127.0.0.1:%d;", httpPort), fmt.Sprintf("listen 127.0.0.1:%d; listen 127.0.0.1:%d ssl;", httpPort, tlsPort))
+	config = strings.Replace(config, "http {\n", fmt.Sprintf("http {\nssl_certificate %s;\nssl_certificate_key %s;\nssl_protocols TLSv1.2 TLSv1.3;\nssl_session_tickets off;\n", c, k), 1)
+	return config, nil
 }

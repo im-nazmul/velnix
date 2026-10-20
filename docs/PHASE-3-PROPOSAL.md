@@ -1,9 +1,10 @@
 # Phase 3 runtime and HTTPS proposal
 
 Status: approved by “Approved, start implementation” on 2026-10-20, following
-“Lets start work with phase 3”. The first PHP CLI slice is implemented; see
-[usage](RUNTIMES.md) and [validation](validation/PHASE-3-RUNTIME.md).
-FPM and HTTPS implementation remains pending within this approved scope.
+“Lets start work with phase 3”. All three implementation slices are now present: [PHP CLI](RUNTIMES.md),
+[FPM](FPM.md) and [HTTPS](HTTPS.md). See [web validation](validation/PHASE-3-WEB.md)
+for passing local checks and the remaining real-mkcert/platform/trust acceptance.
+Implementation completion does not establish full platform acceptance.
 
 ## Scope and implementation order
 

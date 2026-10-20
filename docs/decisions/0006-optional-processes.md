@@ -1,6 +1,6 @@
 # ADR 0006 — Daemonless control with explicit optional workload lifetimes
 
-- Status: Foreground Nginx implemented; foreground per-project FPM accepted for Phase 3; systemd and later workloads remain proposed
+- Status: Foreground Nginx and per-project FPM implemented for Phase 3; systemd and later workloads remain proposed
 - Date: 2026-10-20
 - Related original decisions: D005, D012
 

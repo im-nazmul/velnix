@@ -5,7 +5,8 @@ Nginx executable and Linux pidfd support are required; no packages are installed
 Run as your ordinary user. No systemd, root privileges or permanent Velnix daemon
 are needed. Default executable: `/usr/sbin/nginx`; default listener:
 `127.0.0.1:8080`. Alternative ports must be 1024–65535. IPv6 is unavailable in
-this slice. PHP/FPM, HTTPS and reverse proxying are later milestone work.
+the static slice. Phase 3 adds [per-project FPM](FPM.md) and [optional HTTPS](HTTPS.md);
+reverse proxying remains later work.
 
 ## Start and inspect
 
@@ -70,7 +71,8 @@ cleanup succeeded. Same-user compromise is outside the isolation guarantee.
 Only registered exact `NAME.test` hosts are served; unknown hosts return 404.
 A separate internal `velnix-health.invalid` host returns a configuration generation
 marker for readiness checks. This marker is not an authentication credential.
-Static index files use `index.html`; there is no directory listing or PHP execution.
+Static index files use `index.html`; there is no directory listing or PHP execution
+unless an explicitly enabled, running [FPM profile](FPM.md) is approved in routing.
 Dotfiles, common dependency/configuration directories, executable source suffixes,
 keys, logs and common metadata files are denied. Symlink serving is disabled,
 including paths that traverse symlinks. Use a dedicated public root: the deny

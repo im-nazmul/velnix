@@ -1,6 +1,6 @@
 # ADR 0004 — Exact local domains and separately authorized trust stores
 
-- Status: Accepted for Phase 3 manual hosts/trust instructions and optional isolated mkcert issuance; implementation pending
+- Status: Implemented for Phase 3 manual hosts/trust instructions and optional isolated mkcert v1.4.4 issuance; real mkcert/platform/trust acceptance open
 - Date: 2026-10-20
 - Related original decisions: D010
 

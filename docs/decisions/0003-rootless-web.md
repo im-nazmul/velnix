@@ -1,6 +1,6 @@
 # ADR 0003 — Separate rootless Nginx and per-project FPM first
 
-- Status: Rootless static HTTP implemented; foreground per-project FPM and optional rootless HTTPS accepted for Phase 3, pending implementation
+- Status: Rootless static HTTP implemented; foreground per-project FPM and optional rootless HTTPS implemented within Phase 3; platform acceptance open
 - Date: 2026-10-20
 - Related original decisions: D007, D011
 

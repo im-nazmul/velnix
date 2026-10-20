@@ -2,7 +2,8 @@
 
 The first Phase 3 slice supports native installed PHP CLI binaries. It never
 installs runtimes, changes shell defaults or takes ownership of installations.
-FPM and HTTPS are still pending; selecting CLI PHP does not change web serving.
+[FPM](FPM.md) and optional [HTTPS](HTTPS.md) are implemented separately;
+selecting CLI PHP does not change web serving.
 
 ## Discover and inspect
 

@@ -1,6 +1,7 @@
 # Velnix — Runtime Management
 
-Implemented first Phase 3 slice: [existing PHP CLI selection and exec](RUNTIMES.md).
+Implemented Phase 3: [existing PHP CLI selection and exec](RUNTIMES.md),
+[independent FPM pools](FPM.md) and [optional HTTPS](HTTPS.md).
 The precedence, configuration and broader provider capabilities below describe
 future direction; they are not implemented by the current direct selection path.
 

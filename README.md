@@ -2,7 +2,7 @@
 
 **Native Linux development, without the overhead.**
 
-> Status: Phase 3 started with existing PHP CLI discovery, exact project selection and exec implemented. FPM/HTTPS and broader platform acceptance remain pending. Name provisional pending availability checks.
+> Status: Phase 3 implementation includes PHP CLI, per-project FPM/web routing and optional rootless HTTPS. Local validation passes; real mkcert and broader platform/trust acceptance remain open. See [FPM](docs/FPM.md), [HTTPS](docs/HTTPS.md) and [validation](docs/validation/PHASE-3-WEB.md). Name provisional pending availability checks.
 
 Velnix is an open-source, lightweight local development environment manager for WSL2 and Linux. It aims to unify native services, runtime versions, project linking, `.test` domains, HTTPS and development mail capture without mandatory containers.
 

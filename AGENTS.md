@@ -29,12 +29,13 @@ Bun is the default package manager and script runner for Velnix's JavaScript/Typ
 6. Never implement the whole roadmap in one task.
 
 ## Current Phase
-Phase 4 multi-language work is authorized by “Lets start work with phase 4, no need to ask for my aproval. you can start implementation directly”. Bounded discovery and approved exact version inspection are implemented; see docs/PHASE-4.md and docs/validation/PHASE-4-RUNTIME.md. Continue with the next coherent Phase 4 slice; do not implement the whole roadmap.
+Phase 4 multi-language work is authorized by “Lets start work with phase 4, no need to ask for my aproval. you can start implementation directly”. Bounded discovery and approved exact version inspection are implemented; see docs/PHASE-4.md and docs/validation/PHASE-4-RUNTIME.md. The user subsequently prioritized “Lets finishup phase 3 first”. Do not implement the whole roadmap.
 
 Phase 3: runtime and HTTPS, previously authorized by “Lets start work with phase 3” and
 approval of docs/PHASE-3-PROPOSAL.md with “Approved, start implementation”.
 Project registry transactions and the approved rootless static HTTP slice are implemented; see docs/PROJECTS.md, docs/HTTP.md and docs/validation/PHASE-2-HTTP.md.
 The user approved docs/PHASE-2-HTTP-PROPOSAL.md with “You have my approval”. Local implementation validation passes; unperformed platform acceptance remains open.
-The first Phase 3 PHP CLI discovery/selection/exec slice is implemented; see
-docs/RUNTIMES.md and docs/validation/PHASE-3-RUNTIME.md. FPM and optional HTTPS remain unfinished within docs/PHASE-3-PROPOSAL.md. Propose significant departures
+Phase 3 PHP CLI, per-project FPM/web routing and optional HTTPS are implemented; see
+docs/RUNTIMES.md, docs/FPM.md, docs/HTTPS.md and docs/validation/PHASE-3-WEB.md.
+Real mkcert and platform/trust acceptance remain open within docs/PHASE-3-PROPOSAL.md. Propose significant departures
 from that approved design before implementation. Phase 4 authorization does not imply approval for later roadmap phases or host system mutations.
