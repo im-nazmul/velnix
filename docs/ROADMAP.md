@@ -9,10 +9,11 @@ Go module, CLI, platform detection, doctor, configuration, tests and CI.
 ## Phase 2 — Projects and Web (authorized; project registry slice implemented)
 Project registry, link/unlink, rootless Nginx, static HTTP and explicit process identity. See [PROJECTS](PROJECTS.md) for the implemented commands. HTTP remains pending. The bounded release plan defers park scanning and places PHP integration in Phase 3.
 
-## Phase 3 — HTTPS and Runtime Selection (implemented; acceptance open)
+## Phase 3 — HTTPS and Runtime Selection (COMPLETE)
 Existing PHP CLI discovery/selection/exec, independent [FPM](FPM.md) and optional
-[HTTPS](HTTPS.md) are implemented. [Validation](validation/PHASE-3-WEB.md) records
-local evidence and outstanding real-mkcert, trust and platform acceptance.
+[HTTPS](HTTPS.md) are implemented. [Completion evidence](validation/PHASE-3-COMPLETION.md)
+includes real mkcert, CA rotation and Linux/Windows mirrored scoped HTTPS checks.
+Remaining platform/store/browser acceptance is tracked as release work.
 
 ## Phase 4 — Multi-language (COMPLETE)
 Existing Node/Bun/Python discovery, inspection, selection/exec, native and

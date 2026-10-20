@@ -1,5 +1,10 @@
 # Phase 3 PHP CLI slice — local validation
 
+Follow-up: [PHASE-3-COMPLETION](PHASE-3-COMPLETION.md) records the final
+implementation and real mkcert/Linux/Windows mirrored acceptance. This report
+retains its historical scope; then-unperformed checks are superseded only by
+explicit evidence in that completion report.
+
 Date: 2026-10-20. Scope: first slice of the approved
 [Phase 3 proposal](../PHASE-3-PROPOSAL.md), documented in [RUNTIMES](../RUNTIMES.md).
 This does not establish completion of Phase 3.

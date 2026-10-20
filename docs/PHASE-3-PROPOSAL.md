@@ -1,10 +1,12 @@
 # Phase 3 runtime and HTTPS proposal
 
-Status: approved by “Approved, start implementation” on 2026-10-20, following
-“Lets start work with phase 3”. All three implementation slices are now present: [PHP CLI](RUNTIMES.md),
-[FPM](FPM.md) and [HTTPS](HTTPS.md). See [web validation](validation/PHASE-3-WEB.md)
-for passing local checks and the remaining real-mkcert/platform/trust acceptance.
-Implementation completion does not establish full platform acceptance.
+Status: COMPLETE within the approved implementation scope. Originally approved
+by “Approved, start implementation” on 2026-10-20. PHP CLI, FPM/web and optional
+HTTPS are implemented and real local acceptance now includes mkcert issuance,
+CA rotation/reload, Linux scoped trust and Windows mirrored HTTPS. See
+[completion evidence](validation/PHASE-3-COMPLETION.md). Remaining OS/browser trust,
+native Ubuntu and network-matrix acceptance is explicitly retained in
+[release acceptance](validation/RELEASE-ACCEPTANCE.md), not marked passing.
 
 ## Scope and implementation order
 

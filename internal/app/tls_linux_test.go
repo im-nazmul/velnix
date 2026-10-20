@@ -4,11 +4,15 @@ package app
 
 import (
 	"context"
+	"crypto/x509"
+	"encoding/pem"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"velnix/internal/state"
 )
@@ -161,9 +165,18 @@ func TestTLSInstalledMkcert(t *testing.T) {
 	if os.Geteuid() == 0 {
 		t.Skip("unprivileged user required")
 	}
-	exe, e := exec.LookPath("mkcert")
-	if e != nil {
-		t.Skip("real mkcert unavailable; fixture does not establish compatibility")
+	exe := os.Getenv("VELNIX_TEST_MKCERT")
+	var e error
+	if exe == "" {
+		exe, e = exec.LookPath("mkcert")
+		if e != nil {
+			t.Skip("real mkcert unavailable; set VELNIX_TEST_MKCERT to require an explicit binary")
+		}
+	} else if !filepath.IsAbs(exe) {
+		t.Fatal("VELNIX_TEST_MKCERT must be absolute")
+	}
+	if info, err := os.Stat(exe); err != nil || !info.Mode().IsRegular() {
+		t.Fatalf("configured real mkcert is unavailable: %v", err)
 	}
 	exe, e = filepath.Abs(exe)
 	if e != nil {
@@ -178,8 +191,56 @@ func TestTLSInstalledMkcert(t *testing.T) {
 	}
 	port := freePort(t)
 	startPool(t, s, HTTPRequest{Action: "start", Executable: "/usr/sbin/nginx", Port: freePort(t), HTTPS: true, HTTPSPort: port})
+	for _, name := range []string{"one", "two"} {
+		result, e := service.Verify(context.Background(), name, port)
+		if e != nil || !result.ExplicitCA || result.LinuxSystemTrust {
+			t.Fatalf("real mkcert verification %+v %v", result, e)
+		}
+	}
+	public, e := service.PublicCA(context.Background())
+	if e != nil || strings.Contains(public, "PRIVATE KEY") {
+		t.Fatalf("public CA export: %v", e)
+	}
+	certificate, e := os.ReadFile(filepath.Join(s.Store.Paths.State, r.Generation, "cert.pem"))
+	if e != nil {
+		t.Fatal(e)
+	}
+	block, _ := pem.Decode(certificate)
+	if block == nil {
+		t.Fatal("real mkcert leaf is not PEM")
+	}
+	leaf, e := x509.ParseCertificate(block.Bytes)
+	if e != nil || !reflect.DeepEqual(leaf.DNSNames, []string{"one.test", "two.test"}) || !leaf.NotAfter.After(time.Now()) {
+		t.Fatalf("real leaf SAN/expiry: %+v %v", leaf, e)
+	}
+	for _, name := range tlsFiles {
+		info, e := os.Stat(filepath.Join(s.Store.Paths.State, r.Generation, name))
+		if e != nil || info.Mode().Perm() != 0600 {
+			t.Fatalf("real artifact permissions %s: %v", name, e)
+		}
+	}
+	// Real CA rotation keeps the old active listener intact until reviewed reload.
+	next := issueFixture(t, service, exe)
+	if next.Generation == r.Generation || next.Fingerprint == r.Fingerprint {
+		t.Fatal("rotation reused old CA")
+	}
+	if _, e = service.Verify(context.Background(), "one", port); e == nil {
+		t.Fatal("old endpoint was incorrectly accepted as the new CA/leaf")
+	}
+	reload := HTTPRequest{Action: "reload"}
+	plan, e := s.Plan(context.Background(), reload)
+	if e != nil {
+		t.Fatal(e)
+	}
+	reload.Approval = plan.ID
+	if _, e = s.Apply(context.Background(), reload); e != nil {
+		t.Fatal(e)
+	}
 	result, e := service.Verify(context.Background(), "one", port)
 	if e != nil || !result.ExplicitCA || result.LinuxSystemTrust {
-		t.Fatalf("real mkcert verification %+v %v", result, e)
+		t.Fatalf("real CA rotation %+v %v", result, e)
+	}
+	if _, e = os.Stat(filepath.Join(s.Store.Paths.State, r.Generation, "rootCA.pem")); e != nil {
+		t.Fatal("rotation deleted prior CA evidence")
 	}
 }

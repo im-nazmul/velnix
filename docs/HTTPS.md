@@ -109,7 +109,10 @@ alone does **not** remove trust. Old CA trust is not detected automatically; no
 recursive cleanup command is offered. Ambiguous/external evidence requires
 manual review. Registry recovery, HTTP recovery and TLS recovery are independent.
 
-[Validation](validation/PHASE-3-WEB.md) distinguishes the native adapter fixture
-from real mkcert compatibility, which remains unperformed locally. Adapter design
+[Completion validation](validation/PHASE-3-COMPLETION.md) records passing real
+mkcert issuance/rotation and Linux/Windows mirrored scoped HTTPS checks. Browser
+and OS trust-store acceptance remains explicitly open. Repeat local real-tool
+checks with `scripts/validate-phase3.sh /absolute/mkcert` or set
+`VELNIX_TEST_MKCERT=/absolute/mkcert` for Go tests. Adapter design
 was checked against [mkcert v1.4.4 source](https://github.com/FiloSottile/mkcert/blob/v1.4.4/main.go)
 and its [CAROOT documentation](https://github.com/FiloSottile/mkcert#changing-the-location-of-the-ca-files).

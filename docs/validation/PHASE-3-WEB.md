@@ -1,5 +1,10 @@
 # Phase 3 FPM and HTTPS — local validation
 
+Follow-up: [PHASE-3-COMPLETION](PHASE-3-COMPLETION.md) records the final
+implementation and real mkcert/Linux/Windows mirrored acceptance. This report
+retains its historical scope; then-unperformed checks are superseded only by
+explicit evidence in that completion report.
+
 Date: 2026-10-20. The remaining approved implementation slices are present.
 This closes implementation work, **not full platform acceptance**. Previous
 [PHP CLI evidence](PHASE-3-RUNTIME.md) remains valid for its earlier scope;

@@ -1,19 +1,20 @@
 # Open platform and release acceptance
 
 Status: open; no unperformed check below is a passing result.
-Updated: 2026-10-20 at Phase 4 implementation completion.
+Updated: 2026-10-20 after real Phase 3 mkcert and Windows mirrored HTTPS validation.
 
-The approved bounded Phase 4 implementation is complete. Its local checks and
-remaining provider implementation are recorded in [PHASE-4-COMPLETION](PHASE-4-COMPLETION.md).
+Phases 3 and 4 are complete within approved implementation scopes. Local evidence
+is recorded in [PHASE-3-COMPLETION](PHASE-3-COMPLETION.md) and
+[PHASE-4-COMPLETION](PHASE-4-COMPLETION.md).
 This list keeps the pre-existing platform/release gates distinct from delivered
 features. It does not expand authorization into host mutations or later phases.
 
 | Gate | Status / evidence needed |
 |---|---|
 | Native Ubuntu and a separate non-systemd environment | Unperformed; current integration evidence is local WSL2 |
-| Windows NAT/mirrored, VPN/forwarding, multiple distributions, browser/HMR behavior | Unperformed; requires actual Windows/browser/platform access |
-| Real mkcert v1.4.4 | Unperformed; absent locally; strict fixture and real Nginx TLS evidence do not prove real mkcert compatibility |
-| Linux, Windows CurrentUser and browser trust; fingerprint-specific untrust | Unperformed; no trust store was modified |
+| Windows network/browser matrix | Current mirrored Windows loopback HTTPS with exact name/leaf verification passed; NAT, VPN, other distributions, hosts DNS and browser/HMR UI scenarios remain unperformed |
+| Real mkcert v1.4.4 | PASSED locally: official temporary release, real issuance/SAN/expiry/permissions, public export, HTTPS and CA rotation/reload; see Phase 3 completion |
+| Linux/Windows trust and untrust | Scoped explicit-CA verification and default rejection before/after passed; Linux child-process root override round trip passed. OS/CurrentUser/browser installation and fingerprint-specific removal remain unperformed; no trust store was modified |
 | Additional mise/uv installation variants/releases | Only documented existing-store-v1 fixtures and disposable real runtime copies validated; other layouts refuse rather than guess |
 | Additional runtime/venv/framework versions | Only recorded local versions and bounded metadata contracts are claimed |
 | Full filesystem fault-injection and performance matrix | Not established by local transaction/race tests; no measured budget claim |

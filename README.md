@@ -2,7 +2,7 @@
 
 **Native Linux development, without the overhead.**
 
-> Status: Phase 3 implementation includes PHP CLI, per-project FPM/web routing and optional rootless HTTPS. Phase 4 is complete within its implementation scope: existing Node/Bun/Python selection/exec, read-only mise/uv store resolution, bounded detection and loopback proxying; see [completion evidence](docs/validation/PHASE-4-COMPLETION.md). Local validation passes; real mkcert and broader platform/trust acceptance remain open. See [FPM](docs/FPM.md), [HTTPS](docs/HTTPS.md) and [validation](docs/validation/PHASE-3-WEB.md). Name provisional pending availability checks.
+> Status: Phases 3 and 4 are complete within their approved implementation scopes. [Phase 3 evidence](docs/validation/PHASE-3-COMPLETION.md) includes real PHP/FPM, mkcert and scoped Linux/Windows mirrored HTTPS; [Phase 4 evidence](docs/validation/PHASE-4-COMPLETION.md) covers native execution, read-only provider stores, detection and proxying. Remaining [platform/release acceptance](docs/validation/RELEASE-ACCEPTANCE.md) is explicit. Phase 5 is next and needs a bounded scope before implementation. Name provisional pending availability checks.
 
 Velnix is an open-source, lightweight local development environment manager for WSL2 and Linux. It aims to unify native services, runtime versions, project linking, `.test` domains, HTTPS and development mail capture without mandatory containers.
 
