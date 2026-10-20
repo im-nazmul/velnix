@@ -32,3 +32,7 @@ Loopback binding by default, origin/CSRF protections, authentication as appropri
 
 ## Performance
 Do not start dashboard unless requested; avoid constant polling, heavyweight frontend packages or duplicated application logic.
+
+## Phase 0 command semantics
+
+The CLI tree is illustrative eventual scope. The proposal adds `exec -- command args` for selected child-process environments; it cannot alter its parent shell. Initial runtime operations are read-only. Mutations use previewed plans and state-bound explicit approval; web cannot elevate. See [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md) for v0.1 and [SECURITY](SECURITY.md) for authorization/API requirements.

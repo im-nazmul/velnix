@@ -30,3 +30,7 @@ No container orchestration, production hosting panel, IDE, cloud deployment plat
 
 ## Release discipline
 Incremental milestones with tests, acceptance criteria and documented limitations. Do not promise support for every framework on day one.
+
+## Phase 0 scope clarification
+
+These requirements describe product direction across releases. [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md) proposes the bounded v0.1 and approval gates; [FEASIBILITY](FEASIBILITY.md) records gaps and source-backed platform constraints. Native Ubuntu validation starts with v0.1 to protect portability, while WSL-specific integration stays behind adapters.

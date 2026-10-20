@@ -41,3 +41,7 @@ Do not assume APT, systemd, WSL networking or uniform filesystem paths. Discover
 
 ## Open research
 PHP CLI vs PHP-FPM version selection; external runtime managers; Windows/WSL DNS and HTTPS trust; safe Nginx ownership; daemonless operation; mail storage and security; rollback limitations.
+
+## Phase 0 refinement
+
+The detailed proposed package boundaries, state strategy and small interfaces are in [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md); privilege and recovery requirements are in [SECURITY](SECURITY.md). [FEASIBILITY](FEASIBILITY.md) evaluates the open research above. These proposals require approval before implementation.

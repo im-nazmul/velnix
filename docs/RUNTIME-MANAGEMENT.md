@@ -51,3 +51,7 @@ Verify provider and ownership, check project references, preview changes, requir
 
 ## Research
 Compare mise and specialized providers; executable resolution, deduplication, PHP-FPM routing, safe upgrades and migration paths.
+
+## Phase 0 clarification
+
+The ownership classes above describe installation provenance; they do not grant management or deletion authority. Track provenance and explicit management grants separately as defined in [SECURITY](SECURITY.md). The proposed v0.1 supports existing installations and child-process selection, with independent PHP CLI/FPM resolution; install/update/remove and provider defaults are later capabilities. See [FEASIBILITY](FEASIBILITY.md) for the provider comparison, deterministic conflict behavior and Python environment rules.

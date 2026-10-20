@@ -31,3 +31,7 @@ CLI: structured output, shell completion, dry-run, noninteractive mode. TUI: ove
 
 ## Future
 Other distributions, web servers, plugin SDK, templates, database tooling, import/export environment profiles.
+
+## Release scope
+
+This catalogue describes the eventual product. “Initially” identifies priority language families, not a promise that all provider mutations or interfaces ship in v0.1. The bounded proposed first release and exclusions are in [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md).

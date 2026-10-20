@@ -31,3 +31,7 @@ Security/performance review, WSL/native Ubuntu testing, installers, docs, contri
 More distributions, web servers, plugins, database tools and runtimes.
 
 Each phase needs acceptance criteria, tests, docs and known limitations. Do not proceed automatically.
+
+## Proposed first release and approval gates
+
+[IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md) maps a restricted v0.1 across the foundation, project/HTTP, runtime/HTTPS and stabilization milestones. Full runtime installation, framework automation, TUI, mail and web remain later work. [TESTING](TESTING.md) defines measurable gates; budgets are not measured results. Each milestone still requires explicit approval. Phase 0 documentation is ready for review, not authorization to start Phase 1.

@@ -35,6 +35,10 @@ velnix ui
 - [Interfaces](docs/CLI-TUI-WEB.md)
 - [Roadmap](docs/ROADMAP.md)
 - [Decisions](docs/DECISIONS.md)
+- [Phase 0 feasibility and specification review](docs/FEASIBILITY.md)
+- [Security, ownership and recovery](docs/SECURITY.md)
+- [Proposed v0.1 implementation plan](docs/IMPLEMENTATION-PLAN.md)
+- [Testing and performance acceptance](docs/TESTING.md)
 
 ## License
 To be selected before public release.
