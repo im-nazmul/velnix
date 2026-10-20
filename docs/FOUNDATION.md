@@ -6,7 +6,7 @@ Implementation started with the user's instruction â€œLets start implementationâ
 
 ## Build and use
 
-Go 1.22+ on Linux, with a C toolchain for race tests. Local validation uses the user's installed Go 1.22.2; production/release builds should use a currently supported patched Go release. CI separately checks the compatibility floor and pins Go 1.27.3 for the release-toolchain checks. No runtime distributions or Go toolchain are bundled.
+Go 1.27.3+ on Linux, with a C toolchain for race tests. The local default is Go 1.27.3; production/release builds should use a currently supported patched Go release. CI reads the required toolchain from `go.mod` and runs vulnerability checks with it. Earlier validation records retain the Go version used at the time. No runtime distributions or Go toolchain are bundled.
 
 ```sh
 go build -trimpath -o bin/velnix ./cmd/velnix

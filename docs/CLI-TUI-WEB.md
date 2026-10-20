@@ -25,7 +25,7 @@ CLI requirements: scriptability, useful exit codes, JSON where appropriate, dry-
 Go Bubble Tea + Lip Gloss proposed. Screens: overview, projects, runtimes, services, mail and settings. Keyboard-first, searchable, compact, responsive terminal layout.
 
 ## Web
-Vue 3/TypeScript/Vite proposed. Build static assets and embed in Go; no production Node server. Screens: overview, projects, runtimes, services, databases, certificates, mail, diagnostics and settings. Modern, responsive, accessible, minimal dependencies, dark/light themes.
+Vue 3/TypeScript/Vite proposed. Build static assets and embed in Go; no production Node server. Use Bun as the default package manager and script runner, with a committed `bun.lock`, a pinned Bun version and `bun install --frozen-lockfile` in CI once dashboard tooling exists. Screens: overview, projects, runtimes, services, databases, certificates, mail, diagnostics and settings. Modern, responsive, accessible, minimal dependencies, dark/light themes.
 
 ## Security
 Loopback binding by default, origin/CSRF protections, authentication as appropriate, no arbitrary shell execution through API, scoped privileged actions, no private-key exposure.

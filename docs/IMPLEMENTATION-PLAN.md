@@ -6,7 +6,7 @@ Status: Phase 2 authorized by the user with “Lets start work with phase 2”. 
 
 Go core with standard-library process, filesystem, HTTP and JSON facilities; select a small CLI parser during Phase 1 after dependency/license review. TOML for human configuration, versioned JSON for the initial registry, and bounded JSON operation records under XDG state. SQLite is deferred until mail/query volume or measured concurrency justifies it. Registry writes use a common repository abstraction with OS interprocess locks and atomic durable replacement. No public plugin ABI, dependency-injection framework or generic event bus.
 
-Bubble Tea/Lip Gloss remains the TUI direction. Vue 3/TypeScript/Vite static assets embedded through Go remain the web direction; neither ships in v0.1. Node is a dashboard build dependency, not a runtime requirement for installed Velnix. Prefer external mkcert for local HTTPS; provider and certificate dependencies remain optional and externally installed in v0.1.
+Bubble Tea/Lip Gloss remains the TUI direction. Vue 3/TypeScript/Vite static assets embedded through Go remain the web direction; neither ships in v0.1. Bun is the default dashboard package manager and script runner; any Node requirement from dashboard build tools must be documented when those tools are introduced. Neither Bun nor Node is a runtime requirement for installed Velnix. Prefer external mkcert for local HTTPS; provider and certificate dependencies remain optional and externally installed in v0.1.
 
 Proposed package layout (create incrementally, no empty skeleton roadmap):
 

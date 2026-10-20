@@ -8,7 +8,7 @@ Velnix is an open-source, lightweight local development environment manager for 
 
 ## Getting started
 
-Requires Go 1.22+ on Linux. Use a supported patched Go release for release builds.
+Requires Go 1.27.3+ on Linux. Use a supported patched Go release for release builds.
 
 ```sh
 go build -o bin/velnix ./cmd/velnix

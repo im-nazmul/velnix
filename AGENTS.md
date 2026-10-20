@@ -18,6 +18,8 @@ Velnix is an open-source, lightweight, native Linux development environment mana
 ## Technology Direction
 Go core and CLI; Bubble Tea/Lip Gloss TUI; Vue 3/TypeScript/Vite dashboard compiled to static assets embedded in Go; Nginx first; systemd where available.
 
+Bun is the default package manager and script runner for Velnix's JavaScript/TypeScript tooling. When dashboard tooling is introduced, commit `bun.lock`, pin the Bun version, and use `bun install --frozen-lockfile` in CI. This does not change runtime selection for user-managed projects. GitHub JavaScript actions use their own embedded Node runtime.
+
 ## Codex Workflow
 1. Read docs/PROJECT.md, docs/ARCHITECTURE.md and docs/DECISIONS.md.
 2. Review assumptions and platform dependencies before coding.
