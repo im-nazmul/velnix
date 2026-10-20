@@ -93,5 +93,8 @@ HTTP. See [HTTP](HTTP.md) for lifecycle/recovery behavior and
 ## Node, Bun and Python discovery
 
 Phase 4 adds `runtime list --kind node|bun|python` with optional absolute
-`--directory`. These are unprobed candidates, with no selection or execution
-capability yet. See [PHASE-4](PHASE-4.md) for commands and limits.
+`--directory`. These are unprobed candidates. Explicit version inspection is
+available through `runtime inspect --kind node|bun|python --executable /absolute/binary
+--version X.Y.Z`, with preview and matching `--approve PLAN_ID` required before
+execution. Persistent selection and application execution remain pending.
+See [PHASE-4](PHASE-4.md) for commands and limits.

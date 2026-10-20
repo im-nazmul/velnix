@@ -11,7 +11,64 @@ import (
 
 	"velnix/internal/platform"
 	"velnix/internal/providers/phpcli"
+	"velnix/internal/providers/runtimeinventory"
 )
+
+func TestMultiLanguageInspectionCLI(t *testing.T) {
+	for _, kind := range []string{"node", "bun", "python"} {
+		code, out, stderr := command(t, "runtime", "inspect", "--kind", kind, "--executable", "/bin/true", "--version", "1.2.3", "--dry-run", "--json")
+		var p struct{ Kind, ID string }
+		if code != 0 || stderr != "" || json.Unmarshal([]byte(out), &p) != nil || p.ID == "" || p.Kind != kind {
+			t.Fatalf("%d %s %s", code, out, stderr)
+		}
+		code, _, _ = command(t, "runtime", "inspect", "--kind", kind, "--executable", "/bin/true", "--version", "1.2.3", "--approve", "incorrect", "--json")
+		if code == 0 {
+			t.Fatal("incorrect approval accepted")
+		}
+	}
+	for _, args := range [][]string{
+		{"--kind", "", "--executable", "/bin/true", "--version", "1.2.3"},
+		{"--kind", "ruby", "--executable", "/bin/true", "--version", "1.2.3"},
+		{"--kind", "node", "--php", "/bin/true", "--version", "1.2.3"},
+		{"--kind", "php", "--executable", "/bin/true", "--version", "1.2.3"},
+		{"--kind", "python", "--executable", "python3", "--version", "1.2.3"},
+		{"--kind", "bun", "--executable", "/bin/true", "--version", "latest"},
+	} {
+		if code, _, _ := command(t, append([]string{"runtime", "inspect"}, args...)...); code == 0 {
+			t.Fatalf("accepted %v", args)
+		}
+	}
+}
+
+func TestApprovedPythonInspectionCLI(t *testing.T) {
+	path := "/usr/bin/python3"
+	if _, err := phpcli.Snapshot(path, "0.0.0"); err != nil {
+		t.Skip("native Python unavailable")
+	}
+	args, _ := runtimeinventory.ProbeArgs("python")
+	c := exec.Command(path, args...)
+	c.Env = []string{"PATH=/usr/bin:/bin", "LANG=C"}
+	c.Dir = "/"
+	b, err := c.Output()
+	if err != nil {
+		t.Fatal(err)
+	}
+	version := strings.TrimPrefix(strings.TrimSpace(string(b)), "Python ")
+	base := []string{"runtime", "inspect", "--kind", "python", "--executable", path, "--version", version, "--json"}
+	code, out, stderr := command(t, base...)
+	var p struct{ ID string }
+	if code != 0 || json.Unmarshal([]byte(out), &p) != nil || p.ID == "" {
+		t.Fatalf("%d %s %s", code, out, stderr)
+	}
+	code, out, stderr = command(t, append(base, "--approve", p.ID)...)
+	var result struct {
+		Kind, Authority string
+		Probed          bool
+	}
+	if code != 0 || stderr != "" || json.Unmarshal([]byte(out), &result) != nil || result.Kind != "python" || result.Authority != "external" || !result.Probed {
+		t.Fatalf("%d %s %s", code, out, stderr)
+	}
+}
 
 func TestRuntimeCLI(t *testing.T) {
 	path, version := "", ""

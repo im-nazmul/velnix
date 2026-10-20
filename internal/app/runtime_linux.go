@@ -53,6 +53,9 @@ func (s RuntimeService) Run(ctx context.Context, req RuntimeRequest) (any, error
 	if req.DryRun && req.Approval != "" {
 		return nil, domain.E(domain.Invalid, "--dry-run cannot be combined with --approve")
 	}
+	if req.Kind != "" && req.Kind != "php" && req.Action != "list" && req.Action != "inspect" {
+		return nil, domain.E(domain.Invalid, "only list and inspect support non-PHP runtimes in this slice")
+	}
 	switch req.Action {
 	case "list":
 		if req.Kind != "" && req.Kind != "php" {
@@ -67,6 +70,9 @@ func (s RuntimeService) Run(ctx context.Context, req RuntimeRequest) (any, error
 		}
 		return phpcli.Discover(), nil
 	case "inspect":
+		if req.Kind != "" && req.Kind != "php" {
+			return inspectRuntime(ctx, req)
+		}
 		selection, err := phpcli.Snapshot(req.Path, req.Version)
 		if err != nil {
 			return nil, err

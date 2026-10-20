@@ -36,6 +36,7 @@ Usage:
   velnix projects unlink --name NAME [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime list [--kind php|node|bun|python] [--directory /absolute/path] [--json]
   velnix runtime inspect --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
+  velnix runtime inspect --kind node|bun|python --executable /absolute/binary --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime select --name NAME --php /absolute/php --version X.Y.Z [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime clear --name NAME [--dry-run|--approve PLAN_ID] [--json]
   velnix runtime resolve --name NAME [--json]
@@ -129,6 +130,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	var nginxPath string
 	var phpPath, phpVersion string
 	var runtimeKind, runtimeDirectory string
+	var runtimeExecutable string
 	var httpPort int
 	if command == "http" && sub != "status" {
 		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
@@ -144,6 +146,10 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	if command == "runtime" && sub == "list" {
 		fs.StringVar(&runtimeKind, "kind", "php", "runtime candidate kind")
 		fs.StringVar(&runtimeDirectory, "directory", "", "explicit discovery directory for Node, Bun or Python")
+	}
+	if command == "runtime" && sub == "inspect" {
+		fs.StringVar(&runtimeKind, "kind", "php", "runtime kind")
+		fs.StringVar(&runtimeExecutable, "executable", "", "absolute existing Node, Bun or Python executable")
 	}
 	if command == "exec" || (command == "runtime" && (sub == "select" || sub == "clear" || sub == "resolve")) {
 		fs.StringVar(&projectName, "name", "", "linked project name")
@@ -218,6 +224,20 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		return output(value, string(b))
 	}
 	if command == "runtime" {
+		if sub == "inspect" {
+			if runtimeKind == "" {
+				return domain.E(domain.Invalid, "runtime kind must be php, node, bun or python")
+			}
+			if runtimeKind == "php" && runtimeExecutable != "" {
+				return domain.E(domain.Invalid, "PHP inspection requires --php; --executable requires --kind node, bun or python")
+			}
+			if runtimeKind != "php" {
+				if phpPath != "" {
+					return domain.E(domain.Invalid, "--php cannot be combined with a different runtime kind")
+				}
+				phpPath = runtimeExecutable
+			}
+		}
 		value, err := (app.RuntimeService{Store: state.Store{Paths: c.Paths}}).Run(ctx, app.RuntimeRequest{Action: sub, Name: projectName, Path: phpPath, Version: phpVersion, Approval: approval, DryRun: dryRun, Kind: runtimeKind, Directory: runtimeDirectory})
 		if err != nil {
 			return err

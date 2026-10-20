@@ -34,6 +34,7 @@ The statuses above describe original direction and requirements, not implementat
 | [0007](decisions/0007-release-and-performance.md) | Bounded v0.1 and measurable acceptance budgets | Proposed |
 | [0008](decisions/0008-project-registry-transactions.md) | Project metadata, schema upgrade and recoverable transactions | Accepted for first Phase 2 slice |
 | [0009](decisions/0009-existing-php-cli.md) | Exact existing PHP CLI selections, approved probes and explicit exec | Accepted for first Phase 3 slice |
+| [0010](decisions/0010-multi-language-inspection.md) | Shared native executable identity and approved Node/Bun/Python version inspection | Accepted for Phase 4 inspection slice |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
 

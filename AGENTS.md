@@ -29,7 +29,7 @@ Bun is the default package manager and script runner for Velnix's JavaScript/Typ
 6. Never implement the whole roadmap in one task.
 
 ## Current Phase
-Phase 4 multi-language work is authorized by “Lets start work with phase 4, no need to ask for my aproval. you can start implementation directly”. Start with the bounded discovery slice in docs/PHASE-4.md; do not implement the whole roadmap.
+Phase 4 multi-language work is authorized by “Lets start work with phase 4, no need to ask for my aproval. you can start implementation directly”. Bounded discovery and approved exact version inspection are implemented; see docs/PHASE-4.md and docs/validation/PHASE-4-RUNTIME.md. Continue with the next coherent Phase 4 slice; do not implement the whole roadmap.
 
 Phase 3: runtime and HTTPS, previously authorized by “Lets start work with phase 3” and
 approval of docs/PHASE-3-PROPOSAL.md with “Approved, start implementation”.

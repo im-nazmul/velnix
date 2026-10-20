@@ -33,7 +33,42 @@ selection, state write, dependency installation or system mutation occurs.
 `--directory` is currently limited to the three new kinds; the default PHP list
 keeps its existing contract.
 
-Remaining Phase 4 work: approved exact runtime inspection/selection/exec with
+## Exact runtime inspection
+
+Inspection now extends the PHP preview/approve convention to Node, Bun and
+Python. Supply an absolute native executable and its exact installed version,
+without Node's leading `v` or Python's `Python ` prefix:
+
+```sh
+velnix runtime inspect --kind node --executable /absolute/node --version 25.9.0 --json
+velnix runtime inspect --kind bun --executable /absolute/bun --version 1.4.3 --dry-run --json
+velnix runtime inspect --kind python --executable /usr/bin/python3 --version 3.12.3 --json
+velnix runtime inspect --kind python --executable /usr/bin/python3 --version 3.12.3 --approve PLAN_ID --json
+```
+
+The example versions are local validation observations, not required versions;
+use the actual version you intend to inspect. Preview hashes the executable and
+prints its canonical path, identity, argv, environment, cwd and plan ID without
+running it. Repeat the same request with that ID to authorize the probe. Changing
+kind, version or executable identity invalidates approval. `--dry-run` and
+`--approve` cannot be combined. Successful inspection reports `probed: true`
+with unknown origin and external authority; it persists nothing.
+
+Only native ELF binaries of at most 128 MiB without group/world-write or set-ID
+bits are accepted; scripts and manager shims are refused. Node and Bun receive
+`--version`; Python receives `-I -S --version`. Probes use cwd `/`, no stdin,
+a fixed minimal environment, a two-second timeout and 4 KiB output limits per
+stream. Nonzero exits, stderr and mismatched version output fail. Version output
+does not prove executable safety or language identity. The operation runs the
+explicitly approved binary as the current user and provides no sandbox.
+
+Python aliases resolve to their canonical interpreter; inspection does not
+validate virtualenv semantics. Persistent selection/exec for these three kinds
+remains unavailable. PHP commands and persisted selection format are retained.
+See [ADR 0010](decisions/0010-multi-language-inspection.md) and
+[local validation](validation/PHASE-4-RUNTIME.md).
+
+Remaining Phase 4 work: exact runtime selection/exec with
 language-specific environment rules, nonmutating provider resolution, explicit
 loopback app-server proxying and bounded framework detection. No app-server
 scripts are automatically launched. Provider mutations and later roadmap phases

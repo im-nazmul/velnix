@@ -6,9 +6,9 @@ import (
 	"regexp"
 )
 
-// PHPSelection records permission to run one exact external CLI installation.
-// It grants no authority to install, replace or remove that installation.
-type PHPSelection struct {
+// ExecutableSelection identifies one exact external native CLI installation.
+// Identity does not grant installation, removal or persistent selection authority.
+type ExecutableSelection struct {
 	Path    string `json:"path"`
 	Version string `json:"version"`
 	SHA256  string `json:"sha256"`
@@ -16,14 +16,19 @@ type PHPSelection struct {
 	Inode   uint64 `json:"inode"`
 }
 
-var phpVersion = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(?:[A-Za-z+-][A-Za-z0-9.+-]*)?$`)
+// PHPSelection preserves the existing PHP registry representation.
+type PHPSelection = ExecutableSelection
 
-func ValidPHPVersion(v string) bool { return len(v) <= 80 && phpVersion.MatchString(v) }
+var exactRuntimeVersion = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+(?:[A-Za-z+-][A-Za-z0-9.+-]*)?$`)
 
-func (s PHPSelection) Validate() error {
+func ValidRuntimeVersion(v string) bool { return len(v) <= 80 && exactRuntimeVersion.MatchString(v) }
+
+func ValidPHPVersion(v string) bool { return ValidRuntimeVersion(v) }
+
+func (s ExecutableSelection) Validate() error {
 	b, err := hex.DecodeString(s.SHA256)
-	if !filepath.IsAbs(s.Path) || filepath.Clean(s.Path) != s.Path || !ValidPHPVersion(s.Version) || err != nil || len(b) != 32 || s.Inode == 0 {
-		return E(Invalid, "invalid exact PHP CLI selection")
+	if !filepath.IsAbs(s.Path) || filepath.Clean(s.Path) != s.Path || !ValidRuntimeVersion(s.Version) || err != nil || len(b) != 32 || s.Inode == 0 {
+		return E(Invalid, "invalid exact native CLI selection")
 	}
 	return nil
 }
