@@ -1,5 +1,7 @@
 # Phase 1 foundation
 
+This document records the original foundation behavior. Phase 2 now adds project transactions, schema-2 registry support and before/after recovery as documented in [PROJECTS](PROJECTS.md); statements below about initialization being the only mutation describe Phase 1.
+
 Implementation started with the user's instruction “Lets start implementation”. This authorizes Phase 1 foundation, not later roadmap phases. Go/package/state boundaries and scoped unprivileged operations are accepted for this foundation; Nginx, runtime providers, DNS/trust, TUI, web and mail proposals remain pending their milestones.
 
 ## Build and use

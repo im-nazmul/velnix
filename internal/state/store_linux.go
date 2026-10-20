@@ -30,8 +30,9 @@ type Resource struct {
 	References []string `json:"references"`
 }
 type Registry struct {
-	Schema    int        `json:"schema"`
-	Resources []Resource `json:"resources"`
+	Schema    int              `json:"schema"`
+	Resources []Resource       `json:"resources"`
+	Projects  []domain.Project `json:"projects,omitempty"`
 }
 type Journal struct {
 	Schema       int       `json:"schema"`
@@ -39,6 +40,7 @@ type Journal struct {
 	PlanID       string    `json:"plan_id"`
 	Status       string    `json:"status"`
 	TargetDigest string    `json:"target_digest"`
+	BeforeDigest string    `json:"before_digest,omitempty"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
 type Status struct {
@@ -104,11 +106,14 @@ func parse(r, j []byte) (Status, error) {
 		if err := decode(r, &st.Registry); err != nil {
 			return st, err
 		}
-		if st.Registry.Schema != Schema {
+		if st.Registry.Schema != Schema && st.Registry.Schema != 2 {
 			return st, domain.E(domain.Invalid, "unsupported registry schema %d", st.Registry.Schema)
 		}
 		if st.Registry.Resources == nil {
 			return st, domain.E(domain.Invalid, "registry resources must be an array")
+		}
+		if err := validateProjects(st.Registry); err != nil {
+			return st, err
 		}
 		st.Initialized = true
 	}
@@ -117,7 +122,8 @@ func parse(r, j []byte) (Status, error) {
 		if err := decode(j, st.Journal); err != nil {
 			return st, err
 		}
-		if st.Journal.Schema != Schema || st.Journal.Operation != "init" || len(st.Journal.PlanID) != 64 || st.Journal.TargetDigest != digest(encoded(empty())) {
+		projectOperation := st.Journal.Operation == "project-link" || st.Journal.Operation == "project-unlink"
+		if st.Journal.Schema != Schema || (st.Journal.Operation != "init" && !projectOperation) || !validDigest(st.Journal.PlanID) || !validDigest(st.Journal.TargetDigest) || (projectOperation && !validDigest(st.Journal.BeforeDigest)) || (st.Journal.Operation == "init" && st.Journal.TargetDigest != digest(encoded(empty()))) {
 			return st, domain.E(domain.Invalid, "unsupported or invalid operation journal")
 		}
 		switch st.Journal.Status {
@@ -129,6 +135,9 @@ func parse(r, j []byte) (Status, error) {
 			}
 		case "failed":
 			st.RecoveryRequired = st.Initialized
+			if projectOperation {
+				st.RecoveryRequired = digest(r) != st.Journal.BeforeDigest
+			}
 		default:
 			return st, domain.E(domain.Invalid, "invalid journal status")
 		}
@@ -158,13 +167,24 @@ func (s Store) Plan(action string) (Plan, error) {
 	switch action {
 	case "init":
 		if st.RecoveryRequired {
-			return p, domain.E(domain.Conflict, "interrupted initialization requires state recover")
+			return p, domain.E(domain.Conflict, "interrupted operation requires state recover")
 		}
 		if !st.Initialized {
 			p.Effects = []string{"create missing private data/state directories and mutation lock", "journal approved initialization", "atomically create empty schema-1 registry", "mark initialization verified and complete"}
 		}
 	case "recover":
 		if st.RecoveryRequired {
+			if st.Journal.Operation != "init" {
+				p.TargetDigest = st.Journal.TargetDigest
+				if digest(r) == st.Journal.TargetDigest {
+					p.Effects = []string{"mark already committed project registry change complete"}
+				} else if digest(r) == st.Journal.BeforeDigest {
+					p.Effects = []string{"mark uncommitted project registry change failed; do not replay"}
+				} else {
+					return p, domain.E(domain.Conflict, "registry differs from recorded before and target digests; manual review required")
+				}
+				break
+			}
 			if r != nil && digest(r) != st.Journal.TargetDigest {
 				return p, domain.E(domain.Conflict, "registry differs from initialization target; manual review required")
 			}
@@ -236,7 +256,7 @@ func (s Store) Apply(ctx context.Context, action, approvedID string) (Status, er
 			return Status{}, err
 		}
 		j.Status = "complete"
-		if p.RegistryBefore == "absent" {
+		if p.RegistryBefore == "absent" || (j.Operation != "init" && p.RegistryBefore == j.BeforeDigest) {
 			j.Status = "failed"
 		}
 		j.UpdatedAt = time.Now().UTC()

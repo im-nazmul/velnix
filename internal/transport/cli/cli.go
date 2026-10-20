@@ -27,6 +27,10 @@ Usage:
   velnix state status [--json]
   velnix state init|recover [--dry-run] [--json]
   velnix state init|recover --approve PLAN_ID [--json]
+  velnix projects list [--json]
+  velnix projects inspect --name NAME [--json]
+  velnix projects link --name NAME --path PATH [--document-root PATH] [--dry-run|--approve PLAN_ID] [--json]
+  velnix projects unlink --name NAME [--dry-run|--approve PLAN_ID] [--json]
 
 State mutations default to a read-only plan. Review its ID, then explicitly approve.
 No packages, services, hosts files or trust stores are changed by these commands.
@@ -82,7 +86,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	command := args[0]
 	rest := args[1:]
 	sub := ""
-	if command == "config" || command == "state" {
+	if command == "config" || command == "state" || command == "projects" {
 		if len(rest) == 0 {
 			return domain.E(domain.Invalid, "%s requires a subcommand", command)
 		}
@@ -93,6 +97,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	fs.SetOutput(io.Discard)
 	var jsonFlag, dryRun bool
 	var cfgPath, approval string
+	var projectName, projectPath, documentRoot string
 	fs.BoolVar(&jsonFlag, "json", false, "structured output")
 	if command == "doctor" || command == "config" {
 		fs.StringVar(&cfgPath, "config", "", "configuration path")
@@ -100,6 +105,19 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	if command == "state" && (sub == "init" || sub == "recover") {
 		fs.BoolVar(&dryRun, "dry-run", false, "preview only")
 		fs.StringVar(&approval, "approve", "", "reviewed plan ID")
+	}
+	if command == "projects" {
+		if sub == "inspect" || sub == "link" || sub == "unlink" {
+			fs.StringVar(&projectName, "name", "", "project name")
+		}
+		if sub == "link" {
+			fs.StringVar(&projectPath, "path", ".", "project directory")
+			fs.StringVar(&documentRoot, "document-root", ".", "document root relative to the project directory")
+		}
+		if sub == "link" || sub == "unlink" {
+			fs.BoolVar(&dryRun, "dry-run", false, "preview only")
+			fs.StringVar(&approval, "approve", "", "reviewed plan ID")
+		}
 	}
 	if err := fs.Parse(rest); err != nil {
 		if errors.Is(err, flag.ErrHelp) {
@@ -140,6 +158,18 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 			value = result.Plan
 		}
 		b, _ := json.MarshalIndent(value, "", "  ")
+		return output(value, string(b))
+	}
+	if command == "projects" {
+		service := app.ProjectService{Store: state.Store{Paths: c.Paths}}
+		value, err := service.Run(ctx, app.ProjectRequest{ProjectChange: state.ProjectChange{Action: sub, Name: projectName, Root: projectPath, DocumentRoot: documentRoot}, DryRun: dryRun, ApprovedPlanID: approval})
+		if err != nil {
+			return err
+		}
+		b, err := json.MarshalIndent(value, "", "  ")
+		if err != nil {
+			return err
+		}
 		return output(value, string(b))
 	}
 

@@ -32,5 +32,8 @@ The statuses above describe original direction and requirements, not implementat
 | [0005](decisions/0005-ownership-and-privilege.md) | Provenance, grants, plans and recovery limits | Foundation subset accepted |
 | [0006](decisions/0006-optional-processes.md) | Daemonless control and optional processes | Proposed |
 | [0007](decisions/0007-release-and-performance.md) | Bounded v0.1 and measurable acceptance budgets | Proposed |
+| [0008](decisions/0008-project-registry-transactions.md) | Project metadata, schema upgrade and recoverable transactions | Accepted for first Phase 2 slice |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
+
+Phase 2 was subsequently authorized by “Lets start work with phase 2”. ADR 0008 records the first registry slice and extends the durable state/approval subset to project metadata. Remaining web/process decisions retain their proposed status pending the next Phase 2 implementation slice. Phase 3 remains unapproved.

@@ -1,6 +1,6 @@
 # Velnix — Proposed Implementation Plan
 
-Status: Phase 1 foundation authorized by the user after the Phase 0 review. The scope below remains the release plan; later milestones need separate approval. Foundation details are in [FOUNDATION](FOUNDATION.md). No provider installation or system configuration is authorized by this status change.
+Status: Phase 2 authorized by the user with “Lets start work with phase 2”. The first project registry slice is described in [PROJECTS](PROJECTS.md); foundation details are in [FOUNDATION](FOUNDATION.md). Rootless HTTP remains pending within Phase 2. Later milestones need separate approval. This authorization does not permit provider installation or system configuration changes.
 
 ## Architecture and technology
 
@@ -90,7 +90,7 @@ Defer runtime/provider/package installation, upgrades/uninstall, adoption mutati
 | Phase 3 runtime/HTTPS | Existing runtime resolution, exec, independent FPM and optional mkcert | Two PHP CLI/web versions verified; missing versions fail; Linux/Windows trust checks recorded |
 | v0.1 stabilization | Limited Node/Bun/Python resolution, explicit reverse proxy, docs and packaging | Full TESTING matrix, performance results, license and security review complete |
 
-The original later roadmap phases remain separate: full multi-language provider mutations, TUI, mail and web follow v0.1. Each milestone needs user approval before proceeding to the next; Phase 1 approval authorizes foundation only, not all milestones. Do not write prototypes during Phase 0. Failed rootless/provider spikes trigger revised ADR/scope, never automatic privileged fallback.
+The original later roadmap phases remain separate: full multi-language provider mutations, TUI, mail and web follow v0.1. Each milestone needs user approval before proceeding to the next; the current authorization covers Phase 2 only. Do not write prototypes during Phase 0. Failed rootless/provider spikes trigger revised ADR/scope, never automatic privileged fallback.
 
 ## Approval decisions
 

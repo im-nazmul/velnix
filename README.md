@@ -2,7 +2,7 @@
 
 **Native Linux development, without the overhead.**
 
-> Status: Phase 1 Go CLI foundation. Name provisional pending availability checks.
+> Status: Phase 2 started; project registry commands implemented, HTTP serving pending. Name provisional pending availability checks.
 
 Velnix is an open-source, lightweight local development environment manager for WSL2 and Linux. It aims to unify native services, runtime versions, project linking, `.test` domains, HTTPS and development mail capture without mandatory containers.
 
@@ -18,6 +18,8 @@ bin/velnix state init --dry-run
 ```
 
 The foundation includes version, doctor, config show/validate and state status/init/recover. State creation requires an explicitly approved plan digest. Diagnostics execute no runtime/provider tools and create no files. See [foundation usage and recovery](docs/FOUNDATION.md).
+
+Project list/inspect/link/unlink now use the same explicit approval and recovery model. Links store metadata and reserve a `.test` name; HTTP serving is pending. See [project commands](docs/PROJECTS.md).
 
 ## Planned capabilities
 - CLI, interactive TUI, optional web dashboard
@@ -41,6 +43,7 @@ velnix ui
 
 ## Documentation
 - [Foundation usage and recovery](docs/FOUNDATION.md)
+- [Project registry commands and recovery](docs/PROJECTS.md)
 - [Project specification](docs/PROJECT.md)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Feature catalogue](docs/FEATURES.md)
