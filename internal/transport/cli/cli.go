@@ -23,6 +23,7 @@ const help = `Velnix — native Linux development environment manager
 
 Usage:
   velnix tui
+  velnix mail status|serve|list|show|export|prune|recover [--help]
   velnix version [--json]
   velnix doctor [--json] [--config PATH]
   velnix config show|validate [--json] [--config PATH]
@@ -112,6 +113,9 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 	if len(args) == 0 || (len(args) == 1 && (args[0] == "--help" || args[0] == "-h" || args[0] == "help")) {
 		_, err := io.WriteString(c.Out, help)
 		return err
+	}
+	if args[0] == "mail" {
+		return c.mail(ctx, args[1:])
 	}
 	command := args[0]
 	rest := args[1:]

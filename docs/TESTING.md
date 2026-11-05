@@ -27,7 +27,8 @@ Integration tests: disposable native Linux VMs or dedicated WSL distributions, o
 | HTTPS | SAN/expiry/private permissions; Linux CLI trust and Windows browser trust separately checked; no CA private key exported; exact-fingerprint untrust tested |
 | Network | Windows browser HTTP/HTTPS reaches selected WSL instance; NAT/mirrored, VPN, occupied Windows ports, WSL restart/IP change and multiple distributions exercised |
 | Native portability | Same app/domain code on native Ubuntu; no Windows executable requirement; unsupported package/service adapters degrade clearly |
-| Later web/mail | Authentication/CSRF/rebinding/Host/origin tests; hostile MIME/HTML, relay rejection, quotas/retention and attachment traversal tests before release |
+| Phase 6 mail | Bounded MIME/client parsing, private storage, exact plan invalidation, export collision/traversal, count/age retention, owner-crash cleanup and recovery; see [local completion](validation/PHASE-6-COMPLETION.md) |
+| Later web/mail browser UI | Authentication/CSRF/rebinding/Host/origin tests; hostile HTML/remote-asset handling and safe browser downloads before release |
 
 Full v0.1 matrix: native Ubuntu 24.04 amd64; WSL2 Ubuntu 24.04 with Windows 11 NAT; same with supported mirrored networking; a non-systemd Linux environment for doctor/foreground paths. Record exact OS, kernel, WSL, Windows, provider, CPU, filesystem and browser versions. Windows browser and trust scenarios require real Windows access; Linux-only CI is insufficient. Enterprise trust/VPN restrictions may remain documented unsupported configurations, never fabricated passes. Framework smoke cases: static site, generic PHP and one front-controller app; broad Laravel/WordPress/Drupal support waits for corresponding routing/security fixtures.
 

@@ -32,10 +32,18 @@ and [completion evidence](validation/PHASE-5-COMPLETION.md) for checks and limit
 The [Phase 5B extension](PHASE-5B.md) is COMPLETE within its approved reviewed
 interactive-management scope, including session-owned web/FPM controls. See
 [Phase 5B completion](validation/PHASE-5B-COMPLETION.md).
-Phase 6 needs a separate bounded proposal; no later implementation is started.
+Phase 6 was separately approved; see its scope and completion below. No Phase 7 implementation is started.
 
-## Phase 6 — Mail Capture
-Local SMTP, persistence, message/attachment preview and retention.
+## Phase 6 — Mail Capture (COMPLETE within approved CLI scope)
+
+Existing external Mailpit capture, private persistent storage, passive
+plain-text/MIME inspection, reviewed attachment export/pruning and exited-session
+recovery are implemented. See [MAIL](MAIL.md), [approved scope](PHASE-6-PROPOSAL.md),
+[ADR 0016](decisions/0016-local-mail-capture.md) and
+[completion evidence](validation/PHASE-6-COMPLETION.md). The explicitly approved
+no-egress amendment covers Velnix's flows, not unused authenticated provider
+features or a kernel sandbox. Browser HTML viewing and the dashboard remain
+Phase 7 work and need a separate bounded proposal.
 
 ## Phase 7 — Web Dashboard
 Embedded Vue UI, loopback API, management pages and mail viewer.

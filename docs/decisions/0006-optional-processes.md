@@ -1,6 +1,6 @@
 # ADR 0006 — Daemonless control with explicit optional workload lifetimes
 
-- Status: Foreground Nginx and per-project FPM implemented for Phase 3; systemd and later workloads remain proposed
+- Status: Foreground Nginx and per-project FPM implemented for Phase 3; foreground Mailpit accepted for Phase 6; systemd remains proposed
 - Date: 2026-10-20
 - Related original decisions: D005, D012
 
@@ -30,3 +30,11 @@ with “You have my approval” on 2026-10-20. See [HTTP](../HTTP.md) for implem
 behavior and [validation](../validation/PHASE-2-HTTP.md) for actual local evidence.
 This accepts only the subset in the status above, not later milestone work or
 host package, system service, DNS or trust mutations.
+
+## Phase 6 authorization
+
+The existing-provider evaluation is recorded in
+[the mail checkpoint](../validation/PHASE-6-MAIL.md). The user approved the
+bounded mail implementation and its flow-scoped no-egress amendment. Optional
+foreground capture now follows [ADR 0016](0016-local-mail-capture.md); no
+systemd adapter, provider installation, permanent daemon or dashboard was added.

@@ -58,3 +58,10 @@ plan/apply delegation and session-owned foreground workload cleanup. Views
 remain read-only; mutations require exact backend plan confirmation. See
 [ADR 0015](decisions/0015-reviewed-terminal-management.md). No CLI subprocess,
 new daemon or registry schema was introduced.
+
+The approved Phase 6 adds `app.MailService` over an external Mailpit provider,
+private provider-owned storage and explicit foreground lifetimes. Typed API
+methods restrict Velnix to passive raw-message inspection and reviewed exact-ID
+pruning. A child-only private umask and pinned executable/data descriptors
+protect captured mail; no new Velnix HTTP API or registry schema is introduced.
+See [MAIL](MAIL.md) and [ADR 0016](decisions/0016-local-mail-capture.md).
