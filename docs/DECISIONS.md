@@ -38,6 +38,7 @@ The statuses above describe original direction and requirements, not implementat
 | [0011](decisions/0011-phase3-web-lifecycle.md) | Shared foreground FPM transitions and isolated optional TLS issuance | Implemented within approved Phase 3; platform acceptance open |
 | [0012](decisions/0012-phase4-execution-and-proxy.md) | Existing Node/Bun/Python execution, bounded metadata and external loopback proxy | Implemented; provider completion in ADR 0013 |
 | [0013](decisions/0013-existing-provider-store-resolution.md) | Read-only existing mise/uv storage layouts with reviewed exact-version probes | Implemented; Phase 4 implementation COMPLETE, platform/release acceptance open |
+| [0014](decisions/0014-read-only-terminal-interface.md) | Optional read-only Bubble Tea/Lip Gloss interface over application queries | Implemented; Phase 5 read-only scope COMPLETE, platform/release acceptance open |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
 

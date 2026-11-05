@@ -24,8 +24,12 @@ framework hints are complete within the approved implementation scope. See
 Runtime/provider mutations, manager command activation and later roadmap work
 are outside this completed scope.
 
-## Phase 5 — TUI
+## Phase 5 — TUI (COMPLETE within approved read-only scope)
 Overview, projects, runtimes, services and diagnostics.
+The [bounded Phase 5 proposal](PHASE-5-PROPOSAL.md) defines a read-only first
+milestone approved by “Lets begun implementation”. See [TUI](TUI.md) for usage
+and [completion evidence](validation/PHASE-5-COMPLETION.md) for checks and limitations.
+Phase 6 needs a separate bounded proposal; no later implementation is started.
 
 ## Phase 6 — Mail Capture
 Local SMTP, persistence, message/attachment preview and retention.

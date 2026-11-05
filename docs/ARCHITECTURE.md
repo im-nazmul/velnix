@@ -45,3 +45,10 @@ PHP CLI vs PHP-FPM version selection; external runtime managers; Windows/WSL DNS
 ## Phase 0 refinement
 
 The detailed proposed package boundaries, state strategy and small interfaces are in [IMPLEMENTATION-PLAN](IMPLEMENTATION-PLAN.md); privilege and recovery requirements are in [SECURITY](SECURITY.md). [FEASIBILITY](FEASIBILITY.md) evaluates the open research above. The user authorized Phases 1–4; implemented boundaries and limits are in [FOUNDATION](FOUNDATION.md), [PROJECTS](PROJECTS.md), [HTTP](HTTP.md) and [RUNTIMES](RUNTIMES.md). The approved [Phase 3 proposal](PHASE-3-PROPOSAL.md) now has implemented [FPM](FPM.md) and [HTTPS](HTTPS.md) slices with [completion evidence and release boundaries](validation/PHASE-3-COMPLETION.md); the completed Phase 4 native execution, mise/uv store adapters, metadata and proxy scope is documented in [PHASE-4](PHASE-4.md), with [completion evidence](validation/PHASE-4-COMPLETION.md). Later milestones require separate approval.
+
+The approved Phase 5 read-only terminal interface is complete: presentation lives
+in `internal/transport/tui`, querying existing services through
+`app.TerminalQuery` without a CLI subprocess or daemon. See
+[TUI](TUI.md), [ADR 0014](decisions/0014-read-only-terminal-interface.md) and
+[completion evidence](validation/PHASE-5-COMPLETION.md). Later milestones still
+require separate approval.

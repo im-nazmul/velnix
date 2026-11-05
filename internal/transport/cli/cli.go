@@ -16,11 +16,13 @@ import (
 	"velnix/internal/domain"
 	"velnix/internal/platform"
 	"velnix/internal/state"
+	"velnix/internal/transport/tui"
 )
 
 const help = `Velnix — native Linux development environment manager
 
 Usage:
+  velnix tui
   velnix version [--json]
   velnix doctor [--json] [--config PATH]
   velnix config show|validate [--json] [--config PATH]
@@ -272,6 +274,12 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		if err != nil {
 			return err
 		}
+	}
+	if command == "tui" {
+		if jsonMode {
+			return domain.E(domain.Invalid, "tui does not support --json; use CLI queries")
+		}
+		return tui.Run(ctx, c.In, c.Out, app.TerminalQuery{Paths: c.Paths, Platform: c.Detector})
 	}
 	if command == "state" {
 		service := app.StateService{Store: state.Store{Paths: c.Paths}}

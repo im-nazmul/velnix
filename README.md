@@ -2,7 +2,7 @@
 
 **Native Linux development, without the overhead.**
 
-> Status: Phases 3 and 4 are complete within their approved implementation scopes. [Phase 3 evidence](docs/validation/PHASE-3-COMPLETION.md) includes real PHP/FPM, mkcert and scoped Linux/Windows mirrored HTTPS; [Phase 4 evidence](docs/validation/PHASE-4-COMPLETION.md) covers native execution, read-only provider stores, detection and proxying. Remaining [platform/release acceptance](docs/validation/RELEASE-ACCEPTANCE.md) is explicit. Phase 5 is next and needs a bounded scope before implementation. Name provisional pending availability checks.
+> Status: Phases 3 and 4 are complete within their approved implementation scopes. [Phase 3 evidence](docs/validation/PHASE-3-COMPLETION.md) includes real PHP/FPM, mkcert and scoped Linux/Windows mirrored HTTPS; [Phase 4 evidence](docs/validation/PHASE-4-COMPLETION.md) covers native execution, read-only provider stores, detection and proxying. Remaining [platform/release acceptance](docs/validation/RELEASE-ACCEPTANCE.md) is explicit. The approved read-only [Phase 5 TUI](docs/TUI.md) is complete within scope; [completion evidence](docs/validation/PHASE-5-COMPLETION.md) records its terminal and platform limits. Name provisional pending availability checks.
 
 Velnix is an open-source, lightweight local development environment manager for WSL2 and Linux. It aims to unify native services, runtime versions, project linking, `.test` domains, HTTPS and development mail capture without mandatory containers.
 
@@ -13,6 +13,7 @@ Requires Go 1.27.3+ on Linux. Use a supported patched Go release for release bui
 ```sh
 go build -o bin/velnix ./cmd/velnix
 bin/velnix doctor
+bin/velnix tui # optional interactive read-only interface
 bin/velnix config show
 bin/velnix state init --dry-run
 ```

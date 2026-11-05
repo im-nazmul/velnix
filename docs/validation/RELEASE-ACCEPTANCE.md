@@ -1,16 +1,18 @@
 # Open platform and release acceptance
 
 Status: open; no unperformed check below is a passing result.
-Updated: 2026-10-20 after real Phase 3 mkcert and Windows mirrored HTTPS validation.
+Updated: 2026-11-05 after Phase 5 local TUI completion; prior platform gates retained.
 
-Phases 3 and 4 are complete within approved implementation scopes. Local evidence
+Phases 3, 4 and 5 are complete within approved implementation scopes. Local evidence
 is recorded in [PHASE-3-COMPLETION](PHASE-3-COMPLETION.md) and
-[PHASE-4-COMPLETION](PHASE-4-COMPLETION.md).
+[PHASE-4-COMPLETION](PHASE-4-COMPLETION.md) and
+[PHASE-5-COMPLETION](PHASE-5-COMPLETION.md).
 This list keeps the pre-existing platform/release gates distinct from delivered
 features. It does not expand authorization into host mutations or later phases.
 
 | Gate | Status / evidence needed |
 |---|---|
+| Additional terminal emulator/Windows-terminal TUI validation | Unperformed; Phase 5 has local Linux/WSL PTY evidence and user acceptance of the home skeleton only |
 | Native Ubuntu and a separate non-systemd environment | Unperformed; current integration evidence is local WSL2 |
 | Windows network/browser matrix | Current mirrored Windows loopback HTTPS with exact name/leaf verification passed; NAT, VPN, other distributions, hosts DNS and browser/HMR UI scenarios remain unperformed |
 | Real mkcert v1.4.4 | PASSED locally: official temporary release, real issuance/SAN/expiry/permissions, public export, HTTPS and CA rotation/reload; see Phase 3 completion |
@@ -24,5 +26,5 @@ Existing limitations remain: same-UID hostile code is not sandboxed; runtime
 libraries/configuration are not fully pinned; a TCP listener does not prove app
 identity; metadata changes need reviewed HTTP reload to affect active routes.
 No runtime installation, manager command invocation, global defaults, automatic
-Windows/DNS/trust changes or later TUI/mail/dashboard work was added to close this
-phase. See [TESTING](../TESTING.md) for the complete acceptance matrix.
+Windows/DNS/trust changes, mail or dashboard were added. Phase 5 adds the
+approved read-only TUI only. See [TESTING](../TESTING.md) for the complete acceptance matrix.

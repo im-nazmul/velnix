@@ -29,7 +29,7 @@ Bun is the default package manager and script runner for Velnix's JavaScript/Typ
 6. Never implement the whole roadmap in one task.
 
 ## Current Phase
-Phase 3 and Phase 4 are COMPLETE within their approved implementation scopes. Phase 3 includes PHP CLI, per-project FPM/web routing and optional rootless HTTPS; real mkcert, CA rotation, Linux scoped trust and Windows mirrored HTTPS acceptance now pass locally. Phase 4 adds existing Node/Bun/Python execution, read-only provider-store resolution, bounded framework hints and explicit loopback proxying. See docs/validation/PHASE-3-COMPLETION.md and docs/validation/PHASE-4-COMPLETION.md. Open platform/release checks remain in docs/validation/RELEASE-ACCEPTANCE.md and are not claimed as passed. Phase 5 is the next milestone; define its bounded scope before implementation. Do not implement the whole roadmap.
+Phase 3 and Phase 4 are COMPLETE within their approved implementation scopes. Phase 3 includes PHP CLI, per-project FPM/web routing and optional rootless HTTPS; real mkcert, CA rotation, Linux scoped trust and Windows mirrored HTTPS acceptance now pass locally. Phase 4 adds existing Node/Bun/Python execution, read-only provider-store resolution, bounded framework hints and explicit loopback proxying. See docs/validation/PHASE-3-COMPLETION.md and docs/validation/PHASE-4-COMPLETION.md. Open platform/release checks remain in docs/validation/RELEASE-ACCEPTANCE.md and are not claimed as passed. Phase 5 is COMPLETE within the approved read-only TUI scope; see docs/TUI.md and docs/validation/PHASE-5-COMPLETION.md. Phase 6 is next and needs its own bounded proposal before implementation. Interactive mutations and later milestones require separate scope approval. Do not implement the whole roadmap.
 
 Phase 3: runtime and HTTPS, previously authorized by “Lets start work with phase 3” and
 approval of docs/PHASE-3-PROPOSAL.md with “Approved, start implementation”.
@@ -40,4 +40,4 @@ see docs/RUNTIMES.md, docs/FPM.md, docs/HTTPS.md and
 docs/validation/PHASE-3-COMPLETION.md. Browser/system trust-store installation and
 removal, native Ubuntu and remaining platform scenarios stay release gates in
 docs/validation/RELEASE-ACCEPTANCE.md. Phase 4 is also complete within scope.
-No Phase 5 implementation or host system mutation is authorized by these completion records.
+Phase 5 read-only implementation was separately approved by “Lets begun implementation” following docs/PHASE-5-PROPOSAL.md. No host system mutation is authorized by these completion records.

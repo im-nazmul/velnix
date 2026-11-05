@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"velnix/internal/platform"
@@ -138,5 +139,17 @@ func TestExplicitJSONBoolean(t *testing.T) {
 	code, out, stderr = command(t, "version", "--json=false")
 	if code != 0 || out != "velnix test\n" || stderr != "" {
 		t.Fatalf("%d %s %s", code, out, stderr)
+	}
+}
+
+func TestTUIRejectsScriptIO(t *testing.T) {
+	var out, diagnostics bytes.Buffer
+	c := CLI{In: strings.NewReader(""), Out: &out, Err: &diagnostics}
+	if code := c.Run(context.Background(), []string{"tui"}); code == 0 || !strings.Contains(diagnostics.String(), "interactive") {
+		t.Fatalf("code=%d error=%s", code, diagnostics.String())
+	}
+	diagnostics.Reset()
+	if code := c.Run(context.Background(), []string{"tui", "--json"}); code == 0 || !strings.Contains(diagnostics.String(), "does not support") {
+		t.Fatalf("code=%d error=%s", code, diagnostics.String())
 	}
 }
