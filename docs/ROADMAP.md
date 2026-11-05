@@ -29,6 +29,9 @@ Overview, projects, runtimes, services and diagnostics.
 The [bounded Phase 5 proposal](PHASE-5-PROPOSAL.md) defines a read-only first
 milestone approved by “Lets begun implementation”. See [TUI](TUI.md) for usage
 and [completion evidence](validation/PHASE-5-COMPLETION.md) for checks and limitations.
+The [Phase 5B extension](PHASE-5B.md) is COMPLETE within its approved reviewed
+interactive-management scope, including session-owned web/FPM controls. See
+[Phase 5B completion](validation/PHASE-5B-COMPLETION.md).
 Phase 6 needs a separate bounded proposal; no later implementation is started.
 
 ## Phase 6 — Mail Capture

@@ -279,7 +279,7 @@ func (c CLI) run(ctx context.Context, args []string, jsonMode bool) error {
 		if jsonMode {
 			return domain.E(domain.Invalid, "tui does not support --json; use CLI queries")
 		}
-		return tui.Run(ctx, c.In, c.Out, app.TerminalQuery{Paths: c.Paths, Platform: c.Detector})
+		return tui.Run(ctx, c.In, c.Out, app.NewTerminalSession(ctx, app.TerminalQuery{Paths: c.Paths, Platform: c.Detector}))
 	}
 	if command == "state" {
 		service := app.StateService{Store: state.Store{Paths: c.Paths}}

@@ -243,7 +243,7 @@ func TestSmallPickerKeepsChosenActionVisible(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		key(m, "j")
 	}
-	if !strings.Contains(ansi.Strip(m.View()), "Nothing is started") {
+	if !strings.Contains(ansi.Strip(m.View()), "Changes require") {
 		t.Fatal("help bottom inaccessible", m.View())
 	}
 }

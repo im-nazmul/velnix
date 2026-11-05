@@ -6,7 +6,8 @@ Updated: 2026-11-05 after Phase 5 local TUI completion; prior platform gates ret
 Phases 3, 4 and 5 are complete within approved implementation scopes. Local evidence
 is recorded in [PHASE-3-COMPLETION](PHASE-3-COMPLETION.md) and
 [PHASE-4-COMPLETION](PHASE-4-COMPLETION.md) and
-[PHASE-5-COMPLETION](PHASE-5-COMPLETION.md).
+[PHASE-5-COMPLETION](PHASE-5-COMPLETION.md), with the separately authorized
+[Phase 5B management extension](PHASE-5B-COMPLETION.md).
 This list keeps the pre-existing platform/release gates distinct from delivered
 features. It does not expand authorization into host mutations or later phases.
 
@@ -27,4 +28,4 @@ libraries/configuration are not fully pinned; a TCP listener does not prove app
 identity; metadata changes need reviewed HTTP reload to affect active routes.
 No runtime installation, manager command invocation, global defaults, automatic
 Windows/DNS/trust changes, mail or dashboard were added. Phase 5 adds the
-approved read-only TUI only. See [TESTING](../TESTING.md) for the complete acceptance matrix.
+approved TUI and separately reviewed Phase 5B management extension only. See [TESTING](../TESTING.md) for the complete acceptance matrix.

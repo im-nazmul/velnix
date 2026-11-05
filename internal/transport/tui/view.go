@@ -233,6 +233,9 @@ func (m *model) maxDetailOffset() int {
 }
 func fit(s string, w int) string { return ansi.Truncate(s, max(1, w), "…") }
 func (m *model) View() string {
+	if m.form != nil {
+		return m.changeView()
+	}
 	if m.home || m.palette {
 		return m.friendlyView()
 	}
@@ -362,7 +365,7 @@ func (m *model) View() string {
 	return strings.Join(lines, "\n")
 }
 
-const keyboardHelp = "KEYBOARD\n\nCtrl+P       Find an action\nTab / ← →    Switch screen\n↑ ↓ / j k    Select or scroll\nPageUp/Down  Page content\nHome/End     Beginning / end\nEnter        Open details\nEsc          Back / clear filter / home\n/            Filter by name\nr            Refresh\nt            Technical details\nq / Ctrl-C   Quit\n\nRead only. Nothing is started or changed."
+const keyboardHelp = "KEYBOARD\n\nCtrl+P       Find an action\nTab / ← →    Switch screen\n↑ ↓ / j k    Select or scroll\nPageUp/Down  Page content\nHome/End     Beginning / end\nEnter        Open details\nEsc          Back / clear filter / home\n/            Filter by name\nr            Refresh\nt            Technical details\nq / Ctrl-C   Quit\n\nChanges require a preview and explicit approval."
 
 func (m *model) maxHelpOffset() int {
 	_, available := m.detailLayout()

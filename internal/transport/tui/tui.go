@@ -1,4 +1,4 @@
-// Package tui presents read-only application queries in an optional terminal UI.
+// Package tui presents application queries and reviewed operations in a terminal UI.
 package tui
 
 import (
@@ -41,6 +41,9 @@ type model struct {
 	palette                                           bool
 	command                                           string
 	commandCursor                                     int
+	form                                              *changeForm
+	changeToken                                       int
+	changeCancel                                      context.CancelFunc
 }
 
 func (m *model) load() tea.Cmd {
@@ -81,6 +84,27 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.WindowSizeMsg:
 		m.width = max(1, min(v.Width, 500))
 		m.height = max(1, min(v.Height, 200))
+	case changeResult:
+		if m.form == nil || v.token != m.changeToken {
+			return m, nil
+		}
+		if v.err != nil {
+			stage := "error"
+			if m.form.stage == "planning" && len(m.form.fields) > 0 && !v.applied {
+				stage = "edit"
+			}
+			m.form.stage = stage
+			m.form.plan = app.TerminalPlan{}
+			m.form.message = v.err.Error()
+			m.form.offset = 0
+		} else if v.applied {
+			m.form.stage = "done"
+		} else {
+			m.form.plan = v.plan
+			m.form.stage = "review"
+			m.form.reviewed = m.reviewLimit() == 0
+		}
+		return m, nil
 	case result:
 		if v.generation == m.generation {
 			m.entries = v.entries
@@ -98,10 +122,16 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		key := v.String()
 		if key == "ctrl+c" {
+			if m.changeCancel != nil {
+				m.changeCancel()
+			}
 			if m.cancel != nil {
 				m.cancel()
 			}
 			return m, tea.Quit
+		}
+		if m.form != nil {
+			return m, m.updateChange(v)
 		}
 		if key == "ctrl+p" {
 			m.palette = !m.palette
@@ -131,8 +161,8 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					return m, m.action(action)
 				}
 			default:
-				if v.Type == tea.KeyRunes && len(m.command) < 80 {
-					m.command += single(string(v.Runes))
+				if (v.Type == tea.KeyRunes || v.String() == " ") && len(m.command) < 80 {
+					m.command = appendInput(m.command, v, 80)
 					m.commandCursor = 0
 				}
 			}
@@ -192,8 +222,8 @@ func (m *model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.filter = string(r[:len(r)-1])
 				}
 			default:
-				if v.Type == tea.KeyRunes && len(m.filter) < 128 {
-					m.filter += clean(string(v.Runes))
+				if (v.Type == tea.KeyRunes || v.String() == " ") && len(m.filter) < 128 {
+					m.filter = appendInput(m.filter, v, 128)
 				}
 			}
 			m.cursor = 0
@@ -314,7 +344,7 @@ func clean(s string) string {
 		return r
 	}, s)
 }
-func Run(ctx context.Context, in io.Reader, out io.Writer, reader Reader) error {
+func Run(ctx context.Context, in io.Reader, out io.Writer, reader Reader) (resultErr error) {
 	input, ok := in.(interface{ Fd() uintptr })
 	if !ok || !term.IsTerminal(input.Fd()) {
 		return fmt.Errorf("tui requires interactive input and output terminals; use the CLI for scripts")
@@ -325,10 +355,16 @@ func Run(ctx context.Context, in io.Reader, out io.Writer, reader Reader) error 
 	}
 	runCtx, cancel := context.WithCancel(ctx)
 	defer cancel()
+	if session, ok := reader.(interface{ Close() error }); ok {
+		defer func() { resultErr = errors.Join(resultErr, session.Close()) }()
+	}
 	m := &model{ctx: runCtx, reader: reader, width: 80, height: 24, home: true}
 	defer func() {
 		if m.cancel != nil {
 			m.cancel()
+		}
+		if m.changeCancel != nil {
+			m.changeCancel()
 		}
 	}()
 	_, err := tea.NewProgram(m, tea.WithContext(runCtx), tea.WithInput(in), tea.WithOutput(out), tea.WithAltScreen(), tea.WithoutSignalHandler()).Run()
@@ -339,4 +375,19 @@ func Run(ctx context.Context, in io.Reader, out io.Writer, reader Reader) error 
 		return context.Canceled
 	}
 	return err
+}
+
+func inputText(k tea.KeyMsg) string {
+	if k.String() == " " {
+		return " "
+	}
+	return single(string(k.Runes))
+}
+
+func appendInput(current string, k tea.KeyMsg, limit int) string {
+	r := []rune(current + inputText(k))
+	if len(r) > limit {
+		r = r[:limit]
+	}
+	return string(r)
 }

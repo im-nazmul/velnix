@@ -27,6 +27,8 @@ jobs:
       - run: go build -trimpath -o bin/velnix ./cmd/velnix
       - name: Read-only TUI terminal acceptance
         run: python3 scripts/validate-tui.py bin/velnix
+      - name: TUI reviewed registry management
+        run: python3 scripts/validate-tui-management.py bin/velnix
       - name: Smoke checks
         run: |
           bin/velnix version --json

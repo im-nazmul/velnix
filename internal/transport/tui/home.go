@@ -3,6 +3,7 @@ package tui
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -17,6 +18,9 @@ type commandItem struct {
 
 func (m *model) commands() []commandItem {
 	items := []commandItem{{"Go home", "Your workspace at a glance", 0}, {"Browse projects", "Explore your linked projects", 1}, {"Explore runtimes", "See available language runtimes", 2}, {"View services", "Check your local web services", 3}, {"Check environment", "Find configuration issues", 4}, {"Refresh", "Read the current environment again", 5}, {"Keyboard shortcuts", "Learn your way around", 6}}
+	if _, ok := m.reader.(Manager); ok {
+		items = append(items, []commandItem{{"Initialize state", "Review private state initialization", 20}, {"Link project", "Add an existing project", 21}, {"Unlink project", "Remove a registry entry; source files are preserved", 22}, {"Select runtime", "Choose an existing executable and approve its probe", 23}, {"Clear runtime", "Remove a project runtime selection", 24}, {"Start web", "Start session-owned Nginx", 25}, {"Stop web", "Stop an owned Nginx instance", 26}, {"Reload web", "Apply current project routes", 27}, {"Start PHP pool", "Start session-owned PHP-FPM", 28}, {"Stop PHP pool", "Stop an owned project pool", 29}}...)
+	}
 	out := []commandItem{}
 	for _, item := range items {
 		matches := true
@@ -30,9 +34,31 @@ func (m *model) commands() []commandItem {
 			out = append(out, item)
 		}
 	}
+	query := strings.ToLower(strings.TrimSpace(m.command))
+	rank := func(item commandItem) int {
+		name := strings.ToLower(item.name)
+		if name == query {
+			return 0
+		}
+		if strings.HasPrefix(name, query) {
+			return 1
+		}
+		for _, word := range strings.Fields(query) {
+			if !strings.Contains(name, word) {
+				return 3
+			}
+		}
+		return 2
+	}
+	if query != "" {
+		sort.SliceStable(out, func(i, j int) bool { return rank(out[i]) < rank(out[j]) })
+	}
 	return out
 }
 func (m *model) action(action int) tea.Cmd {
+	if action >= 20 {
+		return m.beginChange(action)
+	}
 	if action == 5 {
 		return m.load()
 	}
@@ -101,7 +127,7 @@ func (m *model) friendlyView() string {
 		} else {
 			lines = append(lines, m.homeSummary()...)
 		}
-		lines = append(lines, "", accent.Render("›  What would you like to explore?"), muted.Render("   Press enter to find an action"), "", "1  Projects         2  Runtimes", "3  Services         4  Environment", "", muted.Render("Just looking around. Nothing is started or changed."))
+		lines = append(lines, "", accent.Render("›  What would you like to explore?"), muted.Render("   Press enter to find an action"), "", "1  Projects         2  Runtimes", "3  Services         4  Environment", "", muted.Render("Changes always start with a preview and your approval."))
 	}
 	if !m.palette && h < 20 {
 		lines = []string{accent.Render("velnix"), "Your local workspace.", "", accent.Render("› Enter to explore"), "1 Projects  ·  2 Runtimes", "3 Services  ·  4 Environment"}

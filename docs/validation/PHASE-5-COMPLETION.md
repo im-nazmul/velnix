@@ -65,3 +65,11 @@ visual correctness in every terminal emulator.
   unperformed acceptance; see [RELEASE-ACCEPTANCE](RELEASE-ACCEPTANCE.md).
 - Phase 6 is the next roadmap milestone. Its bounded proposal and implementation
   require separate authorization; Phase 5 completion does not start it.
+
+## Subsequent authorized extension
+
+The original read-only completion above remains a historical scope record.
+The user subsequently authorized direct implementation of reviewed interactive
+management. See [Phase 5B](../PHASE-5B.md), [ADR 0015](../decisions/0015-reviewed-terminal-management.md)
+and [management validation](PHASE-5B-MANAGEMENT.md) for the implemented extension.
+Phase 6 remains separately gated.

@@ -11,7 +11,9 @@ it. Number keys 1–4 open the corresponding destination from home. Ctrl+P works
 throughout the interface, including details and help. Escape closes the picker
 without changing the underlying screen. Escape from an unfiltered list returns
 home. This is an action picker, not a shell or AI prompt: it only opens existing
-read-only views, refreshes data or displays help.
+views, refreshes data or displays help; the authorized [Phase 5B](PHASE-5B.md)
+extension also offers typed management actions with exact-plan review and
+explicit approval.
 
 The inspection screens are Overview, Projects, Runtimes, Services and Diagnostics.
 The interface uses compact screen tabs, aligned name/status columns and a
@@ -47,10 +49,13 @@ capped for display; control/escape sequences are stripped. Narrow terminals clip
 navigation text; details wrap, and arrow/letter keys still work. Rendering caps
 at 500 columns and 200 rows to bound work.
 
-The interface does not probe runtime binaries, execute repository code, repair
-state, start/stop services or alter configuration. Database/system-service
-inspection is explicitly unsupported in this milestone. Use the existing CLI
-plan/approval workflows for mutations. Reading project hints uses the existing
+Opening views and refreshing does not probe runtime binaries or mutate state.
+Explicit management actions can initialize private state, link/unlink projects,
+select/clear existing runtimes and control owned Nginx/FPM after review and
+approval. Runtime selection discloses its external version probe. No repository
+commands are run. Database/system-service inspection, automatic recovery and
+host trust/DNS/package changes remain unsupported. See [Phase 5B](PHASE-5B.md)
+for forms, review keys and session-owned process lifetime. Reading project hints uses the existing
 bounded metadata reader and may report unavailable or changed project identity.
 
 Bubble Tea v1.3.10 and Lip Gloss v1.1.0 are pinned to the compatible v1 APIs;

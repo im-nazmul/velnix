@@ -52,3 +52,9 @@ in `internal/transport/tui`, querying existing services through
 [TUI](TUI.md), [ADR 0014](decisions/0014-read-only-terminal-interface.md) and
 [completion evidence](validation/PHASE-5-COMPLETION.md). Later milestones still
 require separate approval.
+
+The separately authorized Phase 5B extension adds `app.TerminalSession`: typed
+plan/apply delegation and session-owned foreground workload cleanup. Views
+remain read-only; mutations require exact backend plan confirmation. See
+[ADR 0015](decisions/0015-reviewed-terminal-management.md). No CLI subprocess,
+new daemon or registry schema was introduced.
