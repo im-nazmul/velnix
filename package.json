@@ -1,0 +1,13 @@
+{
+    "name": "velnix-tooling",
+    "private": true,
+    "packageManager": "bun@1.4.4",
+    "scripts": {
+        "tools:install": "python3 scripts/quality.py install",
+        "lint": "python3 scripts/quality.py lint",
+        "lint:fix": "python3 scripts/quality.py lint --fix",
+        "format": "python3 scripts/quality.py format",
+        "format:check": "python3 scripts/quality.py format --check",
+        "check": "bun run format:check && bun run lint && bun run --cwd web typecheck"
+    }
+}

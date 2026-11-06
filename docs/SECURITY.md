@@ -10,17 +10,17 @@ Discovery reads bounded metadata and never sources shell profiles, runs framewor
 
 ## Privilege boundaries
 
-| Operation | Authority | Boundary and approval |
-|---|---|---|
-| Registry, runtime resolution, config rendering | Current user | Private XDG state; no sudo |
-| User runtime install through a provider | Current user | Separate reviewed install plan; provider/source/version explicit; deferred beyond v0.1 |
-| System packages/repositories | One-shot administrator transaction | Exact package/repository plan, dependency/removal preview, no arbitrary shell helper; deferred |
-| User workload process | Current user | Owned config, loopback/private sockets, no capabilities or root |
-| Existing system service start/stop/reload | Scoped one-shot systemctl/polkit action | Exact known unit/action and separate authority grant; status access grants no lifecycle permission |
-| Nginx | Rootless separate instance first | Private prefix and ports 8080/8443; never automatically reload shared system Nginx |
-| Linux hosts/trust | Scoped administrator action | Exact owned entry or certificate fingerprint, compare-before-write; manual v0.1 instructions |
-| Windows hosts | Windows elevation | Separate preview/manual step; no Linux sudo equivalence |
-| Windows trust | Explicit CurrentUser store permission | Exact public CA fingerprint; machine store requires separate elevation |
+| Operation                                      | Authority                               | Boundary and approval                                                                              |
+| ---------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Registry, runtime resolution, config rendering | Current user                            | Private XDG state; no sudo                                                                         |
+| User runtime install through a provider        | Current user                            | Separate reviewed install plan; provider/source/version explicit; deferred beyond v0.1             |
+| System packages/repositories                   | One-shot administrator transaction      | Exact package/repository plan, dependency/removal preview, no arbitrary shell helper; deferred     |
+| User workload process                          | Current user                            | Owned config, loopback/private sockets, no capabilities or root                                    |
+| Existing system service start/stop/reload      | Scoped one-shot systemctl/polkit action | Exact known unit/action and separate authority grant; status access grants no lifecycle permission |
+| Nginx                                          | Rootless separate instance first        | Private prefix and ports 8080/8443; never automatically reload shared system Nginx                 |
+| Linux hosts/trust                              | Scoped administrator action             | Exact owned entry or certificate fingerprint, compare-before-write; manual v0.1 instructions       |
+| Windows hosts                                  | Windows elevation                       | Separate preview/manual step; no Linux sudo equivalence                                            |
+| Windows trust                                  | Explicit CurrentUser store permission   | Exact public CA fingerprint; machine store requires separate elevation                             |
 
 v0.1 has no installed privileged helper, setuid binary, broad sudoers entry or privileged dashboard. Never sudo the entire Velnix application. Future helper protocols must accept typed operations, strict path/unit allowlists and trusted templates, revalidate target identity immediately before mutation, reject symlinks and user-controlled include paths, and clear loader/PATH environment overrides. Root must never parse arbitrary project-supplied Nginx configuration. Running `nginx -t` as root against user-controlled config is also privileged interpretation, not a safe validation shortcut.
 
@@ -60,14 +60,14 @@ Delegate downloads and signature/checksum verification to approved providers, re
 
 ## Recovery limits
 
-| Change | Supported compensation | Limit |
-|---|---|---|
-| Owned config/registry | Restore known prior bytes only if current digest still matches Velnix's last write | Concurrent manual edits require review; no overwriting them |
-| Nginx reload | Restore validated config, reload, health-check | Existing connections and transient failures cannot be undone |
-| User processes/services | Stop owned instance; restore previously recorded lifecycle state only with approval | Lost requests, jobs and memory state cannot be recovered |
-| Package/runtime transaction | Inspect actual provider result; propose repair/removal | Maintainer scripts, migrations, dependency changes, unavailable versions and shared consumers prevent general rollback |
-| Hosts entries | Remove only exact owned entries, preserve unrelated lines | Resolver caches and external edits need reconciliation |
-| CA trust/certificates | Remove exact owned fingerprint from each approved store | Copies, browser caches and compromise remain; no universal revocation |
-| Database data/mail deletion | Restore only from a separately verified backup | No general undo; v0.1 never deletes database data |
+| Change                      | Supported compensation                                                              | Limit                                                                                                                  |
+| --------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Owned config/registry       | Restore known prior bytes only if current digest still matches Velnix's last write  | Concurrent manual edits require review; no overwriting them                                                            |
+| Nginx reload                | Restore validated config, reload, health-check                                      | Existing connections and transient failures cannot be undone                                                           |
+| User processes/services     | Stop owned instance; restore previously recorded lifecycle state only with approval | Lost requests, jobs and memory state cannot be recovered                                                               |
+| Package/runtime transaction | Inspect actual provider result; propose repair/removal                              | Maintainer scripts, migrations, dependency changes, unavailable versions and shared consumers prevent general rollback |
+| Hosts entries               | Remove only exact owned entries, preserve unrelated lines                           | Resolver caches and external edits need reconciliation                                                                 |
+| CA trust/certificates       | Remove exact owned fingerprint from each approved store                             | Copies, browser caches and compromise remain; no universal revocation                                                  |
+| Database data/mail deletion | Restore only from a separately verified backup                                      | No general undo; v0.1 never deletes database data                                                                      |
 
 On partial failure report completed effects, remaining effects, preserved backups and exact manual recovery steps. Rollback is best-effort compensation with verified preconditions, not an ACID transaction across Linux and Windows.

@@ -37,10 +37,10 @@ non-mkcert rejection, invalid flags and no lifecycle state on preview/failure.
 
 Two independent foreground pools served different registered projects at once:
 
-| Project | CLI | CLI ini | Web | Web ini |
-|---|---|---|---|---|
-| one | 8.3.35, `cli` | `/etc/php/8.3/cli/php.ini` | 8.3.35, `fpm-fcgi` | `/etc/php/8.3/fpm/php.ini` |
-| two | 8.5.11, `cli` | `/etc/php/8.5/cli/php.ini` | 8.5.11, `fpm-fcgi` | `/etc/php/8.5/fpm/php.ini` |
+| Project | CLI           | CLI ini                    | Web                | Web ini                    |
+| ------- | ------------- | -------------------------- | ------------------ | -------------------------- |
+| one     | 8.3.35, `cli` | `/etc/php/8.3/cli/php.ini` | 8.3.35, `fpm-fcgi` | `/etc/php/8.3/fpm/php.ini` |
+| two     | 8.5.11, `cli` | `/etc/php/8.5/cli/php.ini` | 8.5.11, `fpm-fcgi` | `/etc/php/8.5/fpm/php.ini` |
 
 Both CLI and HTTP checks collect and log `get_loaded_extensions()` independently.
 Observed CLI lists contain `pcntl`; web lists contain `cgi-fcgi`. Both versions

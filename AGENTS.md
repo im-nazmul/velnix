@@ -1,9 +1,11 @@
 # AGENTS.md — Velnix
 
 ## Project Identity
+
 Velnix is an open-source, lightweight, native Linux development environment manager. WSL2/Ubuntu first, portable to native Linux. Not a container platform or PHP-only tool.
 
 ## Principles
+
 - Lightweight, native and framework-agnostic.
 - No mandatory containers or bundled language runtimes.
 - Prefer existing package managers and runtime managers via adapters.
@@ -16,11 +18,13 @@ Velnix is an open-source, lightweight, native Linux development environment mana
 - Document reversible operations and rollback limitations.
 
 ## Technology Direction
+
 Go core and CLI; Bubble Tea/Lip Gloss TUI; Vue 3/TypeScript/Vite dashboard compiled to static assets embedded in Go; Nginx first; systemd where available.
 
 Bun is the default package manager and script runner for Velnix's JavaScript/TypeScript tooling. When dashboard tooling is introduced, commit `bun.lock`, pin the Bun version, and use `bun install --frozen-lockfile` in CI. This does not change runtime selection for user-managed projects. GitHub JavaScript actions use their own embedded Node runtime.
 
 ## Codex Workflow
+
 1. Read docs/PROJECT.md, docs/ARCHITECTURE.md and docs/DECISIONS.md.
 2. Review assumptions and platform dependencies before coding.
 3. Propose significant architectural changes before implementation.
@@ -29,6 +33,7 @@ Bun is the default package manager and script runner for Velnix's JavaScript/Typ
 6. Never implement the whole roadmap in one task.
 
 ## Current Phase
+
 Phase 3 and Phase 4 are COMPLETE within their approved implementation scopes. Phase 3 includes PHP CLI, per-project FPM/web routing and optional rootless HTTPS; real mkcert, CA rotation, Linux scoped trust and Windows mirrored HTTPS acceptance now pass locally. Phase 4 adds existing Node/Bun/Python execution, read-only provider-store resolution, bounded framework hints and explicit loopback proxying. See docs/validation/PHASE-3-COMPLETION.md and docs/validation/PHASE-4-COMPLETION.md. Open platform/release checks remain in docs/validation/RELEASE-ACCEPTANCE.md and are not claimed as passed. Phase 5 is COMPLETE within the approved read-only TUI scope; see docs/TUI.md and docs/validation/PHASE-5-COMPLETION.md. Phase 6 is COMPLETE within the approved external-Mailpit foreground CLI scope; see docs/MAIL.md, docs/PHASE-6-PROPOSAL.md, ADR 0016 and docs/validation/PHASE-6-COMPLETION.md. Implementation and the flow-scoped no-egress amendment were explicitly approved. Runtime capture/export/prune/recovery still require exact plan approval. Phase 7 is COMPLETE within the approved embedded-dashboard scope; see docs/DASHBOARD.md, docs/PHASE-7-PROPOSAL.md, ADR 0017 and docs/validation/PHASE-7-COMPLETION.md. Its safe HTML-preview fallback is explicit; mail viewing is plain text. Runtime dashboard launch and mutations retain exact plan approval. Phase 8 is next and requires a separate bounded scope before implementation. Phase 5B interactive management is COMPLETE within its approved scope; see docs/validation/PHASE-5B-COMPLETION.md. It was explicitly authorized by “Let do it. you dont need show me the plan, you can go strait to the implementation”; see docs/PHASE-5B.md and ADR 0015. Each mutation still requires runtime plan review and explicit approval. Later milestones require separate scope approval. Do not implement the whole roadmap.
 
 Phase 3: runtime and HTTPS, previously authorized by “Lets start work with phase 3” and

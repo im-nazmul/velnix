@@ -1,10 +1,10 @@
 # Opt-in read-only Windows-to-WSL TLS check. Root input is PUBLIC DER, never a key.
 # No hosts/store imports, browser automation, network reconfiguration or downloads.
 param(
-    [Parameter(Mandatory=$true)][ValidateRange(1024,65535)][int]$Port,
-    [Parameter(Mandatory=$true)][ValidatePattern('^[a-z0-9][a-z0-9-]*\.test$')][string]$Name,
-    [Parameter(Mandatory=$true)][string]$RootCertificateBase64,
-    [Parameter(Mandatory=$true)][ValidatePattern('^[a-f0-9]{64}$')][string]$LeafSHA256
+    [Parameter(Mandatory = $true)][ValidateRange(1024, 65535)][int]$Port,
+    [Parameter(Mandatory = $true)][ValidatePattern('^[a-z0-9][a-z0-9-]*\.test$')][string]$Name,
+    [Parameter(Mandatory = $true)][string]$RootCertificateBase64,
+    [Parameter(Mandatory = $true)][ValidatePattern('^[a-f0-9]{64}$')][string]$LeafSHA256
 )
 $ErrorActionPreference = 'Stop'
 Add-Type -TypeDefinition @'

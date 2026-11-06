@@ -1,0 +1,6 @@
+include = ["*.toml"]
+exclude = [".tools/**", "**/node_modules/**"]
+
+[formatting]
+column_width = 100
+indent_string = "  "

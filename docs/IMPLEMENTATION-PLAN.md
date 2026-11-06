@@ -83,12 +83,12 @@ Defer runtime/provider/package installation, upgrades/uninstall, adoption mutati
 
 ## Approval-dependent milestones
 
-| Milestone | Deliverable | Exit gate |
-|---|---|---|
-| Phase 1 foundation | Go/CLI/config/platform facts, doctor, state/journal/locks, CI | No probe mutations; schema/concurrency/crash tests; foundation budgets measured |
-| Phase 2 project/HTTP | Registry, rootless Nginx, static/link/unlink, explicit process identity | External config unchanged, conflicts preserved, failure recovery and HTTP tests pass |
-| Phase 3 runtime/HTTPS | Existing runtime resolution, exec, independent FPM and optional mkcert | Two PHP CLI/web versions verified; missing versions fail; Linux/Windows trust checks recorded |
-| v0.1 stabilization | Limited Node/Bun/Python resolution, explicit reverse proxy, docs and packaging | Full TESTING matrix, performance results, license and security review complete |
+| Milestone             | Deliverable                                                                    | Exit gate                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| Phase 1 foundation    | Go/CLI/config/platform facts, doctor, state/journal/locks, CI                  | No probe mutations; schema/concurrency/crash tests; foundation budgets measured               |
+| Phase 2 project/HTTP  | Registry, rootless Nginx, static/link/unlink, explicit process identity        | External config unchanged, conflicts preserved, failure recovery and HTTP tests pass          |
+| Phase 3 runtime/HTTPS | Existing runtime resolution, exec, independent FPM and optional mkcert         | Two PHP CLI/web versions verified; missing versions fail; Linux/Windows trust checks recorded |
+| v0.1 stabilization    | Limited Node/Bun/Python resolution, explicit reverse proxy, docs and packaging | Full TESTING matrix, performance results, license and security review complete                |
 
 The original later roadmap phases remain separate: full multi-language provider mutations, TUI, mail and web follow v0.1. Each milestone needs user approval before proceeding to the next; Phase 4 authorization additionally covers multi-language work; the implemented native execution/proxy scope and optional provider limitations are documented in [PHASE-4](PHASE-4.md). Failed rootless/provider spikes trigger revised ADR/scope, never automatic privileged fallback.
 

@@ -11,15 +11,15 @@ platform/release acceptance; those checks remain open in
 
 ## Completion checklist
 
-| Phase 4 item | Result |
-|---|---|
-| Node/Bun/Python bounded discovery and approved exact-version inspection | Complete; existing inspection tests retained |
-| Independent persistent selections, passive resolve and explicit exec | Complete; native/venv execution and CLI regression tests pass |
-| Python venv compatibility and literal requirement conflicts | Complete within documented supported layouts/constraint subset |
-| Nonmutating providers | Complete: direct native resolution plus `existing-store-v1` mise Node/Bun and uv CPython adapters |
-| Explicit loopback app-server proxying, HTTPS and upgrade forwarding | Complete; existing real Nginx integration tests remain passing |
-| Passive bounded framework hints | Complete; metadata/hooks/symlink/FIFO/size tests remain passing |
-| Plans, state migration/recovery, CLI and usage/decision documentation | Complete; schema 4 retained, provider evidence added to reviewed plans |
+| Phase 4 item                                                            | Result                                                                                            |
+| ----------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Node/Bun/Python bounded discovery and approved exact-version inspection | Complete; existing inspection tests retained                                                      |
+| Independent persistent selections, passive resolve and explicit exec    | Complete; native/venv execution and CLI regression tests pass                                     |
+| Python venv compatibility and literal requirement conflicts             | Complete within documented supported layouts/constraint subset                                    |
+| Nonmutating providers                                                   | Complete: direct native resolution plus `existing-store-v1` mise Node/Bun and uv CPython adapters |
+| Explicit loopback app-server proxying, HTTPS and upgrade forwarding     | Complete; existing real Nginx integration tests remain passing                                    |
+| Passive bounded framework hints                                         | Complete; metadata/hooks/symlink/FIFO/size tests remain passing                                   |
+| Plans, state migration/recovery, CLI and usage/decision documentation   | Complete; schema 4 retained, provider evidence added to reviewed plans                            |
 
 ## Final validation
 

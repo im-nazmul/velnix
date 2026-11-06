@@ -44,15 +44,15 @@ An interrupted init with an exact committed target registry can be marked comple
 
 ## Output and exit codes
 
-| Exit | Meaning |
-|---|---|
-| 0 | Success (doctor warnings are allowed) |
-| 1 | Unexpected I/O or execution failure |
-| 2 | Invalid command, config or schema |
-| 3 | Unavailable capability or deadline exceeded |
-| 4 | Unsafe/inaccessible state permissions or path |
-| 5 | Stale plan, concurrent change or recovery conflict |
-| 130 | Cancellation |
+| Exit | Meaning                                            |
+| ---- | -------------------------------------------------- |
+| 0    | Success (doctor warnings are allowed)              |
+| 1    | Unexpected I/O or execution failure                |
+| 2    | Invalid command, config or schema                  |
+| 3    | Unavailable capability or deadline exceeded        |
+| 4    | Unsafe/inaccessible state permissions or path      |
+| 5    | Stale plan, concurrent change or recovery conflict |
+| 130  | Cancellation                                       |
 
 `--json` writes one result to stdout; errors use `{"error":{"code":"...","message":"..."}}` on stderr. Commands never prompt, making missing approval a safe preview rather than an implicit yes. All application work runs as the invoking user; root is unnecessary.
 

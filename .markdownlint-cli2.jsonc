@@ -1,0 +1,15 @@
+{
+    "config": {
+        "default": true,
+        "MD013": false,
+        "MD024": { "siblings_only": true },
+        "MD033": false,
+    },
+    "ignores": [
+        ".tools/**",
+        "**/node_modules/**",
+        "internal/dashboardassets/dist/**",
+        "test-results/**",
+        "THIRD-PARTY-NOTICES.md",
+    ],
+}

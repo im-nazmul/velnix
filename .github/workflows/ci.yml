@@ -1,53 +1,56 @@
 name: Go and dashboard
 
 on:
-  push:
-  pull_request:
+    push:
+    pull_request:
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
-  check:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        with:
-          go-version-file: go.mod
-          cache: true
-      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
-        with:
-          bun-version-file: .bun-version
-      - run: bun install --cwd web --frozen-lockfile
-      - name: Reproduce embedded dashboard assets and enforce size budget
-        run: python3 scripts/check-dashboard-assets.py
-      - run: go mod verify
-      - name: Formatting
-        run: test -z "$(gofmt -l cmd internal)"
-      - run: go vet ./...
-      - run: go test -race -count=1 ./...
-      - run: go build -trimpath -o bin/velnix ./cmd/velnix
-      - name: Install browser for isolated dashboard acceptance
-        run: bun --bun node_modules/@playwright/test/cli.js install chromium
-        working-directory: web
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_GC: '1'
-      - name: Dashboard desktop/mobile browser acceptance
-        run: bun run --cwd web test:browser
-        env:
-          VELNIX_UI_BINARY: ${{ github.workspace }}/bin/velnix
-      - name: Read-only TUI terminal acceptance
-        run: python3 scripts/validate-tui.py bin/velnix
-      - name: TUI reviewed registry management
-        run: python3 scripts/validate-tui-management.py bin/velnix
-      - name: Smoke checks
-        run: |
-          bin/velnix version --json
-          bin/velnix config validate --json
-          bin/velnix doctor --json
-      - name: Vulnerability scan on release toolchain
-        run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./...
+    check:
+        runs-on: ubuntu-24.04
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+            - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+              with:
+                  go-version-file: go.mod
+                  cache: true
+            - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+              with:
+                  bun-version-file: .bun-version
+            - run: bun install --cwd web --frozen-lockfile
+            - name: Build dashboard before Go analysis and compilation
+              run: bun run --cwd web build
+            - name: Install pinned repository quality tools
+              run: bun run tools:install
+            - name: Formatting, lint and Vue/TypeScript checks
+              run: bun run check
+            - name: Reproduce embedded dashboard assets and enforce size budget
+              run: python3 scripts/check-dashboard-assets.py
+            - run: go mod verify
+            - run: go test -race -count=1 ./cmd/... ./internal/...
+            - run: go build -trimpath -o bin/velnix ./cmd/velnix
+            - name: Install browser for isolated dashboard acceptance
+              run: bun --bun node_modules/@playwright/test/cli.js install chromium
+              working-directory: web
+              env:
+                  PLAYWRIGHT_SKIP_BROWSER_GC: "1"
+            - name: Dashboard desktop/mobile browser acceptance
+              run: bun run --cwd web test:browser
+              env:
+                  VELNIX_UI_BINARY: ${{ github.workspace }}/bin/velnix
+            - name: Read-only TUI terminal acceptance
+              run: python3 scripts/validate-tui.py bin/velnix
+            - name: TUI reviewed registry management
+              run: python3 scripts/validate-tui-management.py bin/velnix
+            - name: Smoke checks
+              run: |
+                  bin/velnix version --json
+                  bin/velnix config validate --json
+                  bin/velnix doctor --json
+            - name: Vulnerability scan on release toolchain
+              run: go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./cmd/... ./internal/...

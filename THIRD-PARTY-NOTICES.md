@@ -52,3 +52,8 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+## Lucide dashboard icons
+
+@lucide/vue 1.70.0, https://lucide.dev. The full ISC and derived Feather MIT notices are included in `web/public/assets/licenses.txt` and shipped in the embedded dashboard.

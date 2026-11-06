@@ -28,11 +28,11 @@ runtime was installed or adopted.
 
 ## Real runtimes and built CLI
 
-| Runtime | Native executable | Observed version |
-|---|---|---|
-| Node | `/home/nazmul/.nvm/versions/node/v25.9.0/bin/node` | 25.9.0 |
-| Bun | `/home/nazmul/.bun/bin/bun` | 1.4.3 |
-| Python | `/usr/bin/python3.12` | 3.12.3 |
+| Runtime | Native executable                                  | Observed version |
+| ------- | -------------------------------------------------- | ---------------- |
+| Node    | `/home/nazmul/.nvm/versions/node/v25.9.0/bin/node` | 25.9.0           |
+| Bun     | `/home/nazmul/.bun/bin/bun`                        | 1.4.3            |
+| Python  | `/usr/bin/python3.12`                              | 3.12.3           |
 
 Real integration tests preview/approve each selection, resolve it passively,
 execute it with literal shell-like argv and the registered cwd, check stripped

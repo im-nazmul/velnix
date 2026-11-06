@@ -75,7 +75,11 @@ evidence before proposing another action when its result is uncertain.
 Page reads are cancellable and discard stale responses after navigation. Refresh
 is explicit. There is no background polling, WebSocket, service worker or remote
 font/asset/analytics dependency. Light/dark themes, responsive navigation,
-keyboard focus and native modal review are included. No user credentials persist
+keyboard focus and native modal review are included. Desktop windows at or below
+900 CSS pixels high use tighter spacing and recent-project rows; the redundant
+overview mail shortcut is hidden there while sidebar mail navigation remains.
+Login headings/spacing also adapt to short windows. Tall desktop and mobile
+layouts retain their existing density. No user credentials persist
 in localStorage/sessionStorage.
 
 ## Mail behavior
@@ -137,9 +141,14 @@ project registry schema and resource ownership grants are unchanged.
 
 Source lives in `web/`, HTTP presentation in `internal/transport/web`, shared
 application data/actions in `internal/app`, and generated embedded files in
-`internal/dashboardassets/dist`. Tracked generated assets keep `go test ./...`
-and a direct Go build usable from a clean clone. A direct Go build uses those
-committed assets; after editing frontend source use the full build script.
+`internal/dashboardassets/dist`. Generated assets and binaries are ignored by Git.
+A clean clone must build the frontend before Go compilation, tests or analysis,
+because Go embeds the generated directory. Use `sh scripts/build.sh` to install
+frozen dependencies, build the frontend and compile the binary. Direct Go builds
+require a preceding frontend build; missing assets intentionally fail compilation.
+Published GitHub releases trigger `.github/workflows/release.yml` to build a
+Linux amd64 binary with embedded assets and attach an archive and checksum.
+Release users need neither Bun nor frontend dependencies.
 
 ```sh
 bun install --cwd web --frozen-lockfile
@@ -154,8 +163,8 @@ Vite's upstream Node engine range is `^20.19.0 || >=22.12.0` if using its Node
 execution path; these project scripts were verified under Bun. Bun/Node remain
 build-time tools only. GitHub JavaScript actions have their own embedded runtime.
 
-Vue runtime license notices are included at `/assets/licenses.txt`.
-The reproducibility check rebuilds, compares every generated file and enforces
+Vue and Lucide runtime license notices are included at `/assets/licenses.txt`.
+The reproducibility check builds twice, compares every generated file and enforces
 the 250 KiB compressed JS+CSS budget. CI performs frozen installation, asset
 comparison/typecheck/build, Go checks and isolated desktop/mobile browser checks.
 It does not publish the UI. Existing Mailpit is optional for additional local

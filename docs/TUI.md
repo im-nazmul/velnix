@@ -24,22 +24,22 @@ filesystem discoveries, not verified executable versions. Project selections
 are stored evidence, not a fresh executable probe. Project details include
 bounded framework hints and owned FPM/web profile status. Missing workloads show “Not configured”; failures include an unavailable reason.
 
-| Key | Action |
-|---|---|
-| Enter on home / Ctrl+P anywhere | Search actions |
-| 1–4 on home | Open a destination |
-| Tab, right arrow, l | Next screen |
-| Shift-Tab, left arrow, h | Previous screen |
-| Up/down arrows, k/j | Select row or scroll details |
-| PageUp/PageDown | Page rows or details |
-| Home/End | First/last row or beginning/end of details |
-| Enter | Open details; finish filter input |
-| / | Filter row names; type text, Backspace to edit |
-| Esc, Backspace | Back to filtered list; press again to clear filter |
-| r | Refresh current screen |
-| t | Toggle technical data in details |
-| ? | Toggle help |
-| q, Ctrl-C | Quit (while filtering, q is text; Ctrl-C always quits) |
+| Key                             | Action                                                 |
+| ------------------------------- | ------------------------------------------------------ |
+| Enter on home / Ctrl+P anywhere | Search actions                                         |
+| 1–4 on home                     | Open a destination                                     |
+| Tab, right arrow, l             | Next screen                                            |
+| Shift-Tab, left arrow, h        | Previous screen                                        |
+| Up/down arrows, k/j             | Select row or scroll details                           |
+| PageUp/PageDown                 | Page rows or details                                   |
+| Home/End                        | First/last row or beginning/end of details             |
+| Enter                           | Open details; finish filter input                      |
+| /                               | Filter row names; type text, Backspace to edit         |
+| Esc, Backspace                  | Back to filtered list; press again to clear filter     |
+| r                               | Refresh current screen                                 |
+| t                               | Toggle technical data in details                       |
+| ?                               | Toggle help                                            |
+| q, Ctrl-C                       | Quit (while filtering, q is text; Ctrl-C always quits) |
 
 Reads run asynchronously with a five-second context deadline. Navigation and
 refresh cancel the previous context and reject its stale results. Existing

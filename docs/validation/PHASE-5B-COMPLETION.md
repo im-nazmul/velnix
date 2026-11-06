@@ -10,20 +10,20 @@ implementation or host-system modification is included.
 
 ## Completion checklist
 
-| Item | Result |
-|---|---|
-| Discoverable management | Existing Ctrl+P picker, ranked action search and guided keyboard forms |
-| Private-state initialization | Explicit preview/approval; no automatic initialization |
-| Project management | Link/unlink, selected-project prefill, source preservation and route-reload warning |
-| Runtime selections | Direct existing PHP/Node/Bun/Python selection/clear; external probe disclosed before approval |
-| Owned web controls | Nginx start/stop/reload; optional previously issued HTTPS material |
-| Owned PHP pools | Per-project FPM start/stop; no unsupported reload or hidden restart |
-| Exact approval | Complete bounded preview, end-of-review gate, typed APPLY plus Enter; existing backend revalidates the exact ID |
-| Failure handling | Stale state refuses without retry; preview input is retained for correction; long apply errors are wrapped and scrollable |
-| Session process lifetime | Track only explicitly started foreground owners; cancel/wait on exit; preserve independently owned workloads |
-| Immediate stop/restart | Stop waits for its session owner cleanup before allowing a new generation |
-| Terminal behavior | Bounded inputs, literal spaces, minimum management viewport, cancellation, terminal restoration |
-| Shared logic and automation | Existing application services, no shell/CLI subprocess, CI browsing and registry-management PTY checks |
+| Item                         | Result                                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Discoverable management      | Existing Ctrl+P picker, ranked action search and guided keyboard forms                                                    |
+| Private-state initialization | Explicit preview/approval; no automatic initialization                                                                    |
+| Project management           | Link/unlink, selected-project prefill, source preservation and route-reload warning                                       |
+| Runtime selections           | Direct existing PHP/Node/Bun/Python selection/clear; external probe disclosed before approval                             |
+| Owned web controls           | Nginx start/stop/reload; optional previously issued HTTPS material                                                        |
+| Owned PHP pools              | Per-project FPM start/stop; no unsupported reload or hidden restart                                                       |
+| Exact approval               | Complete bounded preview, end-of-review gate, typed APPLY plus Enter; existing backend revalidates the exact ID           |
+| Failure handling             | Stale state refuses without retry; preview input is retained for correction; long apply errors are wrapped and scrollable |
+| Session process lifetime     | Track only explicitly started foreground owners; cancel/wait on exit; preserve independently owned workloads              |
+| Immediate stop/restart       | Stop waits for its session owner cleanup before allowing a new generation                                                 |
+| Terminal behavior            | Bounded inputs, literal spaces, minimum management viewport, cancellation, terminal restoration                           |
+| Shared logic and automation  | Existing application services, no shell/CLI subprocess, CI browsing and registry-management PTY checks                    |
 
 ## Final local evidence
 

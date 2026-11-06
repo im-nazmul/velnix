@@ -8,17 +8,17 @@ its explicitly authorized extension, not authorization for Phase 6.
 
 Press Ctrl+P and search for one of these actions:
 
-| Action | Inputs and behavior |
-|---|---|
-| Initialize state | Explicit preview of private XDG state creation; never automatic |
-| Link project | Name, absolute project path, document root; source stays external |
-| Unlink project | Name; removes registry entry, preserves source |
-| Select runtime | Project, php/node/bun/python, existing absolute executable, exact version; approval includes the version probe |
-| Clear runtime | Project and kind; removes only its stored selection |
-| Start web | Installed Nginx, HTTP port, optional existing HTTPS certificate/port |
-| Stop web / Reload web | Existing owned workload and current routes |
-| Start PHP pool | Project, installed FPM executable, exact version, profile and upload directories |
-| Stop PHP pool | Project; existing backend does not support reload |
+| Action                | Inputs and behavior                                                                                            |
+| --------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Initialize state      | Explicit preview of private XDG state creation; never automatic                                                |
+| Link project          | Name, absolute project path, document root; source stays external                                              |
+| Unlink project        | Name; removes registry entry, preserves source                                                                 |
+| Select runtime        | Project, php/node/bun/python, existing absolute executable, exact version; approval includes the version probe |
+| Clear runtime         | Project and kind; removes only its stored selection                                                            |
+| Start web             | Installed Nginx, HTTP port, optional existing HTTPS certificate/port                                           |
+| Stop web / Reload web | Existing owned workload and current routes                                                                     |
+| Start PHP pool        | Project, installed FPM executable, exact version, profile and upload directories                               |
+| Stop PHP pool         | Project; existing backend does not support reload                                                              |
 
 The focused project is prefilled when opening an action from Projects. Enter or
 Tab advances the form; Shift-Tab goes back, Ctrl-U clears a default, Backspace

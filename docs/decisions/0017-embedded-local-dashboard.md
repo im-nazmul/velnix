@@ -50,9 +50,12 @@ adding a sanitizer/iframe without complete hostile-content evidence.
 
 ## Consequences and alternatives
 
-Tracking generated assets adds reviewable generated changes but keeps Go builds
-usable without Bun. Reproducibility/size checks prevent stale placeholders from
-shipping. Vue runtime templates are precompiled; no external fonts, CDN assets,
+Build-policy amendment (2026-11-06, explicitly requested): generated dashboard
+assets are no longer tracked. Source builders and CI build the frontend before
+Go compilation; published-release automation embeds fresh assets and packages
+the Linux amd64 binary with license notices. Clean-clone Go checks require the
+frontend build first. Two consecutive frontend builds verify reproducibility
+and the compressed asset size budget. Vue runtime templates are precompiled; no external fonts, CDN assets,
 analytics, hidden polling, WebSockets or service worker are necessary.
 
 One-time login is deliberately simple for a private foreground tool. It provides

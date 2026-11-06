@@ -1,21 +1,26 @@
 # Velnix — Development Roadmap
 
 ## Phase 0 — Architecture and Feasibility (review delivered)
+
 Research providers, PHP-FPM version selection, WSL DNS/HTTPS, privilege model, ownership and performance. Deliver feasibility/security/testing/implementation docs and ADRs. No app implementation until approved.
 
 ## Phase 1 — Core Foundation (implemented; platform validation limits documented)
+
 Go module, CLI, platform detection, doctor, configuration, tests and CI.
 
 ## Phase 2 — Projects and Web (authorized; project registry slice implemented)
+
 Project registry, link/unlink, rootless Nginx, static HTTP and explicit process identity. See [PROJECTS](PROJECTS.md) for the implemented commands. HTTP remains pending. The bounded release plan defers park scanning and places PHP integration in Phase 3.
 
 ## Phase 3 — HTTPS and Runtime Selection (COMPLETE)
+
 Existing PHP CLI discovery/selection/exec, independent [FPM](FPM.md) and optional
 [HTTPS](HTTPS.md) are implemented. [Completion evidence](validation/PHASE-3-COMPLETION.md)
 includes real mkcert, CA rotation and Linux/Windows mirrored scoped HTTPS checks.
 Remaining platform/store/browser acceptance is tracked as release work.
 
 ## Phase 4 — Multi-language (COMPLETE)
+
 Existing Node/Bun/Python discovery, inspection, selection/exec, native and
 read-only mise/uv store resolution, explicit loopback proxying and bounded
 framework hints are complete within the approved implementation scope. See
@@ -25,6 +30,7 @@ Runtime/provider mutations, manager command activation and later roadmap work
 are outside this completed scope.
 
 ## Phase 5 — TUI (COMPLETE within approved read-only scope)
+
 Overview, projects, runtimes, services and diagnostics.
 The [bounded Phase 5 proposal](PHASE-5-PROPOSAL.md) defines a read-only first
 milestone approved by “Lets begun implementation”. See [TUI](TUI.md) for usage
@@ -56,9 +62,11 @@ proposal's explicit unavailable fallback; browser-owned workload lifecycle and
 remote hosting remain excluded. Phase 8 requires separate scope approval.
 
 ## Phase 8 — Stabilization
+
 Security/performance review, WSL/native Ubuntu testing, installers, docs, contributor guidance and release automation.
 
 ## Future
+
 More distributions, web servers, plugins, database tools and runtimes.
 
 Each phase needs acceptance criteria, tests, docs and known limitations. Do not proceed automatically.

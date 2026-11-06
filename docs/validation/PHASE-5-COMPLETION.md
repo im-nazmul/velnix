@@ -10,21 +10,21 @@ scope. Platform/release acceptance remains separate.
 
 ## Completion checklist
 
-| Approved item | Delivered and verified |
-|---|---|
-| Optional Bubble Tea/Lip Gloss interface | `velnix tui`; pinned dependencies; no daemon or schema changes |
-| Welcoming entry and action discovery | Centered home, evidence-based summary, searchable Ctrl+P actions, numbered destinations |
-| Overview | Project count, owned HTTP/TLS and per-project FPM status, configuration/platform findings |
-| Projects | Filter, paths/domains/selections, bounded metadata and owned web/FPM details |
-| Runtimes | Passive candidates/provider capabilities and stored selection evidence; no executable probes |
-| Services | Owned HTTP/FPM/TLS results; explicit unsupported database/system-service inspection |
-| Diagnostics | Existing doctor/configuration findings, local errors and CLI next steps; no repair |
-| Shared application boundary | `TerminalQuery` reuses application services; transport does not parse CLI output |
-| Keyboard and responsive presentation | Lists, preview, readable/technical detail modes, filtering, refresh, paging, help and short-terminal action picker |
-| Cancellation and stale data | Generation-checked async reads, cancellation/deadlines, explicit refresh, no polling |
-| State preservation | Absent/initialized/corrupt-state tests and PTY configuration-error scenario preserve contents/permissions |
-| Terminal safety | Display sanitization/caps, interactive-I/O requirement, terminal mode/alternate-screen restoration |
-| Docs and automation | Usage, ADR 0014, acceptance script and CI terminal step |
+| Approved item                           | Delivered and verified                                                                                             |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Optional Bubble Tea/Lip Gloss interface | `velnix tui`; pinned dependencies; no daemon or schema changes                                                     |
+| Welcoming entry and action discovery    | Centered home, evidence-based summary, searchable Ctrl+P actions, numbered destinations                            |
+| Overview                                | Project count, owned HTTP/TLS and per-project FPM status, configuration/platform findings                          |
+| Projects                                | Filter, paths/domains/selections, bounded metadata and owned web/FPM details                                       |
+| Runtimes                                | Passive candidates/provider capabilities and stored selection evidence; no executable probes                       |
+| Services                                | Owned HTTP/FPM/TLS results; explicit unsupported database/system-service inspection                                |
+| Diagnostics                             | Existing doctor/configuration findings, local errors and CLI next steps; no repair                                 |
+| Shared application boundary             | `TerminalQuery` reuses application services; transport does not parse CLI output                                   |
+| Keyboard and responsive presentation    | Lists, preview, readable/technical detail modes, filtering, refresh, paging, help and short-terminal action picker |
+| Cancellation and stale data             | Generation-checked async reads, cancellation/deadlines, explicit refresh, no polling                               |
+| State preservation                      | Absent/initialized/corrupt-state tests and PTY configuration-error scenario preserve contents/permissions          |
+| Terminal safety                         | Display sanitization/caps, interactive-I/O requirement, terminal mode/alternate-screen restoration                 |
+| Docs and automation                     | Usage, ADR 0014, acceptance script and CI terminal step                                                            |
 
 ## Final verification
 

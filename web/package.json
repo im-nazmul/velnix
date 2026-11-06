@@ -1,23 +1,40 @@
 {
-  "name": "velnix-dashboard",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "packageManager": "bun@1.4.4",
-  "scripts": {
-    "dev": "bun --bun node_modules/vite/bin/vite.js --host 127.0.0.1",
-    "typecheck": "bun --bun node_modules/vue-tsc/bin/vue-tsc.js --noEmit",
-    "build": "bun run typecheck && bun --bun node_modules/vite/bin/vite.js build",
-    "test:browser": "bun --bun node_modules/@playwright/test/cli.js test"
-  },
-  "dependencies": {
-    "vue": "3.5.45"
-  },
-  "devDependencies": {
-    "@playwright/test": "1.65.0",
-    "@vitejs/plugin-vue": "6.0.10",
-    "typescript": "6.0.3",
-    "vite": "8.3.6",
-    "vue-tsc": "3.3.14"
-  }
+    "name": "velnix-dashboard",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "packageManager": "bun@1.4.4",
+    "scripts": {
+        "dev": "bun --bun node_modules/vite/bin/vite.js --host 127.0.0.1",
+        "typecheck": "bun --bun node_modules/vue-tsc/bin/vue-tsc.js --noEmit && bun --bun node_modules/typescript/bin/tsc --noEmit --project tsconfig.tools.json",
+        "build": "bun run typecheck && bun --bun node_modules/vite/bin/vite.js build",
+        "test:browser": "bun --bun node_modules/@playwright/test/cli.js test",
+        "lint": "bun --bun node_modules/eslint/bin/eslint.js . --max-warnings 0 && bun --bun node_modules/stylelint/bin/stylelint.mjs \"src/**/*.{css,vue}\" --allow-empty-input --max-warnings 0",
+        "lint:fix": "bun --bun node_modules/eslint/bin/eslint.js . --max-warnings 0 --fix && bun --bun node_modules/stylelint/bin/stylelint.mjs \"src/**/*.{css,vue}\" --allow-empty-input --max-warnings 0 --fix"
+    },
+    "dependencies": {
+        "@lucide/vue": "1.70.0",
+        "vue": "3.5.45"
+    },
+    "devDependencies": {
+        "@eslint/js": "10.0.1",
+        "@playwright/test": "1.65.0",
+        "@taplo/cli": "0.7.0",
+        "@types/node": "26.6.6",
+        "@vitejs/plugin-vue": "6.0.10",
+        "eslint": "10.14.0",
+        "eslint-config-prettier": "10.1.8",
+        "eslint-plugin-vue": "10.12.0",
+        "globals": "17.14.0",
+        "markdownlint-cli2": "0.22.0",
+        "postcss-html": "2.0.0",
+        "prettier": "3.9.10",
+        "stylelint": "18.0.0",
+        "stylelint-config-standard": "41.0.0",
+        "typescript": "6.0.3",
+        "typescript-eslint": "8.72.1",
+        "vite": "8.3.6",
+        "vue-eslint-parser": "10.4.2",
+        "vue-tsc": "3.3.14"
+    }
 }

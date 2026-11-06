@@ -74,7 +74,7 @@ func TestFilteringDetailsAndSmallTerminal(t *testing.T) {
 func TestUntrustedTextAndNonTTY(t *testing.T) {
 	raw := "safe\x1b[2J\x1b]52;c;secret\a\u202eevil\x9b\x00"
 	got := clean(raw)
-	if strings.ContainsAny(got, "\x1b\a\u202e\x9b\x00") || strings.Contains(got, "secret") {
+	if strings.ContainsAny(got, "\x1b\a\u202e\u009b\x00") || strings.Contains(got, "\x9b") || strings.Contains(got, "secret") {
 		t.Fatalf("unsafe: %q", got)
 	}
 	if len(clean(strings.Repeat("a", 100000))) > 33000 {

@@ -12,24 +12,24 @@ Integration tests: disposable native Linux VMs or dedicated WSL distributions, o
 
 ## Acceptance scenarios
 
-| Area | Required evidence |
-|---|---|
-| CLI | Scriptable JSON on stdout, diagnostics on stderr, stable success/invalid-input/unavailable/denied/conflict/failure/cancellation codes; no interactive hangs |
-| No systemd | Doctor identifies absence; rootless foreground HTTP/FPM works; unsupported lifecycle gives clear remediation |
-| PHP | Two existing versions serve different projects concurrently; CLI and HTTP SAPI/version/ini/extensions checked independently; change one leaves other unchanged |
-| PHP safety | Missing FPM/extension, denied socket, failed pool startup and wrong-version endpoint fail visibly; `.env`, uploads and nonexistent scripts not executed |
-| Node/Bun/Python | Exact selected executable verified; conflicting version files fail; child PATH stable; parent shell/system Python unchanged; compatible/incompatible `.venv` exercised |
-| Ownership | External runtime/package/service never adopted or deleted by discovery; unlink preserves source/data; removal refuses references and missing grants |
-| Nginx | Separate prefix/loopback, occupied ports preserved, config injection rejected, candidate validation failure preserves old config, reload health failure enters recovery |
-| Concurrency/crash | Two CLI writers and future CLI/web writers serialize; SIGKILL at each journal boundary, disk-full, stale lock, failed rename and external file edits recover without clobbering |
-| Process lifecycle | Restart/boot ID/PID reuse, child exit and cancellation cannot kill unrelated processes; bounded logs; no implicit lingering |
-| DNS | Linux and Windows independently resolve each exact `.test` name; alias removal preserves others; IPv6 has explicit enabled/unavailable status |
-| HTTPS | SAN/expiry/private permissions; Linux CLI trust and Windows browser trust separately checked; no CA private key exported; exact-fingerprint untrust tested |
-| Network | Windows browser HTTP/HTTPS reaches selected WSL instance; NAT/mirrored, VPN, occupied Windows ports, WSL restart/IP change and multiple distributions exercised |
-| Native portability | Same app/domain code on native Ubuntu; no Windows executable requirement; unsupported package/service adapters degrade clearly |
-| Phase 6 mail | Bounded MIME/client parsing, private storage, exact plan invalidation, export collision/traversal, count/age retention, owner-crash cleanup and recovery; see [local completion](validation/PHASE-6-COMPLETION.md) |
-| Phase 7 dashboard | Bootstrap/authentication/Host/Origin/CSRF, plan isolation/replay/staleness, private runtime files, authenticated downloads and real desktop/mobile browser flows; see [local completion](validation/PHASE-7-COMPLETION.md) |
-| Later HTML preview | Hostile HTML/CSS/remote-asset isolation must be demonstrated before enabling preview; Phase 7 uses the approved unavailable fallback |
+| Area               | Required evidence                                                                                                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CLI                | Scriptable JSON on stdout, diagnostics on stderr, stable success/invalid-input/unavailable/denied/conflict/failure/cancellation codes; no interactive hangs                                                                |
+| No systemd         | Doctor identifies absence; rootless foreground HTTP/FPM works; unsupported lifecycle gives clear remediation                                                                                                               |
+| PHP                | Two existing versions serve different projects concurrently; CLI and HTTP SAPI/version/ini/extensions checked independently; change one leaves other unchanged                                                             |
+| PHP safety         | Missing FPM/extension, denied socket, failed pool startup and wrong-version endpoint fail visibly; `.env`, uploads and nonexistent scripts not executed                                                                    |
+| Node/Bun/Python    | Exact selected executable verified; conflicting version files fail; child PATH stable; parent shell/system Python unchanged; compatible/incompatible `.venv` exercised                                                     |
+| Ownership          | External runtime/package/service never adopted or deleted by discovery; unlink preserves source/data; removal refuses references and missing grants                                                                        |
+| Nginx              | Separate prefix/loopback, occupied ports preserved, config injection rejected, candidate validation failure preserves old config, reload health failure enters recovery                                                    |
+| Concurrency/crash  | Two CLI writers and future CLI/web writers serialize; SIGKILL at each journal boundary, disk-full, stale lock, failed rename and external file edits recover without clobbering                                            |
+| Process lifecycle  | Restart/boot ID/PID reuse, child exit and cancellation cannot kill unrelated processes; bounded logs; no implicit lingering                                                                                                |
+| DNS                | Linux and Windows independently resolve each exact `.test` name; alias removal preserves others; IPv6 has explicit enabled/unavailable status                                                                              |
+| HTTPS              | SAN/expiry/private permissions; Linux CLI trust and Windows browser trust separately checked; no CA private key exported; exact-fingerprint untrust tested                                                                 |
+| Network            | Windows browser HTTP/HTTPS reaches selected WSL instance; NAT/mirrored, VPN, occupied Windows ports, WSL restart/IP change and multiple distributions exercised                                                            |
+| Native portability | Same app/domain code on native Ubuntu; no Windows executable requirement; unsupported package/service adapters degrade clearly                                                                                             |
+| Phase 6 mail       | Bounded MIME/client parsing, private storage, exact plan invalidation, export collision/traversal, count/age retention, owner-crash cleanup and recovery; see [local completion](validation/PHASE-6-COMPLETION.md)         |
+| Phase 7 dashboard  | Bootstrap/authentication/Host/Origin/CSRF, plan isolation/replay/staleness, private runtime files, authenticated downloads and real desktop/mobile browser flows; see [local completion](validation/PHASE-7-COMPLETION.md) |
+| Later HTML preview | Hostile HTML/CSS/remote-asset isolation must be demonstrated before enabling preview; Phase 7 uses the approved unavailable fallback                                                                                       |
 
 Full v0.1 matrix: native Ubuntu 24.04 amd64; WSL2 Ubuntu 24.04 with Windows 11 NAT; same with supported mirrored networking; a non-systemd Linux environment for doctor/foreground paths. Record exact OS, kernel, WSL, Windows, provider, CPU, filesystem and browser versions. Windows browser and trust scenarios require real Windows access; Linux-only CI is insufficient. Enterprise trust/VPN restrictions may remain documented unsupported configurations, never fabricated passes. Framework smoke cases: static site, generic PHP and one front-controller app; broad Laravel/WordPress/Drupal support waits for corresponding routing/security fixtures.
 
@@ -37,18 +37,18 @@ Full v0.1 matrix: native Ubuntu 24.04 amd64; WSL2 Ubuntu 24.04 with Windows 11 N
 
 Reference machine: 4 logical CPU cores, 8 GiB RAM available to Linux, SSD, projects/state on native ext4 (WSL virtual disk for WSL runs), 100 registered projects, up to 20 discovered installations. Record actual model and contention. `/mnt/c` results are separate and cannot be compared to ext4 budgets. Release build, no debugger, no network/provider installation; report p50/p95 over at least 50 warm samples plus 10 fresh-process cold-cache samples with cache definition recorded. Do not flush host caches without explicit permission. Separate Velnix CPU/RSS from child providers and workloads; publish both where applicable.
 
-| Operation/resource | Initial target |
-|---|---|
-| `version` / help | warm p95 ≤50 ms; cold p95 ≤150 ms |
-| 100-project list (no deep probes) | warm p95 ≤100 ms; cold p95 ≤250 ms |
-| Cached local runtime resolution | warm p95 ≤100 ms; no network |
-| Doctor local scan | p95 ≤2 s; total deadline 5 s, per external probe 500 ms, partial results on timeout |
-| Dry-run render/plan for one project | p95 ≤200 ms, excluding external validation |
-| Nginx config validation + reload + health | p95 ≤2 s on reference machine, timeout 5 s; no package/network work |
-| CLI peak RSS for list/resolve | ≤30 MiB Velnix process; external probes reported separately |
-| Idle control plane | zero Velnix processes/listeners after command exit unless explicitly requested |
-| Requested workloads | idle CPU <1% of one core over 60 s; report Nginx/FPM memory and worker counts separately; no unsupported aggregate promise |
-| Distribution | stripped CLI archive ≤25 MiB compressed; no runtimes/frontend in v0.1 |
+| Operation/resource                        | Initial target                                                                                                             |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `version` / help                          | warm p95 ≤50 ms; cold p95 ≤150 ms                                                                                          |
+| 100-project list (no deep probes)         | warm p95 ≤100 ms; cold p95 ≤250 ms                                                                                         |
+| Cached local runtime resolution           | warm p95 ≤100 ms; no network                                                                                               |
+| Doctor local scan                         | p95 ≤2 s; total deadline 5 s, per external probe 500 ms, partial results on timeout                                        |
+| Dry-run render/plan for one project       | p95 ≤200 ms, excluding external validation                                                                                 |
+| Nginx config validation + reload + health | p95 ≤2 s on reference machine, timeout 5 s; no package/network work                                                        |
+| CLI peak RSS for list/resolve             | ≤30 MiB Velnix process; external probes reported separately                                                                |
+| Idle control plane                        | zero Velnix processes/listeners after command exit unless explicitly requested                                             |
+| Requested workloads                       | idle CPU <1% of one core over 60 s; report Nginx/FPM memory and worker counts separately; no unsupported aggregate promise |
+| Distribution                              | stripped CLI archive ≤25 MiB compressed; no runtimes/frontend in v0.1                                                      |
 
 These are acceptance budgets to validate, not benchmark claims. Record startup/process overhead separately from provider time and HTTP application latency. Rebaseline requires documented evidence and approval, not silently relaxing a failing budget. Later optional API target: idle RSS ≤60 MiB excluding browser/mail/workloads; dashboard initial compressed JS+CSS ≤250 KiB, no polling while hidden. Validate those when their phases begin.
 

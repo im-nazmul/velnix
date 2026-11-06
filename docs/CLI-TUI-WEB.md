@@ -1,9 +1,11 @@
 # Velnix — CLI, TUI and Web Interfaces
 
 ## Principle
+
 Three interfaces, one application layer. CLI must work without dashboard or background API.
 
 ## Proposed CLI tree
+
 ```text
 velnix
 ├── doctor
@@ -22,6 +24,7 @@ velnix
 CLI requirements: scriptability, useful exit codes, JSON where appropriate, dry-run, noninteractive mode, destructive confirmation and clear errors.
 
 ## TUI
+
 The approved read-only Phase 5 interface is complete using Go Bubble Tea and
 Lip Gloss. Run `velnix tui` for a welcoming home, searchable action picker and
 overview/projects/runtimes/owned-services/diagnostics screens. See [usage](TUI.md)
@@ -40,9 +43,11 @@ uses the proposal's explicit unavailable fallback. See [DASHBOARD](DASHBOARD.md)
 and [completion evidence](validation/PHASE-7-COMPLETION.md).
 
 ## Security
+
 Loopback binding by default, origin/CSRF protections, authentication as appropriate, no arbitrary shell execution through API, scoped privileged actions, no private-key exposure.
 
 ## Performance
+
 Do not start dashboard unless requested; avoid constant polling, heavyweight frontend packages or duplicated application logic.
 
 ## Phase 0 command semantics

@@ -85,7 +85,7 @@ func (m *model) friendlyView() string {
 		return fit("Velnix · ctrl+p commands", w)
 	}
 	contentWidth := min(68, w-6)
-	lines := []string{}
+	var lines []string
 	footer := "ctrl+p commands     1 projects     2 runtimes     q quit"
 	if m.palette {
 		lines = []string{accent.Render("What would you like to do?"), "", "› " + single(m.command) + "▏", muted.Render(strings.Repeat("─", contentWidth)), ""}

@@ -1,4 +1,5 @@
-// Package dashboardassets contains reproducibly generated, tracked dashboard assets.
+// Package dashboardassets contains dashboard assets generated at build time.
+// Run sh scripts/build.sh before compiling the Go application.
 package dashboardassets
 
 import (

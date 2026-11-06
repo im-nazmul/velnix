@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Linux PTY acceptance: python3 scripts/validate-tui.py /absolute/velnix."""
+
 import fcntl
 import json
 import os
 import pty
-from pathlib import Path
 import select
 import signal
 import struct
@@ -13,6 +13,7 @@ import sys
 import tempfile
 import termios
 import time
+from pathlib import Path
 
 
 def validate(binary, mode):
@@ -28,20 +29,25 @@ def validate(binary, mode):
             (config_dir / "config.toml").write_text("[invalid")
 
         def snapshot():
-            return {str(path.relative_to(root)): (path.stat().st_mode,
-                    None if path.is_dir() else path.read_bytes())
-                    for path in Path(root).rglob("*")}
+            return {
+                str(path.relative_to(root)): (
+                    path.stat().st_mode,
+                    None if path.is_dir() else path.read_bytes(),
+                )
+                for path in Path(root).rglob("*")
+            }
 
         before_files = snapshot()
         fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 24, 100, 0, 0))
-        process = subprocess.Popen([binary, "tui"], stdin=slave, stdout=slave,
-                                   stderr=slave, env=env)
+        process = subprocess.Popen(
+            [binary, "tui"], stdin=slave, stdout=slave, stderr=slave, env=env
+        )
         output = bytearray()
 
         def drain(duration):
             end = time.monotonic() + duration
             while time.monotonic() < end:
-                if select.select([master], [], [], .05)[0]:
+                if select.select([master], [], [], 0.05)[0]:
                     try:
                         output.extend(os.read(master, 65536))
                     except OSError:
@@ -51,21 +57,35 @@ def validate(binary, mode):
             drain(1)
             if mode == "config-error":
                 os.write(master, b"4")
-                drain(.3)
+                drain(0.3)
                 os.write(master, b"\x1b")
-                drain(.2)
+                drain(0.2)
             for key in [b"\x10", b"projects", b"\r", b"h"]:
                 os.write(master, key)
-                drain(.2)
-            for key in [b"l", b"l", b"l", b"l", b"h", b"?", b"\x1b", b"r",
-                        b"\r", b"j", b"\x1b", b"/", b"HTTP", b"\r"]:
+                drain(0.2)
+            for key in [
+                b"l",
+                b"l",
+                b"l",
+                b"l",
+                b"h",
+                b"?",
+                b"\x1b",
+                b"r",
+                b"\r",
+                b"j",
+                b"\x1b",
+                b"/",
+                b"HTTP",
+                b"\r",
+            ]:
                 os.write(master, key)
-                drain(.15)
+                drain(0.15)
             fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 8, 24, 0, 0))
             process.send_signal(signal.SIGWINCH)
-            drain(.3)
+            drain(0.3)
             os.write(master, b"\x1b")
-            drain(.1)
+            drain(0.1)
             if mode == "signal":
                 process.send_signal(signal.SIGTERM)
             else:
@@ -79,12 +99,31 @@ def validate(binary, mode):
                 assert b"Environment needs a look" in output
                 assert b"Configuration" in output
             assert b"\x1b[?1049l" in output, "alternate screen not restored"
-            for name in [b"v e l n i x", b"What would you like to do?", b"Overview", b"Projects", b"Runtimes", b"Services",
-                         b"Diagnostics", b"Registered projects", b"Provider capabilities",
-                         b"System databases", b"Not configured", b"Filter: HTTP"]:
+            for name in [
+                b"v e l n i x",
+                b"What would you like to do?",
+                b"Overview",
+                b"Projects",
+                b"Runtimes",
+                b"Services",
+                b"Diagnostics",
+                b"Registered projects",
+                b"Provider capabilities",
+                b"System databases",
+                b"Not configured",
+                b"Filter: HTTP",
+            ]:
                 assert name in output, f"missing screen/detail: {name!r}"
-            print(json.dumps(dict(mode=mode, exit=process.returncode,
-                                  terminal_restored=True, state_unchanged=True)))
+            print(
+                json.dumps(
+                    dict(
+                        mode=mode,
+                        exit=process.returncode,
+                        terminal_restored=True,
+                        state_unchanged=True,
+                    )
+                )
+            )
         finally:
             if process.poll() is None:
                 process.kill()

@@ -2,46 +2,46 @@
 
 Detailed ADRs belong in `docs/decisions/`.
 
-| ID | Decision | Status |
-|---|---|---|
-| D001 | Native Linux, no mandatory containers | Accepted |
-| D002 | WSL2/Ubuntu first; portable core | Accepted |
-| D003 | Go core | Accepted for Phase 1 |
-| D004 | CLI first, optional TUI/web | Accepted |
-| D005 | Daemonless by default | Accepted |
-| D006 | Delegate to package/runtime providers | Accepted in principle |
-| D007 | Nginx initially | Accepted for Phase 2 rootless static HTTP |
-| D008 | Embedded Vue/TypeScript dashboard | Accepted for bounded Phase 7 |
-| D009 | Explicit resource ownership | Accepted |
-| D010 | Local HTTPS with Windows/WSL trust | Accepted requirement |
-| D011 | Per-project runtime versions | Accepted requirement |
-| D012 | Local-only SMTP mail capture | Accepted requirement |
-| D013 | Performance budget after prototype measurement | Research |
-| D014 | Velnix name and `velnix` CLI | Provisional; verify availability |
+| ID   | Decision                                       | Status                                    |
+| ---- | ---------------------------------------------- | ----------------------------------------- |
+| D001 | Native Linux, no mandatory containers          | Accepted                                  |
+| D002 | WSL2/Ubuntu first; portable core               | Accepted                                  |
+| D003 | Go core                                        | Accepted for Phase 1                      |
+| D004 | CLI first, optional TUI/web                    | Accepted                                  |
+| D005 | Daemonless by default                          | Accepted                                  |
+| D006 | Delegate to package/runtime providers          | Accepted in principle                     |
+| D007 | Nginx initially                                | Accepted for Phase 2 rootless static HTTP |
+| D008 | Embedded Vue/TypeScript dashboard              | Accepted for bounded Phase 7              |
+| D009 | Explicit resource ownership                    | Accepted                                  |
+| D010 | Local HTTPS with Windows/WSL trust             | Accepted requirement                      |
+| D011 | Per-project runtime versions                   | Accepted requirement                      |
+| D012 | Local-only SMTP mail capture                   | Accepted requirement                      |
+| D013 | Performance budget after prototype measurement | Research                                  |
+| D014 | Velnix name and `velnix` CLI                   | Provisional; verify availability          |
 
 ## Phase 0 detailed proposals (2026-10-20)
 
 The statuses above describe original direction and requirements, not implementation approval. The table below records scoped acceptance for the foundation; other choices remain proposed. accepted requirements such as HTTPS and mail do not imply inclusion in v0.1.
 
-| ADR | Proposal | Status |
-|---|---|---|
-| [0001](decisions/0001-core-and-state.md) | Go core, transport boundaries and durable state | Accepted for Phase 1 |
-| [0002](decisions/0002-runtime-providers.md) | Small provider capabilities and independent CLI/FPM resolution | Direct native and read-only mise/uv store resolution implemented; manager command/mutation adapters deferred |
-| [0003](decisions/0003-rootless-web.md) | Rootless separate Nginx on high ports and per-project FPM | Rootless static HTTP implemented; FPM/HTTPS accepted for Phase 3 |
-| [0004](decisions/0004-dns-and-trust.md) | Exact hosts entries and separate trust-store approval | Manual setup and optional isolated mkcert accepted for Phase 3 |
-| [0005](decisions/0005-ownership-and-privilege.md) | Provenance, grants, plans and recovery limits | Foundation subset accepted |
-| [0006](decisions/0006-optional-processes.md) | Daemonless control and optional processes | Foreground Nginx/FPM accepted; systemd and later workloads proposed |
-| [0007](decisions/0007-release-and-performance.md) | Bounded v0.1 and measurable acceptance budgets | Proposed |
-| [0008](decisions/0008-project-registry-transactions.md) | Project metadata, schema upgrade and recoverable transactions | Accepted for first Phase 2 slice |
-| [0009](decisions/0009-existing-php-cli.md) | Exact existing PHP CLI selections, approved probes and explicit exec | Accepted for first Phase 3 slice |
-| [0010](decisions/0010-multi-language-inspection.md) | Shared native executable identity and approved Node/Bun/Python version inspection | Accepted for Phase 4 inspection slice |
-| [0011](decisions/0011-phase3-web-lifecycle.md) | Shared foreground FPM transitions and isolated optional TLS issuance | Implemented within approved Phase 3; platform acceptance open |
-| [0012](decisions/0012-phase4-execution-and-proxy.md) | Existing Node/Bun/Python execution, bounded metadata and external loopback proxy | Implemented; provider completion in ADR 0013 |
-| [0013](decisions/0013-existing-provider-store-resolution.md) | Read-only existing mise/uv storage layouts with reviewed exact-version probes | Implemented; Phase 4 implementation COMPLETE, platform/release acceptance open |
-| [0014](decisions/0014-read-only-terminal-interface.md) | Optional read-only Bubble Tea/Lip Gloss interface over application queries | Implemented; Phase 5 read-only scope COMPLETE, platform/release acceptance open |
-| [0015](decisions/0015-reviewed-terminal-management.md) | Reviewed terminal mutations and session-owned foreground web/FPM | Implemented; approved Phase 5B scope COMPLETE, platform acceptance open |
-| [0016](decisions/0016-local-mail-capture.md) | Existing external Mailpit, private foreground capture, passive MIME inspection and reviewed export/pruning | Accepted for Phase 6, including the explicitly approved flow-scoped no-egress amendment |
-| [0017](decisions/0017-embedded-local-dashboard.md) | Embedded Vue assets, secured local API, session-bound reviewed actions and passive mail viewing | Implemented; bounded Phase 7 scope COMPLETE, HTML-preview fallback explicit, release gates open |
+| ADR                                                          | Proposal                                                                                                   | Status                                                                                                       |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [0001](decisions/0001-core-and-state.md)                     | Go core, transport boundaries and durable state                                                            | Accepted for Phase 1                                                                                         |
+| [0002](decisions/0002-runtime-providers.md)                  | Small provider capabilities and independent CLI/FPM resolution                                             | Direct native and read-only mise/uv store resolution implemented; manager command/mutation adapters deferred |
+| [0003](decisions/0003-rootless-web.md)                       | Rootless separate Nginx on high ports and per-project FPM                                                  | Rootless static HTTP implemented; FPM/HTTPS accepted for Phase 3                                             |
+| [0004](decisions/0004-dns-and-trust.md)                      | Exact hosts entries and separate trust-store approval                                                      | Manual setup and optional isolated mkcert accepted for Phase 3                                               |
+| [0005](decisions/0005-ownership-and-privilege.md)            | Provenance, grants, plans and recovery limits                                                              | Foundation subset accepted                                                                                   |
+| [0006](decisions/0006-optional-processes.md)                 | Daemonless control and optional processes                                                                  | Foreground Nginx/FPM accepted; systemd and later workloads proposed                                          |
+| [0007](decisions/0007-release-and-performance.md)            | Bounded v0.1 and measurable acceptance budgets                                                             | Proposed                                                                                                     |
+| [0008](decisions/0008-project-registry-transactions.md)      | Project metadata, schema upgrade and recoverable transactions                                              | Accepted for first Phase 2 slice                                                                             |
+| [0009](decisions/0009-existing-php-cli.md)                   | Exact existing PHP CLI selections, approved probes and explicit exec                                       | Accepted for first Phase 3 slice                                                                             |
+| [0010](decisions/0010-multi-language-inspection.md)          | Shared native executable identity and approved Node/Bun/Python version inspection                          | Accepted for Phase 4 inspection slice                                                                        |
+| [0011](decisions/0011-phase3-web-lifecycle.md)               | Shared foreground FPM transitions and isolated optional TLS issuance                                       | Implemented within approved Phase 3; platform acceptance open                                                |
+| [0012](decisions/0012-phase4-execution-and-proxy.md)         | Existing Node/Bun/Python execution, bounded metadata and external loopback proxy                           | Implemented; provider completion in ADR 0013                                                                 |
+| [0013](decisions/0013-existing-provider-store-resolution.md) | Read-only existing mise/uv storage layouts with reviewed exact-version probes                              | Implemented; Phase 4 implementation COMPLETE, platform/release acceptance open                               |
+| [0014](decisions/0014-read-only-terminal-interface.md)       | Optional read-only Bubble Tea/Lip Gloss interface over application queries                                 | Implemented; Phase 5 read-only scope COMPLETE, platform/release acceptance open                              |
+| [0015](decisions/0015-reviewed-terminal-management.md)       | Reviewed terminal mutations and session-owned foreground web/FPM                                           | Implemented; approved Phase 5B scope COMPLETE, platform acceptance open                                      |
+| [0016](decisions/0016-local-mail-capture.md)                 | Existing external Mailpit, private foreground capture, passive MIME inspection and reviewed export/pruning | Accepted for Phase 6, including the explicitly approved flow-scoped no-egress amendment                      |
+| [0017](decisions/0017-embedded-local-dashboard.md)           | Embedded Vue assets, secured local API, session-bound reviewed actions and passive mail viewing            | Implemented; bounded Phase 7 scope COMPLETE, HTML-preview fallback explicit, release gates open              |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
 

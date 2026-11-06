@@ -7,17 +7,17 @@ or claim the open release/platform checks have passed.
 
 ## Closed Phase 3 work
 
-| Item | Result |
-|---|---|
-| Exact existing PHP CLI discovery, approval, selection, resolve and exec | Complete; regression suite passes |
-| Independent per-project PHP-FPM, generic PHP/front-controller/static routing | Complete; concurrent real PHP 8.3.35 and 8.5.11 CLI/web checks pass |
-| Rootless Nginx lifecycle, private sockets, denied paths, recovery and cleanup | Complete within documented identity/recovery limits; regression suite passes |
-| Real mkcert v1.4.4 issuance, SAN/expiry, permissions and HTTPS | Passed using the official native release in `/tmp`, not the test fixture |
-| Real CA rotation with active listener, reviewed reload and retained prior evidence | Passed in `TestTLSInstalledMkcert` |
-| Public-only CA export and exact served-certificate verification | Passed; no private key exported |
-| Linux explicit CA and process-scoped trust/untrust round trip | Passed; normal default roots reject before and after |
-| Windows-to-WSL mirrored HTTPS, exact TLS name/leaf and HTTP 200 | Passed using Windows SslStream and a connection-scoped explicit CA |
-| Windows default trust before/after the explicit-CA connection | Correctly rejects the disposable CA both times; no root imported |
+| Item                                                                               | Result                                                                       |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Exact existing PHP CLI discovery, approval, selection, resolve and exec            | Complete; regression suite passes                                            |
+| Independent per-project PHP-FPM, generic PHP/front-controller/static routing       | Complete; concurrent real PHP 8.3.35 and 8.5.11 CLI/web checks pass          |
+| Rootless Nginx lifecycle, private sockets, denied paths, recovery and cleanup      | Complete within documented identity/recovery limits; regression suite passes |
+| Real mkcert v1.4.4 issuance, SAN/expiry, permissions and HTTPS                     | Passed using the official native release in `/tmp`, not the test fixture     |
+| Real CA rotation with active listener, reviewed reload and retained prior evidence | Passed in `TestTLSInstalledMkcert`                                           |
+| Public-only CA export and exact served-certificate verification                    | Passed; no private key exported                                              |
+| Linux explicit CA and process-scoped trust/untrust round trip                      | Passed; normal default roots reject before and after                         |
+| Windows-to-WSL mirrored HTTPS, exact TLS name/leaf and HTTP 200                    | Passed using Windows SslStream and a connection-scoped explicit CA           |
+| Windows default trust before/after the explicit-CA connection                      | Correctly rejects the disposable CA both times; no root imported             |
 
 The PHP version/ini/extension evidence and failure/recovery tests remain recorded
 in [PHASE-3-WEB](PHASE-3-WEB.md) and [PHASE-3-RUNTIME](PHASE-3-RUNTIME.md).

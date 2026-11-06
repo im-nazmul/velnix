@@ -8,10 +8,10 @@ Velnix is an open-source, lightweight local development environment manager for 
 
 ## Getting started
 
-Requires Go 1.27.3+ on Linux. Use a supported patched Go release for release builds.
+Building from source requires Go 1.27.3+ and the Bun version in `.bun-version` on Linux. Use a supported patched Go release for release builds. Release binaries include the dashboard and do not require Bun.
 
 ```sh
-go build -o bin/velnix ./cmd/velnix # uses committed dashboard assets
+sh scripts/build.sh # builds dashboard assets, then embeds them in the Go binary
 bin/velnix doctor
 bin/velnix tui # optional interactive read-only interface
 bin/velnix config show
@@ -34,7 +34,22 @@ Build frontend edits and Go together with `sh scripts/build.sh` (requires pinned
 Bun). Preview the optional dashboard with `bin/velnix ui --dry-run`, then repeat
 with `--approve PLAN_ID`; see [dashboard login and limits](docs/DASHBOARD.md).
 
+## Development checks
+
+Install dependencies and project-local quality tools, then run the checks:
+
+```sh
+bun install --cwd web --frozen-lockfile
+bun run --cwd web build # required before Go checks on a clean clone
+bun run tools:install
+bun run check
+```
+
+Use `bun run format` to format source files and `bun run lint:fix` for supported
+automatic lint fixes. See [tooling, language coverage and prerequisites](docs/QUALITY.md).
+
 ## Planned capabilities
+
 - Broader CLI/TUI/dashboard management capabilities
 - Global and per-project runtime versions
 - PHP, Node.js, Bun, Python; extensible framework detection
@@ -44,6 +59,7 @@ with `--approve PLAN_ID`; see [dashboard login and limits](docs/DASHBOARD.md).
 - Safe system integration and ownership tracking
 
 ## Future commands (not implemented)
+
 ```bash
 velnix install php@8.5
 velnix link
@@ -52,6 +68,7 @@ velnix services
 ```
 
 ## Documentation
+
 - [Embedded dashboard usage and security](docs/DASHBOARD.md)
 - [Local mail capture and recovery](docs/MAIL.md)
 - [Foundation usage and recovery](docs/FOUNDATION.md)
@@ -70,4 +87,5 @@ velnix services
 - [Testing and performance acceptance](docs/TESTING.md)
 
 ## License
+
 To be selected before public release.

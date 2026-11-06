@@ -18,15 +18,15 @@ supervisor is introduced.
 
 The first dashboard includes useful reads and a small explicit management set:
 
-| Page | Included behavior |
-|---|---|
-| Overview | Registered project summary, owned workload availability, diagnostics and actionable unavailable states |
-| Projects | List/filter/detail; reviewed link/unlink using explicit paths and the existing document-root rules |
-| Runtimes | Passive inventory and project selections; reviewed selection of exact existing native executables and clearing a selection |
-| Owned services | HTTP/FPM and mail status; explain that foreground lifecycle stays in CLI/TUI for this slice |
-| Certificates | Public status/expiry/names; no private keys, issuance, trust-store action or CA download |
-| Mail | Paged inbox, plain text, attachment metadata and explicitly requested safe downloads; reviewed retention pruning |
-| Diagnostics | Existing doctor and configuration findings with sensitive values redacted; no repair or arbitrary config editor |
+| Page           | Included behavior                                                                                                          |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Overview       | Registered project summary, owned workload availability, diagnostics and actionable unavailable states                     |
+| Projects       | List/filter/detail; reviewed link/unlink using explicit paths and the existing document-root rules                         |
+| Runtimes       | Passive inventory and project selections; reviewed selection of exact existing native executables and clearing a selection |
+| Owned services | HTTP/FPM and mail status; explain that foreground lifecycle stays in CLI/TUI for this slice                                |
+| Certificates   | Public status/expiry/names; no private keys, issuance, trust-store action or CA download                                   |
+| Mail           | Paged inbox, plain text, attachment metadata and explicitly requested safe downloads; reviewed retention pruning           |
+| Diagnostics    | Existing doctor and configuration findings with sensitive values redacted; no repair or arbitrary config editor            |
 
 No fabricated database/system-service status or empty functional controls.
 Unavailable actions explain the current capability and relevant CLI command.

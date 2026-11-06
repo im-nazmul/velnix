@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Disposable PTY acceptance for reviewed TUI registry mutations."""
+
 import fcntl
 import json
 import os
-from pathlib import Path
 import pty
 import select
 import struct
@@ -12,6 +12,7 @@ import sys
 import tempfile
 import termios
 import time
+from pathlib import Path
 
 
 def validate(binary):
@@ -27,8 +28,7 @@ def validate(binary):
         master, slave = pty.openpty()
         before = termios.tcgetattr(slave)
         fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack("HHHH", 28, 100, 0, 0))
-        child = subprocess.Popen([binary, "tui"], stdin=slave, stdout=slave,
-                                 stderr=slave, env=env)
+        child = subprocess.Popen([binary, "tui"], stdin=slave, stdout=slave, stderr=slave, env=env)
         output = bytearray()
 
         def send(data):
@@ -37,7 +37,7 @@ def validate(binary):
         def wait(text, timeout=8):
             deadline = time.monotonic() + timeout
             while time.monotonic() < deadline:
-                if select.select([master], [], [], .05)[0]:
+                if select.select([master], [], [], 0.05)[0]:
                     output.extend(os.read(master, 65536))
                 if text.encode() in output:
                     output.clear()
@@ -75,11 +75,13 @@ def validate(binary):
             args = [binary, "projects", action, "--name", name]
             if path is not None:
                 args += ["--path", str(path)]
-            planned = subprocess.run(args + ["--json"], env=env, check=True,
-                                     capture_output=True, text=True)
+            planned = subprocess.run(
+                args + ["--json"], env=env, check=True, capture_output=True, text=True
+            )
             plan_id = json.loads(planned.stdout)["id"]
-            subprocess.run(args + ["--approve", plan_id, "--json"], env=env,
-                           check=True, capture_output=True)
+            subprocess.run(
+                args + ["--approve", plan_id, "--json"], env=env, check=True, capture_output=True
+            )
 
         try:
             wait("v e l n i x")
@@ -116,9 +118,19 @@ def validate(binary):
             child.wait(timeout=8)
             assert child.returncode == 0
             assert termios.tcgetattr(slave) == before, "terminal not restored"
-            print(json.dumps(dict(initialize=True, canceled_preview=True,
-                                  link=True, unlink=True, stale_approval_refused=True, source_preserved=True,
-                                  terminal_restored=True)))
+            print(
+                json.dumps(
+                    dict(
+                        initialize=True,
+                        canceled_preview=True,
+                        link=True,
+                        unlink=True,
+                        stale_approval_refused=True,
+                        source_preserved=True,
+                        terminal_restored=True,
+                    )
+                )
+            )
         finally:
             if child.poll() is None:
                 child.kill()

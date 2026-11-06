@@ -1,0 +1,36 @@
+{
+    "go": {
+        "staticcheck": "honnef.co/go/tools/cmd/staticcheck@v0.8.2",
+        "shfmt": "mvdan.cc/sh/v3/cmd/shfmt@v3.14.1"
+    },
+    "native": {
+        "ruff": {
+            "version": "0.17.4",
+            "url": "https://files.pythonhosted.org/packages/af/1b/62874f14c7873f27c7887d2b1ea41de990e14ba9518801ffe8eacb5d51a6/ruff-0.17.4-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+            "sha256": "2cd025509b2e15721b426fc70fd946d71f43b3db3b08e946dfec2d696d911690",
+            "kind": "ruff-wheel",
+            "executable": "ruff"
+        },
+        "shellcheck": {
+            "version": "0.11.0",
+            "url": "https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.xz",
+            "sha256": "8c3be12b05d5c177a04c29e3c78ce89ac86f1595681cab149b65b97c4e227198",
+            "kind": "shellcheck-tar",
+            "executable": "shellcheck"
+        },
+        "powershell": {
+            "version": "7.6.9",
+            "url": "https://github.com/PowerShell/PowerShell/releases/download/v7.6.9/powershell-7.6.9-linux-x64.tar.gz",
+            "sha256": "1da6d6d6035d651f20e70ddee7c4c15ac6ab8b9fb40ee92240d91263f28a884b",
+            "kind": "tar",
+            "executable": "pwsh"
+        },
+        "psscriptanalyzer": {
+            "version": "1.25.0",
+            "url": "https://www.powershellgallery.com/api/v2/package/PSScriptAnalyzer/1.25.0",
+            "sha256": "14e634c828eb98efb9f40b2918ba90f139ed5eccdf663a2a747736d996995d60",
+            "kind": "zip",
+            "executable": "PSScriptAnalyzer.psd1"
+        }
+    }
+}

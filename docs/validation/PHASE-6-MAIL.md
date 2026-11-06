@@ -45,20 +45,20 @@ has an ordinary bind race; a conflict aborts rather than taking over a listener.
 
 Actual local results for the current binary:
 
-| Check | Observed result |
-|---|---|
-| Multipart capture | Plain text and binary attachment round-trip pass |
-| Hostile attachment filename | Provider preserves `../../escape.bin` as metadata; consumer must choose an explicit destination and never trust it as a path |
-| Message limit | 11 MiB message rejected with SMTP 552 at configured 10 MiB limit |
-| Deep MIME | Service remained responsive after 1,000 nested multipart levels; about 0.3 seconds locally, not a general performance guarantee |
-| HTTP authentication | Unauthenticated message read returns 401; authenticated read returns 200 |
-| Host validation | Authenticated hostile Host returns 403 |
-| Origin validation | Hostile Origin reads and DELETE requests return 403, with and without credentials |
-| Private files under umask 077 | Database, WAL and SHM all mode 0600 |
-| Files under ordinary umask 022 | Database, WAL and SHM all mode 0644; launch must enforce a private child umask before creation |
-| Automatic connection attempts in tested startup/capture/read flow | None observed with connect tracing enabled and a minimal child environment |
-| Explicit authenticated link check | Attempts outbound HTTP despite minimal environment and disabled update checks |
-| Cleanup | Owned test child exits and both ports can be rebound after cleanup |
+| Check                                                             | Observed result                                                                                                                 |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Multipart capture                                                 | Plain text and binary attachment round-trip pass                                                                                |
+| Hostile attachment filename                                       | Provider preserves `../../escape.bin` as metadata; consumer must choose an explicit destination and never trust it as a path    |
+| Message limit                                                     | 11 MiB message rejected with SMTP 552 at configured 10 MiB limit                                                                |
+| Deep MIME                                                         | Service remained responsive after 1,000 nested multipart levels; about 0.3 seconds locally, not a general performance guarantee |
+| HTTP authentication                                               | Unauthenticated message read returns 401; authenticated read returns 200                                                        |
+| Host validation                                                   | Authenticated hostile Host returns 403                                                                                          |
+| Origin validation                                                 | Hostile Origin reads and DELETE requests return 403, with and without credentials                                               |
+| Private files under umask 077                                     | Database, WAL and SHM all mode 0600                                                                                             |
+| Files under ordinary umask 022                                    | Database, WAL and SHM all mode 0644; launch must enforce a private child umask before creation                                  |
+| Automatic connection attempts in tested startup/capture/read flow | None observed with connect tracing enabled and a minimal child environment                                                      |
+| Explicit authenticated link check                                 | Attempts outbound HTTP despite minimal environment and disabled update checks                                                   |
+| Cleanup                                                           | Owned test child exits and both ports can be rebound after cleanup                                                              |
 
 For the last network check, every provider `connect` syscall was injected with
 `ENETUNREACH` by strace **before** the provider started. The authenticated

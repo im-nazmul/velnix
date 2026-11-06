@@ -1,0 +1,14 @@
+{
+    "recommendations": [
+        "golang.go",
+        "Vue.volar",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "stylelint.vscode-stylelint",
+        "charliermarsh.ruff",
+        "timonwong.shellcheck",
+        "tamasfe.even-better-toml",
+        "ms-vscode.powershell",
+        "DavidAnson.vscode-markdownlint"
+    ]
+}

@@ -209,7 +209,7 @@ func TestFPMPreviewAndGuards(t *testing.T) {
 	pool := HTTPService{Store: s.Store, FPMName: "one"}
 	for _, r := range []HTTPRequest{{Action: "start", Executable: "/missing", Version: "8.3.1"}, {Action: "start", Executable: "/missing-script", Version: "8.3.1", Profile: "php"}, {Action: "start", Executable: "/usr/sbin/php-fpm8.3", Version: "8.3.35", Profile: "bad"}, {Action: "start", Executable: "/usr/sbin/php-fpm8.3", Version: "8.3.35", Uploads: []string{"../escape"}}} {
 		if _, e := pool.Plan(context.Background(), r); e == nil {
-			t.Fatal(fmt.Sprintf("accepted %+v", r))
+			t.Fatalf("accepted %+v", r)
 		}
 	}
 	if b, _ := pool.read(); b != nil {

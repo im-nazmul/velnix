@@ -10,11 +10,11 @@ platform acceptance and the outstanding Phase 3 FPM/HTTPS checks remain open.
 The installed-runtime integration test successfully checked descriptor-based
 version probes for:
 
-| Runtime | Canonical executable | Observed version |
-|---|---|---|
-| Node | `/home/nazmul/.nvm/versions/node/v25.9.0/bin/node` | 25.9.0 |
-| Bun | `/home/nazmul/.bun/bin/bun` | 1.4.3 |
-| Python | `/usr/bin/python3.12` | 3.12.3 |
+| Runtime | Canonical executable                               | Observed version |
+| ------- | -------------------------------------------------- | ---------------- |
+| Node    | `/home/nazmul/.nvm/versions/node/v25.9.0/bin/node` | 25.9.0           |
+| Bun     | `/home/nazmul/.bun/bin/bun`                        | 1.4.3            |
+| Python  | `/usr/bin/python3.12`                              | 3.12.3           |
 
 No installation or system configuration was changed. The CLI integration test
 also previews and approves Python inspection with no Velnix state creation.

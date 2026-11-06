@@ -32,12 +32,12 @@ python3 scripts/benchmark-foundation.py --output /tmp/velnix-foundation-samples.
 
 [Raw samples and environment metadata](phase-1-local-samples.json): 10 initial fresh-process samples, followed by 50 fresh-process samples with warm filesystem caches. No caches flushed, no other process sampling or CPU/memory limits imposed. Python subprocess overhead is included. First samples are explicitly not cold-cache measurements. Commands use absent, temporary HOME/XDG state; the harness asserts that read-only commands created no user files.
 
-| Command | Warm p50 | Warm p95 |
-|---|---|---|
-| `version` | 1.331 ms | 1.921 ms |
-| `help` | 1.138 ms | 1.777 ms |
-| `doctor` | 1.487 ms | 1.875 ms |
-| `config` | 1.221 ms | 1.648 ms |
+| Command     | Warm p50 | Warm p95 |
+| ----------- | -------- | -------- |
+| `version`   | 1.331 ms | 1.921 ms |
+| `help`      | 1.138 ms | 1.777 ms |
+| `doctor`    | 1.487 ms | 1.875 ms |
+| `config`    | 1.221 ms | 1.648 ms |
 | `init-plan` | 1.333 ms | 1.697 ms |
 
 Stripped binary: 2400408 bytes; gzip-compressed binary: 1046034 bytes (not a packaged release archive). GNU time reported doctor peak 2864 of 2864 KiB. Provider discovery does not execute subprocesses, and this milestone has no Velnix listeners or workload processes. Results meet the preliminary help/version and doctor budgets on this host; they do not validate project-list/resolve/workload budgets that have no implementation yet.

@@ -42,3 +42,12 @@ Thumbs.db
 # Browser acceptance artifacts
 /test-results/
 web/playwright-report/
+
+# Project-local quality tooling and caches
+.tools/
+.ruff_cache/
+
+# Generated embedded dashboard (build before Go compilation)
+/internal/dashboardassets/dist/
+__pycache__/
+*.py[cod]

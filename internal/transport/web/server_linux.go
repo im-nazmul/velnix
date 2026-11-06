@@ -111,7 +111,7 @@ func respond(w http.ResponseWriter, status int, value any) {
 		return
 	}
 	if len(b) > 2<<20 {
-		http.Error(w, "Response exceeds dashboard limit", 413)
+		http.Error(w, "Response exceeds dashboard limit", http.StatusRequestEntityTooLarge)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
