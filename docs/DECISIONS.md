@@ -11,7 +11,7 @@ Detailed ADRs belong in `docs/decisions/`.
 | D005 | Daemonless by default | Accepted |
 | D006 | Delegate to package/runtime providers | Accepted in principle |
 | D007 | Nginx initially | Accepted for Phase 2 rootless static HTTP |
-| D008 | Embedded Vue/TypeScript dashboard | Proposed |
+| D008 | Embedded Vue/TypeScript dashboard | Accepted for bounded Phase 7 |
 | D009 | Explicit resource ownership | Accepted |
 | D010 | Local HTTPS with Windows/WSL trust | Accepted requirement |
 | D011 | Per-project runtime versions | Accepted requirement |
@@ -41,6 +41,7 @@ The statuses above describe original direction and requirements, not implementat
 | [0014](decisions/0014-read-only-terminal-interface.md) | Optional read-only Bubble Tea/Lip Gloss interface over application queries | Implemented; Phase 5 read-only scope COMPLETE, platform/release acceptance open |
 | [0015](decisions/0015-reviewed-terminal-management.md) | Reviewed terminal mutations and session-owned foreground web/FPM | Implemented; approved Phase 5B scope COMPLETE, platform acceptance open |
 | [0016](decisions/0016-local-mail-capture.md) | Existing external Mailpit, private foreground capture, passive MIME inspection and reviewed export/pruning | Accepted for Phase 6, including the explicitly approved flow-scoped no-egress amendment |
+| [0017](decisions/0017-embedded-local-dashboard.md) | Embedded Vue assets, secured local API, session-bound reviewed actions and passive mail viewing | Implemented; bounded Phase 7 scope COMPLETE, HTML-preview fallback explicit, release gates open |
 
 See [FEASIBILITY](FEASIBILITY.md) for researched sources and unresolved experiments. Phase 1 foundation was subsequently authorized by the user: “Lets start implementation”. ADR 0001 is accepted for the foundation; ADR 0005 has its foundation state/approval subset accepted, while later privilege and resource-management choices remain proposed. Other ADRs retain their proposed status until the relevant milestone.
 

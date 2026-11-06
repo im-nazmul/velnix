@@ -1,4 +1,4 @@
-name: Go foundation
+name: Go and dashboard
 
 on:
   push:
@@ -19,12 +19,27 @@ jobs:
         with:
           go-version-file: go.mod
           cache: true
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version-file: .bun-version
+      - run: bun install --cwd web --frozen-lockfile
+      - name: Reproduce embedded dashboard assets and enforce size budget
+        run: python3 scripts/check-dashboard-assets.py
       - run: go mod verify
       - name: Formatting
         run: test -z "$(gofmt -l cmd internal)"
       - run: go vet ./...
       - run: go test -race -count=1 ./...
       - run: go build -trimpath -o bin/velnix ./cmd/velnix
+      - name: Install browser for isolated dashboard acceptance
+        run: bun --bun node_modules/@playwright/test/cli.js install chromium
+        working-directory: web
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_GC: '1'
+      - name: Dashboard desktop/mobile browser acceptance
+        run: bun run --cwd web test:browser
+        env:
+          VELNIX_UI_BINARY: ${{ github.workspace }}/bin/velnix
       - name: Read-only TUI terminal acceptance
         run: python3 scripts/validate-tui.py bin/velnix
       - name: TUI reviewed registry management

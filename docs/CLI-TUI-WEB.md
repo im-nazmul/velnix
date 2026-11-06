@@ -29,7 +29,15 @@ and [completion evidence](validation/PHASE-5-COMPLETION.md). Mail, settings
 mutations and system-service lifecycle remain later scope.
 
 ## Web
-Vue 3/TypeScript/Vite proposed. Build static assets and embed in Go; no production Node server. Use Bun as the default package manager and script runner, with a committed `bun.lock`, a pinned Bun version and `bun install --frozen-lockfile` in CI once dashboard tooling exists. Screens: overview, projects, runtimes, services, databases, certificates, mail, diagnostics and settings. Modern, responsive, accessible, minimal dependencies, dark/light themes.
+
+The approved Phase 7 dashboard is complete within its bounded scope. Run
+`velnix ui --dry-run`, then approve the exact launch plan. Embedded Vue 3/
+TypeScript/Vite assets require no production frontend server. Bun is pinned with
+a committed lockfile, frozen CI installs and reproducible asset checks.
+Seven pages share typed application services with a small reviewed action
+allowlist. Plain-text mail viewing and safe downloads are included; HTML preview
+uses the proposal's explicit unavailable fallback. See [DASHBOARD](DASHBOARD.md)
+and [completion evidence](validation/PHASE-7-COMPLETION.md).
 
 ## Security
 Loopback binding by default, origin/CSRF protections, authentication as appropriate, no arbitrary shell execution through API, scoped privileged actions, no private-key exposure.

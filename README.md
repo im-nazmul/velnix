@@ -2,7 +2,7 @@
 
 **Native Linux development, without the overhead.**
 
-> Status: Phases 3 and 4 are complete within their approved implementation scopes. [Phase 3 evidence](docs/validation/PHASE-3-COMPLETION.md) includes real PHP/FPM, mkcert and scoped Linux/Windows mirrored HTTPS; [Phase 4 evidence](docs/validation/PHASE-4-COMPLETION.md) covers native execution, read-only provider stores, detection and proxying. Remaining [platform/release acceptance](docs/validation/RELEASE-ACCEPTANCE.md) is explicit. The [Phase 5 TUI](docs/TUI.md) includes the completed read-only scope and the completed [Phase 5B management extension](docs/PHASE-5B.md); [completion evidence](docs/validation/PHASE-5-COMPLETION.md) records its terminal and platform limits. The completed [Phase 6 mail CLI](docs/MAIL.md) includes capture, passive inspection, reviewed export/pruning and recovery; [local evidence](docs/validation/PHASE-6-COMPLETION.md) records provider and platform limits. Name provisional pending availability checks.
+> Status: Phases 3 and 4 are complete within their approved implementation scopes. [Phase 3 evidence](docs/validation/PHASE-3-COMPLETION.md) includes real PHP/FPM, mkcert and scoped Linux/Windows mirrored HTTPS; [Phase 4 evidence](docs/validation/PHASE-4-COMPLETION.md) covers native execution, read-only provider stores, detection and proxying. Remaining [platform/release acceptance](docs/validation/RELEASE-ACCEPTANCE.md) is explicit. The [Phase 5 TUI](docs/TUI.md) includes the completed read-only scope and the completed [Phase 5B management extension](docs/PHASE-5B.md); [completion evidence](docs/validation/PHASE-5-COMPLETION.md) records its terminal and platform limits. The completed [Phase 6 mail CLI](docs/MAIL.md) includes capture, passive inspection, reviewed export/pruning and recovery; [local evidence](docs/validation/PHASE-6-COMPLETION.md) records provider and platform limits. The completed [Phase 7 dashboard](docs/DASHBOARD.md) adds an embedded local Vue UI with reviewed actions and plain-text mail viewing. Name provisional pending availability checks.
 
 Velnix is an open-source, lightweight local development environment manager for WSL2 and Linux. It aims to unify native services, runtime versions, project linking, `.test` domains, HTTPS and development mail capture without mandatory containers.
 
@@ -11,7 +11,7 @@ Velnix is an open-source, lightweight local development environment manager for 
 Requires Go 1.27.3+ on Linux. Use a supported patched Go release for release builds.
 
 ```sh
-go build -o bin/velnix ./cmd/velnix
+go build -o bin/velnix ./cmd/velnix # uses committed dashboard assets
 bin/velnix doctor
 bin/velnix tui # optional interactive read-only interface
 bin/velnix config show
@@ -30,8 +30,12 @@ Optional foreground `mail serve` captures local development mail through an exis
 Mailpit v1.33.0. Inspect plain text and export attachments through the CLI using
 reviewed plans; see [mail usage and recovery](docs/MAIL.md).
 
+Build frontend edits and Go together with `sh scripts/build.sh` (requires pinned
+Bun). Preview the optional dashboard with `bin/velnix ui --dry-run`, then repeat
+with `--approve PLAN_ID`; see [dashboard login and limits](docs/DASHBOARD.md).
+
 ## Planned capabilities
-- CLI, interactive TUI, optional web dashboard
+- Broader CLI/TUI/dashboard management capabilities
 - Global and per-project runtime versions
 - PHP, Node.js, Bun, Python; extensible framework detection
 - Laravel, WordPress, Drupal, JS frameworks, Python apps and static sites
@@ -45,10 +49,10 @@ velnix install php@8.5
 velnix link
 velnix secure
 velnix services
-velnix ui
 ```
 
 ## Documentation
+- [Embedded dashboard usage and security](docs/DASHBOARD.md)
 - [Local mail capture and recovery](docs/MAIL.md)
 - [Foundation usage and recovery](docs/FOUNDATION.md)
 - [Project registry commands and recovery](docs/PROJECTS.md)

@@ -38,3 +38,7 @@ Thumbs.db
 *.pem
 *.p12
 *.pfx
+
+# Browser acceptance artifacts
+/test-results/
+web/playwright-report/

@@ -686,3 +686,24 @@ func (s MailService) serve(ctx context.Context, req MailRequest) (any, error) {
 	}
 	return record, errors.Join(e, finishErr)
 }
+
+// Attachment reads bounded bytes for an explicitly requested transport download.
+// It never chooses a filesystem destination, exports a file or marks mail read.
+func (s MailService) Attachment(ctx context.Context, id, part string) (mailpit.Attachment, error) {
+	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
+	defer cancel()
+	c, _, e := s.client()
+	if e != nil {
+		return mailpit.Attachment{}, e
+	}
+	defer c.Close()
+	raw, e := c.Raw(ctx, id)
+	if e != nil {
+		return mailpit.Attachment{}, e
+	}
+	m, e := mailpit.Parse(id, raw)
+	if e != nil {
+		return mailpit.Attachment{}, e
+	}
+	return m.Attachment(part)
+}

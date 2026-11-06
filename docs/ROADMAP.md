@@ -32,7 +32,7 @@ and [completion evidence](validation/PHASE-5-COMPLETION.md) for checks and limit
 The [Phase 5B extension](PHASE-5B.md) is COMPLETE within its approved reviewed
 interactive-management scope, including session-owned web/FPM controls. See
 [Phase 5B completion](validation/PHASE-5B-COMPLETION.md).
-Phase 6 was separately approved; see its scope and completion below. No Phase 7 implementation is started.
+Phase 6 was separately approved; see its scope and completion below. Phase 7 was also separately approved; see its completed scope below.
 
 ## Phase 6 — Mail Capture (COMPLETE within approved CLI scope)
 
@@ -42,11 +42,18 @@ recovery are implemented. See [MAIL](MAIL.md), [approved scope](PHASE-6-PROPOSAL
 [ADR 0016](decisions/0016-local-mail-capture.md) and
 [completion evidence](validation/PHASE-6-COMPLETION.md). The explicitly approved
 no-egress amendment covers Velnix's flows, not unused authenticated provider
-features or a kernel sandbox. Browser HTML viewing and the dashboard remain
-Phase 7 work and need a separate bounded proposal.
+features or a kernel sandbox. The separately approved Phase 7 dashboard adds plain-text browser mail viewing
+and safe downloads. HTML preview remains explicitly unavailable.
 
-## Phase 7 — Web Dashboard
-Embedded Vue UI, loopback API, management pages and mail viewer.
+## Phase 7 — Web Dashboard (COMPLETE within approved bounded scope)
+
+Embedded Vue UI, reviewed foreground loopback API, seven pages, bounded reviewed
+application actions and passive mail viewing/downloads are implemented. See
+[DASHBOARD](DASHBOARD.md), [approved proposal](PHASE-7-PROPOSAL.md),
+[ADR 0017](decisions/0017-embedded-local-dashboard.md) and
+[completion evidence](validation/PHASE-7-COMPLETION.md). HTML preview uses the
+proposal's explicit unavailable fallback; browser-owned workload lifecycle and
+remote hosting remain excluded. Phase 8 requires separate scope approval.
 
 ## Phase 8 — Stabilization
 Security/performance review, WSL/native Ubuntu testing, installers, docs, contributor guidance and release automation.

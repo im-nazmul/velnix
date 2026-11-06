@@ -65,3 +65,13 @@ methods restrict Velnix to passive raw-message inspection and reviewed exact-ID
 pruning. A child-only private umask and pinned executable/data descriptors
 protect captured mail; no new Velnix HTTP API or registry schema is introduced.
 See [MAIL](MAIL.md) and [ADR 0016](decisions/0016-local-mail-capture.md).
+
+The separately approved Phase 7 embeds tracked reproducible Vue/Vite assets and
+adds `app.Dashboard` typed reads/actions through `internal/transport/web`.
+`velnix ui` is an optional foreground loopback listener with private bootstrap,
+expiring sessions and session-bound exact plan review. It never owns terminal
+workloads or proxies arbitrary provider/file/exec access. Plain-text mail and
+safe downloads reuse Phase 6; HTML preview is unavailable under the proposal's
+explicit fallback. See [DASHBOARD](DASHBOARD.md),
+[ADR 0017](decisions/0017-embedded-local-dashboard.md) and
+[completion evidence](validation/PHASE-7-COMPLETION.md).
